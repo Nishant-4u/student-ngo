@@ -1,0 +1,16 @@
+{
+  "name": "student-ngo-backend",
+  "version": "1.0.0",
+  "description": "Node.js + Nodemailer backend for the NGO website",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.3",
+    "ejs": "^5.0.1",
+    "express": "^4.18.4",
+    "nodemailer": "^6.9.4"
+  }
+}

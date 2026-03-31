@@ -1,0 +1,43 @@
+@media only screen and (min-width:200px) and (max-width:575px){
+    .btn-outer{
+        position: fixed;
+        bottom: 0px;
+        width: 100%;
+        background-color: white;
+        padding: 5px 0px;
+        left: 0px;
+        justify-content: center !important;
+    }
+    
+    .bannerContent h1{
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 30px;
+    }
+    .bannerContent br{
+        display: none;
+    }
+    .bannerContent p, .bannerContent u1 li{
+    font-size: 16px;
+    }
+    .bannerContentBtn {
+        flex-direction: column;
+    }
+     .bannerContentBtn button{
+        width: 100%;
+     }
+     .bannerForm{
+    padding: 20px;
+     }
+     .highlights-section h2 {
+    font-size: 26px;
+     }
+
+
+}
+@media (min-width: 1400px) {
+    .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        max-width: 1170ppx;
+    }
+}

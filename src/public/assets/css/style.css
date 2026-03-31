@@ -1,0 +1,84 @@
+ *{
+     font-family: "Inter", sans-serif;
+}
+
+.bannerContent h1{
+    font-size: 60px;
+    font-weight: 750;
+}
+.bannerContent p{
+    font-size: 22px;
+}
+.bannerContent h1 span{
+    color:#a52a2a;
+     
+}
+.bannerContent ul{
+    list-style: none;
+}
+.bannerContent u1{
+    list-style: none;
+}
+.bannerContent u1 li{
+    font-size: 22px;
+}
+
+.bannerContent u1{
+    font-size: 22px;
+}
+.bannerContent u1 li i{
+    color:#0000ff;
+}
+.bannerContentBtn button{
+    width: 50%;
+    padding: 10px 0px;
+    border-radius: 5px;
+}
+
+.bannerContentBtn button:first-child{
+    color: azure;
+    background: linear-gradient(to right,#a52a2a,#0000ff);
+}
+.bannerForm{
+    padding: 40px;
+    border-radius: 10px;
+}
+
+.bannerForm h3{
+    font-size: 18px;
+    font-weight: 700;
+}
+.bannerForm button{
+    width: 100%;
+    padding: 10px 0px;
+     background: linear-gradient(to right,#a52a2a,#0000ff);
+     border: none;
+     color: white;
+}
+.counterSection h2 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #a52a2a;
+}
+.highlights-section {
+    background-color: antiquewhite;
+}
+.highlights-section h2 {
+    color: black;
+    font-size: 36px;
+    font-weight: 700;
+} 
+.highlights-section p{
+    font-size: 18px;
+}
+.highlightsItems h4{
+    font-size: 18px;
+    font-weight: 600;
+}
+.highlightsItems p{
+    font-size: 15px;
+}
+.tabItemsContent ul {
+    list-style: none;
+}
+     
