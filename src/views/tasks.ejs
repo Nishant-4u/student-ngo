@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+<section class="container-fluid py-5 bg-light">
+  <div class="container">
+    <div class="bg-white shadow-lg rounded p-4">
+      <h1>Planner & Tasks</h1>
+      <p class="mb-4">Build a simple to-do list, mark tasks complete, and save your progress in localStorage.</p>
+      <div class="tool-panel p-4">
+        <div class="input-group mb-3">
+          <input id="task-title" class="form-control" type="text" placeholder="Add a new task">
+          <button id="task-add" class="btn btn-primary">Add</button>
+        </div>
+        <ul id="task-list" class="task-list"></ul>
+        <p class="tool-note">Tasks are saved automatically in your browser so your list stays between visits.</p>
+      </div>
+      <a href="/" class="btn btn-link mt-4">← Back to Home</a>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,112 @@
+<%- include('partials/header') %>
+<section id="streak-page" class="container-fluid py-5 bg-light streak-page">
+  <div class="container">
+    <div class="bg-white shadow-lg rounded p-4">
+      <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+          <h1 class="display-6 fw-bold">Leaderboard & Streak</h1>
+          <p class="lead text-muted">Build consistency, track your study hours, and stay motivated every day.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <span class="badge bg-warning text-dark py-2 px-3 fs-6">🔥 Focus & consistency</span>
+        </div>
+      </div>
+
+      <div class="row gx-4 gy-4">
+        <div class="col-lg-6">
+          <div class="stats-card p-4 mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3 gap-3 flex-wrap">
+              <div>
+                <div class="text-uppercase text-muted small mb-2">Current streak</div>
+                <div class="streak-count fw-bold" id="streak-count">0</div>
+                <div class="streak-subtitle text-muted">day streak</div>
+              </div>
+              <div id="streak-level" class="level-badge">New Challenger</div>
+            </div>
+            <div id="streak-message" class="fs-6 text-secondary mb-4">Your streak starts today!</div>
+            <div class="goal-card p-3 rounded-3 mb-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="small text-uppercase text-muted">Goal</div>
+                  <div class="fw-semibold">3 hrs | Completed: <span id="goal-completed">0.0 hrs</span></div>
+                </div>
+                <span class="badge bg-warning text-dark">Goal</span>
+              </div>
+              <div class="progress mt-3 goal-progress-bar">
+                <div id="goal-progress-fill" class="progress-bar bg-warning" role="progressbar" style="width: 0%;">0%</div>
+              </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              <button id="streak-activity-button" class="btn btn-outline-warning">Record Activity</button>
+              <button id="log-minutes-btn" class="btn btn-warning">Log Study Minutes</button>
+            </div>
+          </div>
+
+          <div class="stats-card p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h5 class="mb-0">Study Time</h5>
+              <span class="text-muted">Today + Week</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <div>
+                <span class="d-block text-muted">Today</span>
+                <strong id="today-study-time">0 min</strong>
+              </div>
+              <div>
+                <span class="d-block text-muted">Weekly</span>
+                <strong id="weekly-study-time">0 min</strong>
+              </div>
+            </div>
+            <div class="progress mt-3 weekly-progress-bar">
+              <div id="weekly-progress-fill" class="progress-bar bg-warning" role="progressbar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="weekly-log-card p-4 mt-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h5 class="mb-0">Weekly study log</h5>
+                <p class="text-muted mb-0">Track the last 7 days with weekday labels.</p>
+              </div>
+              <span class="badge bg-warning text-dark">Week view</span>
+            </div>
+            <ul id="weekly-study-log" class="weekly-study-log list-unstyled mb-0"></ul>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="leaderboard-card p-4 mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h5 class="mb-0">Leaderboard</h5>
+                <p class="text-muted mb-0">Live class ranking with your current progress.</p>
+              </div>
+              <span class="badge bg-warning text-dark">Top performers</span>
+            </div>
+            <ul id="leaderboard-list" class="leaderboard-list list-unstyled mb-3"></ul>
+            <div class="leaderboard-item p-3 rounded-3 bg-warning bg-opacity-10">
+              <div class="fw-semibold mb-2">Your current rank</div>
+              <div class="text-muted">Rank: <strong id="leader-rank">#1</strong></div>
+              <div class="text-muted">Current streak: <strong id="leader-streak">0</strong> days</div>
+              <div class="text-muted">Today: <strong id="leader-today-minutes">0</strong> min</div>
+            </div>
+          </div>
+
+          <div class="motivation-card p-4 rounded-4">
+            <h5 class="mb-3">Motivation</h5>
+            <p id="motivation-text" class="mb-3">Every day is a new chance to grow.</p>
+            <div class="warning-box p-3 rounded-3">
+              <strong>Don’t break your streak!</strong>
+              <p id="streak-warning" class="mb-0">Come back today 😢</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <a href="/" class="btn btn-link">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

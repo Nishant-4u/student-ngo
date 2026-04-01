@@ -1,3 +1,49 @@
+<footer class="site-footer mt-5">
+  <div class="container py-5">
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <div class="footer-card">
+          <h5>About</h5>
+          <p>Helping students stay focused, motivated, and consistent in their study journey.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="footer-card">
+          <h5>Quick Links</h5>
+          <ul class="footer-links list-unstyled mt-3">
+            <li><a href="/"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li><a href="/timer"><i class="fa-solid fa-clock"></i> Timer</a></li>
+            <li><a href="/tasks"><i class="fa-solid fa-list-check"></i> Tasks / Planner</a></li>
+            <li><a href="/flashcards"><i class="fa-solid fa-clapperboard"></i> Flashcards</a></li>
+            <li><a href="/notes"><i class="fa-solid fa-file-pdf"></i> Notes</a></li>
+            <li><a href="/chat"><i class="fa-solid fa-comments"></i> Chat</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="footer-card">
+          <h5>Connect</h5>
+          <ul class="footer-links list-unstyled mt-3">
+            <li><a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" target="_blank" rel="noopener noreferrer" data-login-protected="whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp group</a></li>
+            <li><a href="https://youtube.com/@2amstudywithme?si=h713dPkWFMRQg9zj" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i> YouTube channel</a></li>
+            <li><a href="/college-student"><i class="fa-solid fa-heart"></i> Student Support</a></li>
+            <li><a href="/streak"><i class="fa-solid fa-trophy"></i> Goals / Streak</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom py-3">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <p class="mb-0">© 2026 Transformation-bridge| Made for Students 💛</p>
+      <div class="footer-mini-links">
+        <a href="/music">Music</a>
+        <a href="/quotes">Quotes</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script>
 
@@ -45,5 +91,1127 @@
     });
   });
 </script>
-</body>
+  <div id="distraction-confirm-overlay" class="distraction-confirm-overlay d-none">
+    <div class="distraction-confirm-modal">
+      <p>This may distract you. Stay focused or continue?</p>
+      <div class="d-flex justify-content-end gap-2">
+        <button id="stay-focused-btn" class="btn btn-secondary btn-sm">Stay Focused</button>
+        <button id="continue-redirect-btn" class="btn btn-primary btn-sm">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginProtectedMessage = 'Please register first. We’ll connect you soon after registration.';
+    const isLoggedIn = () => localStorage.getItem('isLoggedIn') === 'true' || localStorage.getItem('studentRegistered') === 'true';
+    const chatContent = document.getElementById('chat-content');
+    const notesContent = document.getElementById('notes-content');
+    const registerButton = document.getElementById('register-button');
+    const streakCount = document.getElementById('streak-count');
+    const streakMessage = document.getElementById('streak-message');
+    const streakActivityButton = document.getElementById('streak-activity-button');
+    const featureCards = document.querySelectorAll('.feature-card');
+    const focusModeToggle = document.getElementById('focus-mode-toggle');
+    const focusModeStatus = document.getElementById('focus-mode-status');
+    const distractionOverlay = document.getElementById('distraction-confirm-overlay');
+    const distractionContinue = document.getElementById('continue-redirect-btn');
+    const distractionStay = document.getElementById('stay-focused-btn');
+
+    const quotes = [
+      { text: 'Small steps every day create big progress over time.', author: 'Study Smart' },
+      { text: 'The best way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
+      { text: 'Focus on being productive instead of busy.', author: 'Tim Ferriss' },
+      { text: 'Success is the sum of small efforts repeated day in and day out.', author: 'Robert Collier' },
+      { text: 'Don’t watch the clock; do what it does. Keep going.', author: 'Sam Levenson' }
+    ];
+
+    const musicTracks = [
+      { label: 'Focus Beats', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+      { label: 'Calm Study', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+      { label: 'Deep Concentration', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
+    ];
+
+    const tasksKey = 'studyTasks';
+    const flashcardsKey = 'studyFlashcards';
+    const streakKey = 'studyStreakCount';
+    const streakDateKey = 'studyStreakDate';
+    const studyTimeLogKey = 'studyTimeLog';
+    const leaderboardDataKey = 'studyLeaderboardData';
+    const dailyGoalMinutes = 180;
+    const gameUnlockKey = 'studyGameUnlocked';
+    const quizQuestions = [
+      {
+        question: 'What is the best way to stay focused during study?',
+        options: ['Multitasking', 'Short focused sessions with breaks', 'Studying for hours without pause', 'Only using your phone'],
+        answer: 1
+      },
+      {
+        question: 'Which habit helps build a strong study streak?',
+        options: ['Skipping study sometimes', 'Studying at the same time each day', 'Changing routine every hour', 'Studying only before exams'],
+        answer: 1
+      },
+      {
+        question: 'When your mind wanders, what should you do?',
+        options: ['Keep pushing through', 'Take a short break and return', 'Scroll social media', 'Stop studying forever'],
+        answer: 1
+      },
+      {
+        question: 'A healthy focus routine includes:',
+        options: ['Continuous work with no rest', 'Balanced study and breaks', 'No planning at all', 'Studying only when bored'],
+        answer: 1
+      }
+    ];
+    let currentGameMode = 'memory';
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let reactionTimeout = null;
+    let reactionStart = null;
+    let focusTimer = null;
+    let focusRemaining = 0;
+    let focusActive = false;
+
+    let pomodoroMode = 'study';
+    let studyDurationSeconds = 25 * 60;
+    let breakDurationSeconds = 5 * 60;
+    let pomodoroSeconds = studyDurationSeconds;
+    let pomodoroInterval = null;
+    let focusModeSetting = localStorage.getItem('focusModeSetting') === 'true';
+    let focusModeActive = false;
+    let pendingRedirect = null;
+    let tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+    let flashcards = JSON.parse(localStorage.getItem(flashcardsKey) || '[]');
+    let studySessionStart = null;
+    let lastPendingMinuteCount = 0;
+
+    const timerMinutes = document.getElementById('timer-minutes');
+    const timerSeconds = document.getElementById('timer-seconds');
+    const timerModeLabel = document.getElementById('timer-mode-label');
+    const timerCurrentMode = document.getElementById('timer-current-mode');
+    const timerProgressRing = document.getElementById('timer-progress-ring');
+    const studyDurationInput = document.getElementById('study-duration-input');
+    const breakDurationInput = document.getElementById('break-duration-input');
+    const studyDurationRange = document.getElementById('study-duration-range');
+    const breakDurationRange = document.getElementById('break-duration-range');
+
+    function formatTwoDigits(value) {
+      return String(value).padStart(2, '0');
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(pomodoroSeconds / 60);
+      const seconds = pomodoroSeconds % 60;
+      if (timerMinutes) timerMinutes.textContent = formatTwoDigits(minutes);
+      if (timerSeconds) timerSeconds.textContent = formatTwoDigits(seconds);
+      updateProgressRing();
+    }
+
+    function updateProgressRing() {
+      if (!timerProgressRing) return;
+      const total = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
+      const elapsed = Math.max(0, total - pomodoroSeconds);
+      const progressAngle = total > 0 ? Math.min(360, (elapsed / total) * 360) : 0;
+      timerProgressRing.style.background = `conic-gradient(#4f46e5 ${progressAngle}deg, #e9ecef ${progressAngle}deg)`;
+    }
+
+    function updateTimerSettings() {
+      const studyMinutes = Number(studyDurationInput?.value) || 25;
+      const breakMinutes = Number(breakDurationInput?.value) || 5;
+      studyDurationSeconds = Math.max(60, Math.min(7200, studyMinutes * 60));
+      breakDurationSeconds = Math.max(60, Math.min(3600, breakMinutes * 60));
+      if (studyDurationInput) studyDurationInput.value = Math.round(studyDurationSeconds / 60);
+      if (breakDurationInput) breakDurationInput.value = Math.round(breakDurationSeconds / 60);
+      if (studyDurationRange) studyDurationRange.value = Math.round(studyDurationSeconds / 60);
+      if (breakDurationRange) breakDurationRange.value = Math.round(breakDurationSeconds / 60);
+      if (!pomodoroInterval) {
+        pomodoroSeconds = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
+        updateTimerDisplay();
+      }
+    }
+
+    function updateDigitalClock() {
+      const clockElement = document.getElementById('digital-clock');
+      const dateElement = document.getElementById('clock-date');
+      if (!clockElement) return;
+      const now = new Date();
+      const hours = formatTwoDigits(now.getHours());
+      const minutes = formatTwoDigits(now.getMinutes());
+      const seconds = formatTwoDigits(now.getSeconds());
+      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      if (dateElement) {
+        dateElement.textContent = now.toLocaleDateString(undefined, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+    }
+
+    function initDigitalClock() {
+      const clockElement = document.getElementById('digital-clock');
+      if (!clockElement) return;
+      updateDigitalClock();
+      setInterval(updateDigitalClock, 1000);
+    }
+
+    function updateFocusModeUI() {
+      if (focusModeToggle) {
+        focusModeToggle.textContent = focusModeSetting ? 'Focus Mode ON' : 'Focus Mode OFF';
+        focusModeToggle.className = focusModeSetting ? 'btn btn-sm btn-success' : 'btn btn-sm btn-outline-info';
+      }
+      if (focusModeStatus) {
+        focusModeStatus.textContent = focusModeActive ? 'Focus Mode active' : focusModeSetting ? 'Focus Mode ready' : 'Focus Mode OFF';
+        focusModeStatus.className = focusModeActive ? 'badge bg-success' : focusModeSetting ? 'badge bg-warning' : 'badge bg-secondary';
+      }
+    }
+
+    function setFocusModeSetting(enabled) {
+      focusModeSetting = enabled;
+      localStorage.setItem('focusModeSetting', String(enabled));
+      updateBlockerState();
+    }
+
+    function updateBlockerState() {
+      focusModeActive = focusModeSetting && !!pomodoroInterval;
+      updateFocusModeUI();
+    }
+
+    function setPomodoroMode(mode) {
+      pomodoroMode = mode;
+      pomodoroSeconds = mode === 'break' ? breakDurationSeconds : studyDurationSeconds;
+      timerModeLabel.textContent = mode === 'break' ? 'Break' : 'Study';
+      timerModeLabel.className = mode === 'break' ? 'badge bg-warning' : 'badge bg-primary';
+      if (timerCurrentMode) {
+        timerCurrentMode.textContent = mode === 'break' ? 'Break period' : 'Study period';
+      }
+      updateTimerDisplay();
+      updateBlockerState();
+    }
+
+    function startPomodoro() {
+      if (pomodoroInterval) return;
+      if (pomodoroMode === 'study') {
+        studySessionStart = Date.now();
+      } else {
+        studySessionStart = null;
+      }
+      pomodoroInterval = setInterval(() => {
+        if (pomodoroSeconds > 0) {
+          pomodoroSeconds -= 1;
+          updateTimerDisplay();
+          const pendingMinutes = getPendingStudyMinutes();
+          if (pendingMinutes !== lastPendingMinuteCount) {
+            lastPendingMinuteCount = pendingMinutes;
+            updateStreakPage();
+          }
+        } else {
+          saveStudySessionTime(true);
+          clearInterval(pomodoroInterval);
+          pomodoroInterval = null;
+          lastPendingMinuteCount = 0;
+          updateBlockerState();
+          alert('Session complete! Time to switch your focus. Your study game is now unlocked.');
+        }
+      }, 1000);
+      updateBlockerState();
+    }
+
+    function pausePomodoro() {
+      if (pomodoroInterval) {
+        saveStudySessionTime();
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+      }
+      updateBlockerState();
+    }
+
+    function resetPomodoro() {
+      pausePomodoro();
+      pomodoroSeconds = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
+      updateTimerDisplay();
+      updateBlockerState();
+    }
+
+    function showQuote() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      const quoteText = document.getElementById('quote-text');
+      const quoteAuthor = document.getElementById('quote-author');
+      if (quoteText) quoteText.textContent = quote.text;
+      if (quoteAuthor) quoteAuthor.textContent = quote.author;
+    }
+
+    function loadTasks() {
+      tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+      renderTasks();
+    }
+
+    function saveTasks() {
+      localStorage.setItem(tasksKey, JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById('task-list');
+      if (!taskList) return;
+      taskList.innerHTML = tasks.map((task, index) => `
+        <li class="task-item ${task.completed ? 'completed' : ''}">
+          <span class="task-text">${task.title}</span>
+          <div class="d-flex gap-2 flex-wrap align-items-center">
+            <button data-index="${index}" class="btn btn-sm btn-outline-success task-toggle">${task.completed ? 'Undo' : 'Complete'}</button>
+            <button data-index="${index}" class="btn btn-sm btn-outline-danger task-delete">Delete</button>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function loadFlashcards() {
+      flashcards = JSON.parse(localStorage.getItem(flashcardsKey) || '[]');
+      renderFlashcards();
+    }
+
+    function saveFlashcards() {
+      localStorage.setItem(flashcardsKey, JSON.stringify(flashcards));
+    }
+
+    function renderFlashcards() {
+      const cardsContainer = document.getElementById('flashcards-container');
+      if (!cardsContainer) return;
+      cardsContainer.innerHTML = flashcards.map((card, index) => `
+        <div class="flashcard-item" data-index="${index}">
+          <div class="flashcard-side flex-grow-1">
+            <div class="fw-semibold">${card.front}</div>
+            <div class="text-muted mt-2 flashcard-back flashcard-hidden">${card.back}</div>
+          </div>
+          <div class="flashcard-actions">
+            <button data-index="${index}" class="btn btn-sm btn-outline-primary flashcard-flip">Flip</button>
+            <button data-index="${index}" class="btn btn-sm btn-outline-danger flashcard-delete">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getISODate(date = new Date()) {
+      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      return localDate.toISOString().slice(0, 10);
+    }
+
+    function getStudyTimeLog() {
+      return JSON.parse(localStorage.getItem(studyTimeLogKey) || '{}');
+    }
+
+    function saveStudyTimeLog(log) {
+      localStorage.setItem(studyTimeLogKey, JSON.stringify(log));
+    }
+
+    function getStudyMinutes(date = new Date()) {
+      const log = getStudyTimeLog();
+      return Number(log[getISODate(date)] || 0);
+    }
+
+    function addStudyMinutes(minutes) {
+      if (!minutes || minutes < 1) return 0;
+      const dateKey = getISODate();
+      const log = getStudyTimeLog();
+      log[dateKey] = (Number(log[dateKey] || 0) + Math.round(minutes));
+      saveStudyTimeLog(log);
+      return log[dateKey];
+    }
+
+    function getWeeklyStudyMinutes() {
+      let total = 0;
+      for (let i = 0; i < 7; i += 1) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        total += getStudyMinutes(date);
+      }
+      return total;
+    }
+
+    function getPendingStudyMinutes() {
+      if (!studySessionStart || pomodoroMode !== 'study') return 0;
+      return Math.max(0, Math.floor((Date.now() - studySessionStart) / 60000));
+    }
+
+    function getLevelText(streak) {
+      if (streak >= 10) return 'Focus Master';
+      if (streak >= 4) return 'Consistent';
+      if (streak >= 1) return 'Beginner';
+      return 'New Challenger';
+    }
+
+    function getMotivationText(streak) {
+      if (streak >= 7) return 'You’re ahead of most people 💯';
+      if (streak >= 3) return 'You’re building a habit 🔥';
+      if (streak === 2) return 'Keep the momentum going!';
+      if (streak === 1) return 'Great start!';
+      return 'Every day is a new chance to grow.';
+    }
+
+    function getSampleLeaderboard() {
+      return [
+        { name: 'Priya', streak: 8, minutes: 320 },
+        { name: 'Arjun', streak: 6, minutes: 280 },
+        { name: 'Sneha', streak: 5, minutes: 240 },
+        { name: 'Rohan', streak: 4, minutes: 190 },
+        { name: 'Ayesha', streak: 2, minutes: 130 }
+      ];
+    }
+
+    function getLeaderboardData() {
+      const stored = JSON.parse(localStorage.getItem(leaderboardDataKey) || 'null');
+      return Array.isArray(stored) && stored.length ? stored : getSampleLeaderboard();
+    }
+
+    function saveLeaderboardData(entries) {
+      localStorage.setItem(leaderboardDataKey, JSON.stringify(entries));
+    }
+
+    function buildLeaderboard(userStats) {
+      const entries = getLeaderboardData().filter(entry => entry.name !== 'You');
+      const combined = [...entries, { name: 'You', streak: userStats.streak, minutes: userStats.minutes, isYou: true }];
+      combined.sort((a, b) => {
+        if (b.streak !== a.streak) return b.streak - a.streak;
+        return b.minutes - a.minutes;
+      });
+      return combined.map((entry, index) => ({
+        rank: index + 1,
+        name: entry.name,
+        streak: entry.streak,
+        minutes: entry.minutes,
+        isYou: !!entry.isYou
+      }));
+    }
+
+    function renderLeaderboard(userStats) {
+      const leaderboardList = document.getElementById('leaderboard-list');
+      const leaderRank = document.getElementById('leader-rank');
+      if (!leaderboardList || !leaderRank) return;
+
+      const entries = buildLeaderboard(userStats);
+      leaderboardList.innerHTML = entries.slice(0, 5).map(entry => `
+        <li class="leaderboard-list-item ${entry.isYou ? 'leaderboard-you' : ''}">
+          <div class="d-flex align-items-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="leaderboard-rank">#${entry.rank}</div>
+              <div>
+                <div class="fw-semibold">${entry.name}${entry.isYou ? ' (You)' : ''}</div>
+                <div class="text-muted">${entry.streak} day streak • ${entry.minutes} min today</div>
+              </div>
+            </div>
+            <span class="badge ${entry.isYou ? 'bg-success' : 'bg-warning text-dark'}">${entry.isYou ? 'Your pace' : 'Top'}</span>
+          </div>
+        </li>
+      `).join('');
+
+      const userRank = entries.find(entry => entry.isYou)?.rank || entries.length;
+      leaderRank.textContent = `#${userRank}`;
+    }
+
+    function getStreakWarningText(lastDate) {
+      const today = getISODate();
+      const yesterday = getISODate(new Date(Date.now() - 86400000));
+      if (!lastDate) return 'Start today to build your streak.';
+      if (lastDate === today) return 'You’re on track today!';
+      if (lastDate === yesterday) return 'Don’t break your streak! Come back today 😢';
+      return 'A fresh streak begins now. Let’s get back on track.';
+    }
+
+    function updateStreakPage() {
+      const streakPage = document.getElementById('streak-page');
+      if (!streakPage) return;
+
+      const storedCount = Number(localStorage.getItem(streakKey) || 0);
+      const lastDate = localStorage.getItem(streakDateKey);
+      const todayMinutes = getStudyMinutes();
+      const weeklyMinutes = getWeeklyStudyMinutes();
+      const pendingMinutes = getPendingStudyMinutes();
+      const displayTodayMinutes = todayMinutes + pendingMinutes;
+      const displayWeeklyMinutes = weeklyMinutes + pendingMinutes;
+      const levelText = getLevelText(storedCount);
+      const motivation = getMotivationText(storedCount);
+      const warningText = getStreakWarningText(lastDate);
+      const goalCompletion = Math.min(100, Math.round((displayTodayMinutes / dailyGoalMinutes) * 100));
+
+      const streakCountElement = document.getElementById('streak-count');
+      const streakMessageElement = document.getElementById('streak-message');
+      const streakLevel = document.getElementById('streak-level');
+      const todayStudyTime = document.getElementById('today-study-time');
+      const weeklyStudyTime = document.getElementById('weekly-study-time');
+      const goalCompleted = document.getElementById('goal-completed');
+      const goalProgressFill = document.getElementById('goal-progress-fill');
+      const weeklyProgressFill = document.getElementById('weekly-progress-fill');
+      const leaderStreak = document.getElementById('leader-streak');
+      const leaderTodayMinutes = document.getElementById('leader-today-minutes');
+      const weeklyStudyLog = document.getElementById('weekly-study-log');
+      const motivationText = document.getElementById('motivation-text');
+      const streakWarning = document.getElementById('streak-warning');
+
+      if (streakCountElement) streakCountElement.textContent = storedCount;
+      if (streakMessageElement) streakMessageElement.textContent = storedCount > 0 ? `${storedCount} Day Streak — ${motivation}` : 'Your streak starts today!';
+      if (streakLevel) streakLevel.textContent = levelText;
+      if (todayStudyTime) todayStudyTime.textContent = `${displayTodayMinutes} min${pendingMinutes ? ` (+${pendingMinutes} live)` : ''}`;
+      if (weeklyStudyTime) weeklyStudyTime.textContent = `${displayWeeklyMinutes} min`;
+      if (goalCompleted) goalCompleted.textContent = `${(displayTodayMinutes / 60).toFixed(1)} hrs`;
+      if (goalProgressFill) {
+        goalProgressFill.style.width = `${goalCompletion}%`;
+        goalProgressFill.textContent = `${goalCompletion}%`;
+      }
+      if (weeklyProgressFill) {
+        weeklyProgressFill.style.width = `${Math.min(100, Math.round((displayWeeklyMinutes / (dailyGoalMinutes * 7)) * 100))}%`;
+      }
+      if (leaderStreak) leaderStreak.textContent = storedCount;
+      if (leaderTodayMinutes) leaderTodayMinutes.textContent = `${displayTodayMinutes} min`;
+      if (motivationText) motivationText.textContent = motivation;
+      if (streakWarning) streakWarning.textContent = warningText;
+      renderWeeklyStudyLog(pendingMinutes);
+      renderLeaderboard({ streak: storedCount, minutes: displayTodayMinutes });
+    }
+
+    function renderWeeklyStudyLog(pendingMinutes = 0) {
+      const weeklyStudyLog = document.getElementById('weekly-study-log');
+      if (!weeklyStudyLog) return;
+      const entries = [];
+      const today = new Date();
+      for (let i = 6; i >= 0; i -= 1) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const label = i === 0 ? 'Today' : date.toLocaleDateString(undefined, { weekday: 'short' });
+        const minutes = getStudyMinutes(date) + (i === 0 ? pendingMinutes : 0);
+        entries.push(`
+          <li class="weekly-log-item d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="fw-semibold">${label}</div>
+              <div class="text-muted small">${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</div>
+            </div>
+            <span class="badge ${minutes >= 60 ? 'bg-warning text-dark' : 'bg-secondary text-white'}">${minutes} min</span>
+          </li>
+        `);
+      }
+      weeklyStudyLog.innerHTML = entries.join('');
+    }
+
+    function saveStudySessionTime(completed = false) {
+      if (!studySessionStart || pomodoroMode !== 'study') {
+        studySessionStart = null;
+        return;
+      }
+      const elapsedSeconds = Math.floor((Date.now() - studySessionStart) / 1000);
+      const minutes = Math.max(1, Math.round(elapsedSeconds / 60));
+      addStudyMinutes(minutes);
+      studySessionStart = null;
+      updateStreakPage();
+      if (completed) {
+        localStorage.setItem(gameUnlockKey, 'true');
+        if (document.getElementById('game-lock-message')) {
+          setupGamePage();
+        }
+      }
+    }
+
+    function isGameUnlocked() {
+      return localStorage.getItem(gameUnlockKey) === 'true';
+    }
+
+    function switchGameMode(mode) {
+      resetReactionGame();
+      resetFocusChallenge();
+      currentGameMode = mode;
+      document.querySelectorAll('.game-mode-btn').forEach(button => {
+        button.classList.toggle('active', button.id === `game-mode-${mode}`);
+      });
+      document.querySelectorAll('.game-content').forEach(section => {
+        section.classList.toggle('d-none', section.id !== `game-${mode}`);
+      });
+      if (mode === 'memory') initGameBoard();
+      if (mode === 'quiz') initQuizGame();
+      if (mode === 'reaction') resetReactionGame();
+      if (mode === 'focus') resetFocusChallenge();
+    }
+
+    function renderQuizQuestion() {
+      const questionEl = document.getElementById('quiz-question');
+      const optionsEl = document.getElementById('quiz-options');
+      const scoreEl = document.getElementById('quiz-score');
+      if (!questionEl || !optionsEl || !scoreEl) return;
+
+      const current = quizQuestions[currentQuizIndex];
+      questionEl.textContent = current.question;
+      optionsEl.innerHTML = current.options.map((option, index) => `
+        <button type="button" class="btn btn-outline-secondary quiz-option-btn" data-option-index="${index}">${option}</button>
+      `).join('');
+      scoreEl.textContent = `Score: ${quizScore} / ${quizQuestions.length}`;
+    }
+
+    function initQuizGame() {
+      currentQuizIndex = 0;
+      quizScore = 0;
+      renderQuizQuestion();
+      const quizStatus = document.getElementById('game-status');
+      if (quizStatus) quizStatus.textContent = 'Answer each question to earn a fun completion score.';
+    }
+
+    function handleQuizAnswer(selectedIndex) {
+      const quizStatus = document.getElementById('game-status');
+      if (currentQuizIndex >= quizQuestions.length) {
+        if (quizStatus) quizStatus.textContent = `Quiz complete! Your final score is ${quizScore} / ${quizQuestions.length}.`;
+        return;
+      }
+      const question = quizQuestions[currentQuizIndex];
+      if (selectedIndex === question.answer) {
+        quizScore += 1;
+        if (quizStatus) quizStatus.textContent = 'Nice! That one was correct.';
+      } else if (quizStatus) {
+        quizStatus.textContent = 'Good try — keep going and learn from each question.';
+      }
+      currentQuizIndex += 1;
+      if (currentQuizIndex >= quizQuestions.length) {
+        if (quizStatus) quizStatus.textContent = `Quiz complete! Your final score is ${quizScore} / ${quizQuestions.length}.`;
+      } else {
+        renderQuizQuestion();
+      }
+    }
+
+    function initReactionGame() {
+      const reactionStatus = document.getElementById('reaction-status');
+      const reactionResult = document.getElementById('reaction-result');
+      const reactionButton = document.getElementById('reaction-start-btn');
+      if (!reactionStatus || !reactionResult || !reactionButton) return;
+      reactionResult.textContent = '';
+      reactionStatus.textContent = 'Get ready... the button will turn green soon.';
+      reactionButton.textContent = 'Wait for green';
+      if (reactionTimeout) clearTimeout(reactionTimeout);
+      reactionStart = null;
+      const wait = 1500 + Math.random() * 2500;
+      reactionTimeout = setTimeout(() => {
+        if (!reactionStatus || !reactionButton) return;
+        reactionStatus.textContent = 'Click now!';
+        reactionButton.textContent = 'Click!';
+        reactionStart = Date.now();
+      }, wait);
+    }
+
+    function resetReactionGame() {
+      const reactionStatus = document.getElementById('reaction-status');
+      const reactionResult = document.getElementById('reaction-result');
+      const reactionButton = document.getElementById('reaction-start-btn');
+      if (reactionTimeout) clearTimeout(reactionTimeout);
+      reactionStart = null;
+      if (reactionButton) reactionButton.textContent = 'Start Reaction Test';
+      if (reactionStatus) reactionStatus.textContent = 'Press start and wait for the green signal.';
+      if (reactionResult) reactionResult.textContent = '';
+    }
+
+    function initFocusChallenge() {
+      const focusStatus = document.getElementById('focus-challenge-status');
+      const focusTimerEl = document.getElementById('focus-challenge-timer');
+      const durationSelect = document.getElementById('focus-duration');
+      if (!focusStatus || !focusTimerEl || !durationSelect) return;
+      if (focusTimer) clearInterval(focusTimer);
+      focusActive = true;
+      focusRemaining = Number(durationSelect.value) || 120;
+      const updateTimer = () => {
+        const minutes = Math.floor(focusRemaining / 60);
+        const seconds = focusRemaining % 60;
+        focusTimerEl.textContent = `${formatTwoDigits(minutes)}:${formatTwoDigits(seconds)}`;
+        if (focusRemaining <= 0) {
+          clearInterval(focusTimer);
+          focusActive = false;
+          focusStatus.textContent = 'Great work! You completed the focus challenge.';
+          return;
+        }
+        focusRemaining -= 1;
+      };
+      updateTimer();
+      focusStatus.textContent = 'Stay on this page and keep your attention here.';
+      focusTimer = setInterval(updateTimer, 1000);
+      window.addEventListener('blur', () => {
+        if (!focusActive) return;
+        clearInterval(focusTimer);
+        focusActive = false;
+        focusStatus.textContent = 'Focus broken — try again after a full study session.';
+      }, { once: true });
+    }
+
+    function resetFocusChallenge() {
+      const focusStatus = document.getElementById('focus-challenge-status');
+      const focusTimerEl = document.getElementById('focus-challenge-timer');
+      if (focusTimer) clearInterval(focusTimer);
+      focusActive = false;
+      focusRemaining = Number(document.getElementById('focus-duration')?.value || 120);
+      if (focusTimerEl) focusTimerEl.textContent = `${formatTwoDigits(Math.floor(focusRemaining / 60))}:${formatTwoDigits(focusRemaining % 60)}`;
+      if (focusStatus) focusStatus.textContent = 'Press start to begin the Focus Trial.';
+    }
+
+    function initGameBoard() {
+      const grid = document.getElementById('memory-grid');
+      const gameStatus = document.getElementById('game-status');
+      if (!grid || !gameStatus) return;
+
+      const icons = ['🧠', '📚', '✨', '🚀'];
+      const deck = [...icons, ...icons].sort(() => Math.random() - 0.5);
+      let firstCard = null;
+      let secondCard = null;
+      let lockBoard = false;
+      let matches = 0;
+
+      function resetTurn() {
+        firstCard = null;
+        secondCard = null;
+        lockBoard = false;
+      }
+
+      function checkForMatch() {
+        if (!firstCard || !secondCard) return;
+        const match = firstCard.dataset.symbol === secondCard.dataset.symbol;
+        if (match) {
+          firstCard.classList.add('matched');
+          secondCard.classList.add('matched');
+          matches += 1;
+          gameStatus.textContent = matches === icons.length
+            ? 'You matched all pairs! Great focus and well done.'
+            : `Nice! ${matches} of ${icons.length} pairs matched.`;
+          resetTurn();
+        } else {
+          lockBoard = true;
+          setTimeout(() => {
+            [firstCard, secondCard].forEach(card => {
+              card.classList.remove('flipped');
+              card.querySelector('.card-front')?.classList.remove('d-none');
+              card.querySelector('.card-back')?.classList.add('card-hidden');
+            });
+            resetTurn();
+          }, 900);
+        }
+      }
+
+      grid.innerHTML = deck.map(symbol => `
+        <button type="button" class="memory-card" data-symbol="${symbol}">
+          <span class="card-front">?</span>
+          <span class="card-back card-hidden">${symbol}</span>
+        </button>
+      `).join('');
+
+      grid.querySelectorAll('.memory-card').forEach(card => {
+        card.addEventListener('click', () => {
+          if (lockBoard || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+          card.classList.add('flipped');
+          card.querySelector('.card-front')?.classList.add('d-none');
+          card.querySelector('.card-back')?.classList.remove('card-hidden');
+          if (!firstCard) {
+            firstCard = card;
+            return;
+          }
+          secondCard = card;
+          checkForMatch();
+        });
+      });
+
+      const restartBtn = document.getElementById('restart-game-btn');
+      if (restartBtn && !restartBtn.dataset.gameListener) {
+        restartBtn.dataset.gameListener = 'true';
+        restartBtn.addEventListener('click', initGameBoard);
+      }
+      gameStatus.textContent = 'Tap two cards to reveal a match.';
+    }
+
+    function setupGamePage() {
+      const unlocked = isGameUnlocked();
+      const gameLocked = document.getElementById('game-locked');
+      const gameUnlockedPanel = document.getElementById('game-unlocked');
+      const gameUnlockStatus = document.getElementById('game-unlock-status');
+      const gameLockMessage = document.getElementById('game-lock-message');
+      const gameUnlockHint = document.getElementById('game-unlock-hint');
+      if (gameUnlockStatus) {
+        gameUnlockStatus.textContent = unlocked ? 'Game unlocked — choose your reward' : 'Unlock the game with focus';
+        gameUnlockStatus.className = unlocked ? 'badge bg-success py-2 px-3 fs-6' : 'badge bg-warning py-2 px-3 fs-6';
+      }
+      if (gameLockMessage) {
+        gameLockMessage.textContent = unlocked
+          ? 'Study game unlocked! Choose a mini-game and enjoy your reward challenge.'
+          : 'Complete a study session to unlock the game.';
+      }
+      if (gameUnlockHint) {
+        gameUnlockHint.textContent = unlocked
+          ? 'Great job! The Study Game is unlocked — choose a game below.'
+          : 'Complete a study session to unlock the Study Game reward.';
+      }
+      if (gameLocked) {
+        gameLocked.classList.toggle('d-none', unlocked);
+      }
+      if (gameUnlockedPanel) {
+        gameUnlockedPanel.classList.toggle('d-none', !unlocked);
+      }
+      if (unlocked) {
+        switchGameMode(currentGameMode);
+      }
+    }
+
+    function refreshStreak() {
+      const storedCount = Number(localStorage.getItem(streakKey) || 0);
+      if (streakCount) streakCount.textContent = storedCount;
+      if (streakMessage) streakMessage.textContent = storedCount > 0 ? getMotivationText(storedCount) : 'Your streak starts today!';
+      updateStreakPage();
+    }
+
+    function recordActivity() {
+      const today = getISODate();
+      const yesterday = getISODate(new Date(Date.now() - 86400000));
+      const lastDate = localStorage.getItem(streakDateKey);
+      let count = Number(localStorage.getItem(streakKey) || 0);
+      if (lastDate !== today) {
+        count = lastDate === yesterday ? count + 1 : 1;
+        localStorage.setItem(streakKey, count);
+        localStorage.setItem(streakDateKey, today);
+      }
+      refreshStreak();
+    }
+
+    function setupAuthPanels() {
+      const registered = isLoggedIn();
+
+      if (chatContent) {
+        if (registered) {
+          chatContent.innerHTML = `
+            <div class="alert alert-success mb-2">Welcome back! Access the student chat below.</div>
+            <a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" target="_blank" rel="noopener noreferrer" data-login-protected="whatsapp" class="btn btn-success">Join the WhatsApp group</a>
+            <a class="btn btn-success btn-sm mt-2" target="_blank" rel="noopener noreferrer" href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" data-login-protected="whatsapp">Join Chat</a>
+          `;
+        } else {
+          chatContent.innerHTML = `<div class="alert alert-warning">Please register first. We’ll connect you soon after registration.</div>`;
+        }
+      }
+
+      if (notesContent) {
+        if (registered) {
+          notesContent.innerHTML = `
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="p-3 bg-light rounded">
+                  <h5>Notes</h5>
+                  <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/1A2B3C4D5E6F7G8H9I/view?usp=sharing" class="d-block link-primary">Class Notes PDF</a>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-3 bg-light rounded">
+                  <h5>PYQs</h5>
+                  <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/1B2C3D4E5F6G7H8I9J/view?usp=sharing" class="d-block link-primary">Previous Year Questions</a>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-3 bg-light rounded">
+                  <h5>PDFs</h5>
+                  <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/1C2D3E4F5G6H7I8J9K/view?usp=sharing" class="d-block link-primary">Study Guide PDF</a>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          notesContent.innerHTML = `<div class="alert alert-warning">Please register first to access notes and PDFs.</div>`;
+        }
+      }
+
+      if (registerButton) {
+        if (registered) {
+          registerButton.classList.add('d-none');
+        } else {
+          registerButton.classList.remove('d-none');
+          registerButton.addEventListener('click', () => {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('studentRegistered', 'true');
+            setupAuthPanels();
+            alert('Registration holds for this session. Chat and notes are now available.');
+          }, { once: true });
+        }
+      }
+    }
+
+    function initMusic() {
+      const musicSelect = document.getElementById('music-select');
+      const musicPlayer = document.getElementById('focus-music-player');
+      if (!musicSelect || !musicPlayer) return;
+      musicTracks.forEach(track => {
+        const option = document.createElement('option');
+        option.value = track.src;
+        option.textContent = track.label;
+        musicSelect.appendChild(option);
+      });
+      musicSelect.value = musicTracks[0].src;
+      musicSelect.addEventListener('change', () => {
+        musicPlayer.src = musicSelect.value;
+        musicPlayer.play().catch(() => {});
+      });
+    }
+
+    function showDistractionConfirmation() {
+      return new Promise(resolve => {
+        if (!distractionOverlay || !distractionContinue || !distractionStay) {
+          resolve(false);
+          return;
+        }
+
+        distractionOverlay.classList.remove('d-none');
+
+        const cleanup = () => {
+          distractionOverlay.classList.add('d-none');
+          distractionContinue.removeEventListener('click', onContinue);
+          distractionStay.removeEventListener('click', onStay);
+        };
+
+        const onContinue = () => {
+          cleanup();
+          resolve(true);
+        };
+
+        const onStay = () => {
+          cleanup();
+          resolve(false);
+        };
+
+        distractionContinue.addEventListener('click', onContinue);
+        distractionStay.addEventListener('click', onStay);
+      });
+    }
+
+    function playRedirect(link, isBlank) {
+      if (isBlank) {
+        window.open(link, '_blank', 'noopener');
+      } else {
+        window.location.href = link;
+      }
+    }
+
+    function isDistractingLink(url) {
+      const distractingSites = ['youtube.com', 'youtu.be', 'instagram.com', 'facebook.com'];
+      return distractingSites.some(site => url.hostname.toLowerCase().includes(site));
+    }
+
+    function bindInteractions() {
+      const timerStart = document.getElementById('timer-start');
+      const timerPause = document.getElementById('timer-pause');
+      const timerReset = document.getElementById('timer-reset');
+      const timerStudyMode = document.getElementById('timer-study-mode');
+      const timerBreakMode = document.getElementById('timer-break-mode');
+      const reminderSet = document.getElementById('reminder-set');
+      const taskAdd = document.getElementById('task-add');
+      const taskTitle = document.getElementById('task-title');
+      const taskList = document.getElementById('task-list');
+      const flashcardAdd = document.getElementById('flashcard-add');
+      const flashcardFront = document.getElementById('flashcard-front');
+      const flashcardBack = document.getElementById('flashcard-back');
+      const cardsContainer = document.getElementById('flashcards-container');
+
+      timerStart?.addEventListener('click', () => {
+        startPomodoro();
+        recordActivity();
+      });
+      timerPause?.addEventListener('click', pausePomodoro);
+      timerReset?.addEventListener('click', resetPomodoro);
+      timerStudyMode?.addEventListener('click', () => setPomodoroMode('study'));
+      timerBreakMode?.addEventListener('click', () => setPomodoroMode('break'));
+
+      const syncStudyDuration = () => {
+        if (!studyDurationInput || !studyDurationRange) return;
+        const value = Math.max(1, Math.min(120, Number(studyDurationInput.value) || 25));
+        studyDurationInput.value = value;
+        studyDurationRange.value = value;
+        updateTimerSettings();
+      };
+
+      const syncBreakDuration = () => {
+        if (!breakDurationInput || !breakDurationRange) return;
+        const value = Math.max(1, Math.min(60, Number(breakDurationInput.value) || 5));
+        breakDurationInput.value = value;
+        breakDurationRange.value = value;
+        updateTimerSettings();
+      };
+
+      studyDurationInput?.addEventListener('input', syncStudyDuration);
+      studyDurationRange?.addEventListener('input', () => {
+        if (studyDurationInput) studyDurationInput.value = studyDurationRange.value;
+        updateTimerSettings();
+      });
+      breakDurationInput?.addEventListener('input', syncBreakDuration);
+      breakDurationRange?.addEventListener('input', () => {
+        if (breakDurationInput) breakDurationInput.value = breakDurationRange.value;
+        updateTimerSettings();
+      });
+
+      focusModeToggle?.addEventListener('click', () => setFocusModeSetting(!focusModeSetting));
+
+      reminderSet?.addEventListener('click', () => {
+        const timeInput = document.getElementById('reminder-time');
+        if (!timeInput || !timeInput.value) {
+          alert('Please choose a time for your reminder.');
+          return;
+        }
+        const [hours, minutes] = timeInput.value.split(':').map(Number);
+        const target = new Date();
+        target.setHours(hours, minutes, 0, 0);
+        if (target <= new Date()) {
+          target.setDate(target.getDate() + 1);
+        }
+        const delay = target.getTime() - Date.now();
+        alert(`Reminder set for ${target.toLocaleTimeString()}`);
+        setTimeout(() => alert('⏰ Reminder: Time to study!'), delay);
+      });
+
+      taskAdd?.addEventListener('click', () => {
+        if (!taskTitle || !taskTitle.value.trim()) return;
+        tasks.push({ title: taskTitle.value.trim(), completed: false });
+        taskTitle.value = '';
+        saveTasks();
+        renderTasks();
+        recordActivity();
+      });
+
+      taskList?.addEventListener('click', event => {
+        const target = event.target;
+        const index = target.dataset.index;
+        if (typeof index === 'undefined') return;
+        const idx = Number(index);
+        if (target.classList.contains('task-delete')) {
+          tasks.splice(idx, 1);
+          saveTasks();
+          renderTasks();
+        }
+        if (target.classList.contains('task-toggle')) {
+          tasks[idx].completed = !tasks[idx].completed;
+          saveTasks();
+          renderTasks();
+          recordActivity();
+        }
+      });
+
+      flashcardAdd?.addEventListener('click', () => {
+        if (!flashcardFront || !flashcardBack || !flashcardFront.value.trim() || !flashcardBack.value.trim()) return;
+        flashcards.push({ front: flashcardFront.value.trim(), back: flashcardBack.value.trim() });
+        flashcardFront.value = '';
+        flashcardBack.value = '';
+        saveFlashcards();
+        renderFlashcards();
+        recordActivity();
+      });
+
+      document.querySelectorAll('.game-mode-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const mode = button.id.replace('game-mode-', '');
+          currentGameMode = mode;
+          switchGameMode(mode);
+        });
+      });
+
+      document.getElementById('quiz-options')?.addEventListener('click', event => {
+        const button = event.target.closest('button[data-option-index]');
+        if (!button) return;
+        handleQuizAnswer(Number(button.dataset.optionIndex));
+      });
+
+      document.getElementById('quiz-restart-btn')?.addEventListener('click', initQuizGame);
+      const reactionBtn = document.getElementById('reaction-start-btn');
+      reactionBtn?.addEventListener('click', () => {
+        if (reactionStart === null && reactionTimeout) {
+          const status = document.getElementById('reaction-status');
+          if (status) status.textContent = 'Too early! Wait for the green signal.';
+          return;
+        }
+        if (!reactionStart) {
+          initReactionGame();
+          return;
+        }
+        const reactionResult = document.getElementById('reaction-result');
+        const reactionStatus = document.getElementById('reaction-status');
+        const elapsed = Date.now() - reactionStart;
+        if (reactionResult) reactionResult.textContent = `Reaction time: ${elapsed} ms`;
+        if (reactionStatus) reactionStatus.textContent = 'Great reflex! Try again to improve.';
+        reactionStart = null;
+        if (reactionTimeout) {
+          clearTimeout(reactionTimeout);
+          reactionTimeout = null;
+        }
+        reactionBtn.textContent = 'Start Reaction Test';
+      });
+      document.getElementById('focus-start-btn')?.addEventListener('click', initFocusChallenge);
+      document.getElementById('focus-duration')?.addEventListener('change', resetFocusChallenge);
+
+      cardsContainer?.addEventListener('click', event => {
+        const target = event.target;
+        const index = target.dataset.index;
+        if (typeof index === 'undefined') return;
+        const idx = Number(index);
+        if (target.classList.contains('flashcard-delete')) {
+          flashcards.splice(idx, 1);
+          saveFlashcards();
+          renderFlashcards();
+        }
+        if (target.classList.contains('flashcard-flip')) {
+          const cardNode = target.closest('.flashcard-item');
+          const backText = cardNode.querySelector('.flashcard-back');
+          if (backText) backText.classList.toggle('flashcard-hidden');
+          recordActivity();
+        }
+      });
+
+      streakActivityButton?.addEventListener('click', () => {
+        recordActivity();
+        alert('Study activity recorded. Keep your streak going!');
+      });
+
+      const logMinutesButton = document.getElementById('log-minutes-btn');
+      logMinutesButton?.addEventListener('click', () => {
+        const input = prompt('Enter minutes of study to log for today:', '30');
+        const minutes = Number(input);
+        if (!minutes || minutes <= 0) return;
+        addStudyMinutes(minutes);
+        updateStreakPage();
+        alert(`Logged ${minutes} minutes for today. Keep the streak alive!`);
+      });
+
+      featureCards.forEach(card => card.addEventListener('click', recordActivity));
+
+      document.addEventListener('click', async event => {
+        const link = event.target.closest('a[href]');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+
+        if (link.dataset.loginProtected && !isLoggedIn()) {
+          event.preventDefault();
+          alert(loginProtectedMessage);
+          return;
+        }
+
+        try {
+          const targetUrl = new URL(link.href, window.location.href);
+          if (targetUrl.origin !== window.location.origin && isDistractingLink(targetUrl) && focusModeActive) {
+            event.preventDefault();
+            const proceed = await showDistractionConfirmation();
+            if (proceed) {
+              playRedirect(link.href, link.target === '_blank');
+            }
+            return;
+          }
+          if (targetUrl.origin !== window.location.origin && !focusModeActive && isDistractingLink(targetUrl)) {
+            // allow navigation to distracting sites when focus mode is disabled
+            return;
+          }
+        } catch (err) {
+          // ignore invalid URLs
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTimerSettings();
+      updateTimerDisplay();
+      initDigitalClock();
+      showQuote();
+      loadTasks();
+      loadFlashcards();
+      refreshStreak();
+      setupAuthPanels();
+      setupGamePage();
+      initMusic();
+      updateFocusModeUI();
+      bindInteractions();
+    });
+  </script>
 </html>

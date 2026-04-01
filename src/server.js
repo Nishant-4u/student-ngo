@@ -23,7 +23,63 @@ const transporter = nodemailer.createTransport({
 });
 
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index', { pageTitle: 'Home' });
+});
+
+app.get('/timer', (req, res) => {
+  res.render('timer', { pageTitle: 'Pomodoro Timer' });
+});
+
+app.get('/tasks', (req, res) => {
+  res.render('tasks', { pageTitle: 'Planner & Tasks' });
+});
+
+app.get('/flashcards', (req, res) => {
+  res.render('flashcards', { pageTitle: 'Flashcards' });
+});
+
+app.get('/notes', (req, res) => {
+  res.render('notes', { pageTitle: 'Download Study Notes' });
+});
+
+app.get('/chat', (req, res) => {
+  res.render('chat', { pageTitle: 'Student Chat' });
+});
+
+app.get('/music', (req, res) => {
+  res.render('music', { pageTitle: 'Focus Music' });
+});
+
+app.get('/quotes', (req, res) => {
+  res.render('quotes', { pageTitle: 'Motivational Quotes' });
+});
+
+app.get('/game', (req, res) => {
+  res.render('game', { pageTitle: 'Study Game' });
+});
+
+app.get('/calculator', (req, res) => {
+  res.render('calculator', { pageTitle: 'Scientific Calculator' });
+});
+
+app.get('/clock', (req, res) => {
+  res.render('clock', { pageTitle: 'Digital Clock' });
+});
+
+app.get('/streak', (req, res) => {
+  res.render('streak', { pageTitle: 'Leaderboard & Streak' });
+});
+
+app.get('/college-student', (req, res) => {
+  res.render('college-student', { pageTitle: 'College Student Support' });
+});
+
+app.get('/reminder', (req, res) => {
+  res.render('reminder', { pageTitle: 'Reminder System' });
+});
+
+app.get('/distraction', (req, res) => {
+  res.render('distraction', { pageTitle: 'Distraction Blocker' });
 });
 
 app.post('/send-email', async (req, res) => {

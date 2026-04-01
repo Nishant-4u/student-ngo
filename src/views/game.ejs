@@ -1,0 +1,108 @@
+<%- include('partials/header') %>
+<section class="container-fluid py-5 bg-light">
+  <div class="container">
+    <div class="bg-white shadow-lg rounded p-4">
+      <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+          <h1 class="display-6 fw-bold">Study Game Hub</h1>
+          <p class="lead text-muted">Earn your game time by studying first. Unlock a calm challenge, a quick quiz, a reaction tester, and a focus trial after a completed Pomodoro session.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <span id="game-unlock-status" class="badge bg-warning py-2 px-3 fs-6">Unlock the game with focus</span>
+        </div>
+      </div>
+
+      <div id="game-panel" class="mt-4">
+        <div id="game-locked" class="text-center py-5">
+          <div class="mb-3 fs-3">🔒 Game locked</div>
+          <p id="game-lock-message" class="mb-4">Complete a Pomodoro study session to unlock a set of focus-friendly mini-games.</p>
+          <div id="game-unlock-hint" class="text-muted mb-4">Complete a study session to unlock the Study Game reward.</div>
+          <a href="/timer" class="btn btn-primary">Go to Pomodoro Timer</a>
+        </div>
+
+        <div id="game-unlocked" class="d-none">
+          <div class="game-mode-nav btn-group mb-4" role="group">
+            <button type="button" id="game-mode-memory" class="btn btn-outline-primary game-mode-btn active">Memory Match</button>
+            <button type="button" id="game-mode-quiz" class="btn btn-outline-primary game-mode-btn">Quiz Challenge</button>
+            <button type="button" id="game-mode-reaction" class="btn btn-outline-primary game-mode-btn">Reaction Speed</button>
+            <button type="button" id="game-mode-focus" class="btn btn-outline-primary game-mode-btn">Focus Trial</button>
+          </div>
+          <div id="game-status" class="mb-4 text-secondary">Choose a game and enjoy your reward challenge.</div>
+
+          <div class="game-content" id="game-memory">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+              <div>
+                <div class="text-uppercase text-muted small mb-1">Memory Match</div>
+                <h2 class="h5 mb-0">Flip cards and find the pair.</h2>
+              </div>
+              <button id="restart-game-btn" class="btn btn-outline-primary">Restart Memory</button>
+            </div>
+            <div id="memory-grid" class="memory-grid"></div>
+          </div>
+
+          <div class="game-content d-none" id="game-quiz">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+              <div>
+                <div class="text-uppercase text-muted small mb-1">Quiz Challenge</div>
+                <h2 class="h5 mb-0">Test your focus with quick questions.</h2>
+              </div>
+            </div>
+            <div class="quiz-card p-4 rounded shadow-sm bg-white">
+              <div id="quiz-question" class="h5 mb-4"></div>
+              <div id="quiz-options" class="d-grid gap-3"></div>
+              <div class="mt-4 d-flex justify-content-between align-items-center">
+                <div id="quiz-score" class="text-muted">Score: 0 / 0</div>
+                <button id="quiz-restart-btn" class="btn btn-outline-primary btn-sm">Restart Quiz</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="game-content d-none" id="game-reaction">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+              <div>
+                <div class="text-uppercase text-muted small mb-1">Reaction Speed</div>
+                <h2 class="h5 mb-0">Click fast when the signal appears.</h2>
+              </div>
+            </div>
+            <div class="reaction-box p-4 rounded shadow-sm bg-white text-center">
+              <div id="reaction-status" class="mb-3 text-secondary">Press start and wait for the green signal.</div>
+              <button id="reaction-start-btn" class="btn btn-primary mb-3">Start Reaction Test</button>
+              <div id="reaction-result" class="fw-bold"></div>
+            </div>
+          </div>
+
+          <div class="game-content d-none" id="game-focus">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+              <div>
+                <div class="text-uppercase text-muted small mb-1">Focus Trial</div>
+                <h2 class="h5 mb-0">Stay present for a calm timer.</h2>
+              </div>
+            </div>
+            <div class="focus-box p-4 rounded shadow-sm bg-white">
+              <p class="text-muted">Stay on this page for the full timer. If you switch tabs or lose focus, the challenge resets.</p>
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <label class="m-0">Duration:</label>
+                <select id="focus-duration" class="form-select form-select-sm w-auto">
+                  <option value="120">2 minutes</option>
+                  <option value="180">3 minutes</option>
+                  <option value="300">5 minutes</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <div class="display-6 fw-bold" id="focus-challenge-timer">02:00</div>
+              </div>
+              <button id="focus-start-btn" class="btn btn-primary mb-3">Start Focus Trial</button>
+              <div id="focus-challenge-status" class="text-secondary"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 d-flex gap-3 flex-wrap">
+        <a href="/timer" class="btn btn-link">← Back to Timer</a>
+        <a href="/streak" class="btn btn-link">View streak progress →</a>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

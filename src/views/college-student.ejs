@@ -1,0 +1,203 @@
+<%- include('partials/header') %>
+<section class="container-fluid py-5 wellness-section">
+  <div class="container">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-10 text-center">
+        <div class="wellness-highlight shadow-sm p-4">
+          <p class="text-success mb-2">🌿 Hey Student… take a breath. You’re doing better than you think.</p>
+          <h1 class="fw-bold">College Student Support</h1>
+          <p class="lead text-muted">A calm, caring space designed to help you feel relaxed, happy, and stress-free. Use these moments to breathe, reset, and remember that you are enough.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-lg-4 col-md-6">
+        <div class="wellness-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="wellness-chip mb-3">😊 Feel Better</div>
+            <h3 class="h5">Motivational Quote</h3>
+            <p>Tap to receive a gentle message that reminds you how strong you are.</p>
+          </div>
+          <div>
+            <p id="feel-better-quote" class="wellness-quote">Click the button to hear a warm thought.</p>
+            <button id="feel-better-btn" class="btn btn-outline-success mt-3">Show me a quote</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="wellness-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="wellness-chip mb-3">🎧 Relax Mode</div>
+            <h3 class="h5">Calming Music</h3>
+            <p>Listen to soft background music crafted to help your mind unwind.</p>
+          </div>
+          <div>
+            <audio id="relax-audio" class="wellness-music" controls>
+              <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+            <button id="relax-music-play" class="btn btn-outline-primary mt-3">Play Calm Music</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="wellness-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="wellness-chip mb-3">💬 Talk to Someone</div>
+            <h3 class="h5">Reach Out</h3>
+            <p>There is always someone ready to listen. Click to join the supportive WhatsApp group.</p>
+          </div>
+          <div>
+            <a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" target="_blank" rel="noopener noreferrer" data-login-protected="whatsapp" class="btn btn-success">Join the WhatsApp group</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="wellness-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="wellness-chip mb-3">🌈 Positive Thoughts</div>
+            <h3 class="h5">Positive Messages</h3>
+            <p>Auto-changing words of encouragement to brighten your day.</p>
+          </div>
+          <div>
+            <p id="positive-thoughts" class="wellness-quote">You are capable of handling whatever comes next.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="wellness-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="wellness-chip mb-3">😂 Quick Smile</div>
+            <h3 class="h5">Lighten Your Mood</h3>
+            <p>Small, playful messages to bring a smile and reduce pressure.</p>
+          </div>
+          <div>
+            <p id="quick-smile-text" class="wellness-quote">A little laughter is a powerful study break.</p>
+            <button id="quick-smile-btn" class="btn btn-outline-warning mt-3">Give me a smile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row gy-4">
+      <div class="col-lg-7">
+        <div class="wellness-card p-4">
+          <h3 class="mb-3">Stress Relief</h3>
+          <p class="mb-2">It’s okay to feel tired. You are allowed to pause, rest, and return stronger.</p>
+          <p class="mb-2">You don’t have to be perfect — every step counts, even the quiet ones.</p>
+          <div class="wellness-breathing mt-4">
+            <h4 class="h6 mb-3">Breathing Tips</h4>
+            <ul class="mb-0">
+              <li>Inhale slowly for 4 seconds, hold gently for 3 seconds, then exhale for 6 seconds.</li>
+              <li>Repeat this breathing pattern 3 times and feel your mind come back to center.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="wellness-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h3 class="mb-3">You are not alone.</h3>
+            <p class="mb-3">This page is your calm corner when deadlines feel heavy. Take a moment to breathe and choose one small thing that makes you feel supported right now.</p>
+          </div>
+          <div class="d-flex flex-column gap-3 wellness-buttons">
+            <button id="you-are-enough-btn" class="btn btn-outline-info">You are enough</button>
+            <button id="breathe-btn" class="btn btn-outline-secondary">Take a deep breath</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5">
+      <a class="btn btn-link" href="/">← Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const feelings = [
+    'You are doing better than you think, and every effort matters.',
+    'A calm mind helps you learn more clearly. You deserve this pause.',
+    'Keep going gently — progress is not always loud.',
+    'Your journey is valid, even on the slow days.',
+    'You are stronger than your doubts and kinder than you realize.'
+  ];
+
+  const positiveThoughts = [
+    'Small moments of rest help you return with more energy.',
+    'Trust the process; growth happens quietly.',
+    'You are capable of more than you know.',
+    'A kind thought about yourself is a powerful habit.',
+    'Today can still be a gentle, meaningful day.'
+  ];
+
+  const smiles = [
+    'A study break with a smile is a little victory.',
+    'You deserve a moment of joy right now.',
+    'Even superstars take quiet breaks — you are one too.',
+    'Lighten your thoughts like you lighten your backpack.',
+    'A tiny laugh can lift a heavy heart.'
+  ];
+
+  const feelBetterBtn = document.getElementById('feel-better-btn');
+  const feelBetterQuote = document.getElementById('feel-better-quote');
+  const quickSmileBtn = document.getElementById('quick-smile-btn');
+  const quickSmileText = document.getElementById('quick-smile-text');
+  const positiveThoughtsBox = document.getElementById('positive-thoughts');
+  const relaxAudio = document.getElementById('relax-audio');
+  const relaxMusicPlay = document.getElementById('relax-music-play');
+  const youAreEnoughBtn = document.getElementById('you-are-enough-btn');
+  const breatheBtn = document.getElementById('breathe-btn');
+
+  function randomItem(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  function updatePositiveThought() {
+    if (positiveThoughtsBox) {
+      positiveThoughtsBox.textContent = randomItem(positiveThoughts);
+    }
+  }
+
+  if (feelBetterBtn && feelBetterQuote) {
+    feelBetterBtn.addEventListener('click', () => {
+      feelBetterQuote.textContent = randomItem(feelings);
+    });
+  }
+
+  if (quickSmileBtn && quickSmileText) {
+    quickSmileBtn.addEventListener('click', () => {
+      quickSmileText.textContent = randomItem(smiles);
+    });
+  }
+
+  if (relaxMusicPlay && relaxAudio) {
+    relaxMusicPlay.addEventListener('click', () => {
+      relaxAudio.play().catch(() => {
+        alert('Please allow audio playback in your browser to use Relax Mode.');
+      });
+    });
+  }
+
+  if (youAreEnoughBtn) {
+    youAreEnoughBtn.addEventListener('click', () => {
+      alert('You are enough. One more calm breath can make a big difference.');
+    });
+  }
+
+  if (breatheBtn) {
+    breatheBtn.addEventListener('click', () => {
+      alert('Breathe in for 4, hold for 3, breathe out for 6. Feel the calm return.');
+    });
+  }
+
+  updatePositiveThought();
+  setInterval(updatePositiveThought, 6000);
+</script>
+
+<%- include('partials/footer') %>

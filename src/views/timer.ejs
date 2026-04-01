@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+<section class="container-fluid py-5 bg-light">
+  <div class="container">
+    <div class="bg-white shadow-lg rounded p-4">
+      <h1>Pomodoro Timer</h1>
+      <p class="mb-4">25 min study + 5 min break. Start, pause, and reset your focus sessions from one dedicated page.</p>
+      <div class="tool-panel p-4">
+        <div class="timer-settings mb-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="study-duration-input" class="form-label">Study duration</label>
+              <div class="input-group input-group-lg mb-2">
+                <input id="study-duration-input" type="number" min="1" max="120" value="25" class="form-control" />
+                <span class="input-group-text">min</span>
+              </div>
+              <input id="study-duration-range" type="range" min="1" max="120" value="25" class="form-range" />
+            </div>
+            <div class="col-md-6">
+              <label for="break-duration-input" class="form-label">Break duration</label>
+              <div class="input-group input-group-lg mb-2">
+                <input id="break-duration-input" type="number" min="1" max="60" value="5" class="form-control" />
+                <span class="input-group-text">min</span>
+              </div>
+              <input id="break-duration-range" type="range" min="1" max="60" value="5" class="form-range" />
+            </div>
+          </div>
+        </div>
+        <div class="timer-card text-center mx-auto mb-4">
+          <div class="progress-ring" id="timer-progress-ring">
+            <div class="timer-display">
+              <span id="timer-minutes">25</span>:<span id="timer-seconds">00</span>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3 timer-control-row">
+          <button id="timer-start" class="btn btn-success btn-lg">Start</button>
+          <button id="timer-pause" class="btn btn-secondary btn-lg">Pause</button>
+          <button id="timer-reset" class="btn btn-outline-secondary btn-lg">Reset</button>
+        </div>
+        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
+          <button id="timer-study-mode" class="btn btn-outline-primary btn-sm">Study</button>
+          <button id="timer-break-mode" class="btn btn-outline-warning btn-sm">Break</button>
+        </div>
+        <div class="mb-3 text-center">
+          <span id="timer-current-mode" class="text-muted d-block mb-1">Current mode</span>
+          <span id="timer-mode-label" class="badge bg-primary">Study</span>
+        </div>
+        <div class="mb-3 text-center">
+          <span id="focus-mode-status" class="badge bg-secondary">Focus Mode OFF</span>
+        </div>
+        <p id="game-unlock-hint" class="tool-note">Complete one full study session to unlock the Study Game reward.</p>
+        <p class="tool-note">Use the Pomodoro rhythm to improve concentration and build a strong study routine. Focus Mode blocks YouTube, Instagram, and Facebook links only while a Pomodoro session is running.</p>
+      </div>
+      <a href="/" class="btn btn-link mt-4">← Back to Home</a>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

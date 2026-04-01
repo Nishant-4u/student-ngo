@@ -1,0 +1,218 @@
+<%- include('partials/header') %>
+<section class="container-fluid py-5 bg-light">
+  <div class="container">
+    <div class="bg-white shadow-lg rounded p-4">
+      <div class="d-flex flex-column flex-lg-row align-items-start gap-4 mb-4">
+        <div>
+          <h1 class="display-6 fw-bold">Scientific Calculator</h1>
+          <p class="mb-3">A clean calculator for study sessions with advanced functions: sin, cos, tan, log, ln, √, and power.</p>
+          <p class="text-muted mb-0">Use it during homework, revision, or when solving study problems that need quick math support.</p>
+        </div>
+        <div class="text-end flex-grow-1">
+          <span class="badge bg-warning text-dark">Study-friendly UI</span>
+          <span class="badge bg-info text-dark">Responsive layout</span>
+        </div>
+      </div>
+
+      <div class="calculator-body">
+        <div class="calculator-screen mb-3 p-3 rounded-3 bg-dark text-white shadow-sm">
+          <div id="calc-expression" class="calculator-expression text-end text-secondary">0</div>
+          <div id="calc-display" class="calculator-display text-end fw-bold">0</div>
+        </div>
+
+        <div class="calculator-grid">
+          <button type="button" class="btn btn-light calc-btn" data-value="7" data-key="7">7</button>
+          <button type="button" class="btn btn-light calc-btn" data-value="8" data-key="8">8</button>
+          <button type="button" class="btn btn-light calc-btn" data-value="9" data-key="9">9</button>
+          <button type="button" class="btn btn-outline-secondary calc-btn operator-btn" data-value="÷" data-key="/">÷</button>
+
+          <button type="button" class="btn btn-light calc-btn" data-value="4" data-key="4">4</button>
+          <button type="button" class="btn btn-light calc-btn" data-value="5" data-key="5">5</button>
+          <button type="button" class="btn btn-light calc-btn" data-value="6" data-key="6">6</button>
+          <button type="button" class="btn btn-outline-secondary calc-btn operator-btn" data-value="×" data-key="*">×</button>
+
+          <button type="button" class="btn btn-light calc-btn" data-value="1" data-key="1">1</button>
+          <button type="button" class="btn btn-light calc-btn" data-value="2" data-key="2">2</button>
+          <button type="button" class="btn btn-light calc-btn" data-value="3" data-key="3">3</button>
+          <button type="button" class="btn btn-outline-secondary calc-btn operator-btn" data-value="-" data-key="-">-</button>
+
+          <button type="button" class="btn btn-light calc-btn" data-value="0" data-key="0">0</button>
+          <button type="button" class="btn btn-light calc-btn" data-value="." data-key=".">.</button>
+          <button type="button" class="btn btn-outline-secondary calc-btn special-btn" data-value="(" data-key="(">(</button>
+          <button type="button" class="btn btn-outline-secondary calc-btn special-btn" data-value=")" data-key=")">)</button>
+
+          <button type="button" class="btn btn-warning calc-btn function-btn" data-value="sin(" data-key="s">sin</button>
+          <button type="button" class="btn btn-warning calc-btn function-btn" data-value="cos(" data-key="c">cos</button>
+          <button type="button" class="btn btn-warning calc-btn function-btn" data-value="tan(" data-key="t">tan</button>
+          <button type="button" class="btn btn-warning calc-btn operator-btn" data-value="^" data-key="^">^</button>
+
+          <button type="button" class="btn btn-warning calc-btn function-btn" data-value="log(" data-key="l">log</button>
+          <button type="button" class="btn btn-warning calc-btn function-btn" data-value="ln(" data-key="n">ln</button>
+          <button type="button" class="btn btn-warning calc-btn function-btn" data-value="√(" data-key="r">√</button>
+          <button type="button" id="calc-delete" class="btn btn-danger action-btn" data-key="Backspace">DEL</button>
+
+          <button type="button" id="calc-clear" class="btn btn-danger action-btn" data-key="Escape">AC</button>
+          <button type="button" id="calc-equals" class="btn btn-success action-btn" data-key="Enter">=</button>
+        </div>
+
+        <div class="mt-4 text-center text-muted keyboard-hint">
+          <p class="mb-1">Tip: Use keyboard shortcuts: <strong>Enter</strong> =, <strong>Backspace</strong> DEL, <strong>Esc</strong> AC.</p>
+          <p class="mb-0">Type numbers and operators, or press <strong>S</strong>/<strong>C</strong>/<strong>T</strong>/<strong>L</strong>/<strong>N</strong> for scientific functions.</p>
+        </div>
+      </div>
+
+      <a href="/" class="btn btn-link mt-4">← Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+
+<script>
+  const calcExpression = document.getElementById('calc-expression');
+  const calcDisplay = document.getElementById('calc-display');
+  let currentInput = '';
+  let lastResult = null;
+
+  const updateDisplay = () => {
+    calcExpression.textContent = currentInput || '0';
+    calcDisplay.textContent = currentInput || '0';
+  };
+
+  const highlightButton = (button) => {
+    if (!button) return;
+    button.classList.add('active');
+    setTimeout(() => button.classList.remove('active'), 120);
+  };
+
+  const addValue = (value) => {
+    if (!value) return;
+    if (currentInput === '0' && /[0-9]/.test(value)) {
+      currentInput = value;
+    } else {
+      currentInput += value;
+    }
+    updateDisplay();
+  };
+
+  const safeEvaluate = (expression) => {
+    if (!expression) return '';
+    const safe = expression
+      .replace(/×/g, '*')
+      .replace(/÷/g, '/')
+      .replace(/√\(/g, 'Math.sqrt(')
+      .replace(/\^/g, '**')
+      .replace(/sin\(/g, 'Math.sin(')
+      .replace(/cos\(/g, 'Math.cos(')
+      .replace(/tan\(/g, 'Math.tan(')
+      .replace(/log\(/g, 'Math.log10(')
+      .replace(/ln\(/g, 'Math.log(');
+
+    return Function('return ' + safe)();
+  };
+
+  const displayResult = () => {
+    try {
+      const value = safeEvaluate(currentInput);
+      if (value === undefined || Number.isNaN(value)) {
+        calcDisplay.textContent = 'Error';
+        return;
+      }
+      lastResult = value;
+      calcDisplay.textContent = Number.isFinite(value) ? Number.parseFloat(value.toFixed(10)).toString() : 'Error';
+    } catch (error) {
+      calcDisplay.textContent = 'Error';
+    }
+  };
+
+  const setClear = () => {
+    currentInput = '';
+    calcDisplay.textContent = '0';
+    updateDisplay();
+  };
+
+  const setDelete = () => {
+    currentInput = currentInput.slice(0, -1);
+    updateDisplay();
+  };
+
+  const buttonMap = {
+    'Enter': 'equals',
+    '=': 'equals',
+    'Backspace': 'delete',
+    'Escape': 'clear',
+    '/': '÷',
+    '*': '×',
+    's': 'sin(',
+    'S': 'sin(',
+    'c': 'cos(',
+    'C': 'cos(',
+    't': 'tan(',
+    'T': 'tan(',
+    'l': 'log(',
+    'L': 'log(',
+    'n': 'ln(',
+    'N': 'ln(',
+    'r': '√(',
+    'R': '√('
+  };
+
+  const findButtonByKey = (key) => {
+    return document.querySelector(`[data-key="${key}"]`);
+  };
+
+  document.querySelectorAll('.calc-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const value = button.dataset.value;
+      if (!value) return;
+      addValue(value);
+    });
+  });
+
+  document.getElementById('calc-clear').addEventListener('click', () => {
+    setClear();
+  });
+
+  document.getElementById('calc-delete').addEventListener('click', () => {
+    setDelete();
+  });
+
+  document.getElementById('calc-equals').addEventListener('click', () => {
+    displayResult();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const key = event.key;
+    if (key in buttonMap) {
+      event.preventDefault();
+      const mapped = buttonMap[key];
+      if (mapped === 'equals') {
+        highlightButton(document.getElementById('calc-equals'));
+        displayResult();
+        return;
+      }
+      if (mapped === 'delete') {
+        highlightButton(document.getElementById('calc-delete'));
+        setDelete();
+        return;
+      }
+      if (mapped === 'clear') {
+        highlightButton(document.getElementById('calc-clear'));
+        setClear();
+        return;
+      }
+      addValue(mapped);
+      highlightButton(findButtonByKey(key));
+      return;
+    }
+
+    if (/^[0-9.+\-()%^]$/.test(key)) {
+      event.preventDefault();
+      const mapped = key === '*' ? '×' : key === '/' ? '÷' : key;
+      addValue(mapped);
+      highlightButton(findButtonByKey(key));
+    }
+  });
+
+  updateDisplay();
+</script>
