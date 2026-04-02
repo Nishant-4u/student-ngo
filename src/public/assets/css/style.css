@@ -88,6 +88,28 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.pricing-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 2rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+}
+
+.pricing-features li {
+    margin-bottom: 0.75rem;
+    color: #334155;
+}
+
+.pricing-section .badge {
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+}
+
 .feature-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 24px 50px rgba(0, 0, 0, 0.12);
@@ -118,6 +140,41 @@
 .timer-card {
     max-width: 420px;
     margin: 0 auto;
+}
+
+.timer-card.fullscreen-card {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    padding: 2rem;
+    box-shadow: none;
+}
+
+.timer-card.fullscreen-card .progress-ring {
+    width: min(90vw, 720px);
+    height: min(90vw, 720px);
+}
+
+.timer-card.fullscreen-card .timer-display {
+    font-size: clamp(4rem, 10vw, 8rem);
+}
+
+body.fullscreen-active {
+    overflow: hidden;
+}
+
+.timer-control-row button {
+    min-width: 130px;
 }
 
 .progress-ring {
@@ -261,12 +318,12 @@
 }
 
 .calculator-body {
-    max-width: 380px;
+    max-width: 340px;
     margin: 0 auto;
-    padding: 0.9rem;
+    padding: 0.85rem;
     background: linear-gradient(180deg, #0e1321, #161d31);
-    border-radius: 1.3rem;
-    box-shadow: 0 20px 32px rgba(4, 8, 20, 0.45);
+    border-radius: 1.2rem;
+    box-shadow: 0 16px 28px rgba(4, 8, 20, 0.35);
     border: 1px solid rgba(120, 138, 166, 0.12);
 }
 
@@ -350,8 +407,12 @@
 }
 
 .keyboard-hint {
-    font-size: 0.85rem;
-    color: #b7c2d6;
+    font-size: 0.84rem;
+    color: #38bdf8;
+}
+
+.tip-text {
+    color: #38bdf8;
 }
 
 .calculator-grid {
@@ -361,13 +422,13 @@
 }
 
 .calc-btn {
-    min-height: 44px;
-    border-radius: 0.85rem;
-    font-size: 0.88rem;
+    min-height: 40px;
+    border-radius: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 0.01em;
     transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, filter 0.15s ease;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.20);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.18);
     background: #111826;
     color: #edf2ff;
     border: 1px solid rgba(110, 126, 158, 0.24);
@@ -544,11 +605,12 @@
 
 .streak-page .stats-card,
 .streak-page .leaderboard-card,
-.streak-page .motivation-card {
-    background: #fff8eb;
-    border: 1px solid rgba(245, 158, 11, 0.18);
-    border-radius: 1.5rem;
-    box-shadow: 0 18px 45px rgba(245, 158, 11, 0.08);
+.streak-page .motivation-card,
+.streak-page .weekly-log-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 1.3rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
 .streak-page .level-badge {
@@ -563,8 +625,8 @@
 }
 
 .streak-page .goal-card {
-    background: #fff7e3;
-    border: 1px solid #fcd34d;
+    background: #ffffff;
+    border: 1px solid rgba(34, 197, 94, 0.18);
 }
 
 .streak-page .goal-progress-bar,
@@ -576,10 +638,10 @@
 }
 
 .streak-page .weekly-log-card {
-    background: #fff8eb;
-    border: 1px solid rgba(245, 158, 11, 0.18);
-    border-radius: 1.5rem;
-    box-shadow: 0 18px 45px rgba(245, 158, 11, 0.08);
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 1.3rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
 .streak-page .weekly-study-log .weekly-log-item {
@@ -610,8 +672,8 @@
 }
 
 .streak-page .leaderboard-list-item {
-    background: #fff7e3;
-    border: 1px solid rgba(245, 158, 11, 0.18);
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 1rem;
     padding: 1rem;
     margin-bottom: 0.75rem;
@@ -626,6 +688,28 @@
 .streak-page .leaderboard-you {
     background: rgba(16, 185, 129, 0.12);
     border-color: rgba(16, 185, 129, 0.2);
+}
+
+.streak-page .leaderboard-rank {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #22c55e);
+    color: white;
+    font-weight: 800;
+}
+
+.streak-page .warning-box {
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.24);
+    color: #b91c1c;
+}
+
+.streak-page .motivation-card p {
+    font-size: 1rem;
+    color: #111827;
 }
 
 .streak-page .leaderboard-you .leaderboard-rank {

@@ -191,10 +191,17 @@
     const timerModeLabel = document.getElementById('timer-mode-label');
     const timerCurrentMode = document.getElementById('timer-current-mode');
     const timerProgressRing = document.getElementById('timer-progress-ring');
+    const timerSessionMessage = document.getElementById('timer-session-message');
+    const timerFullscreenButton = document.getElementById('timer-fullscreen');
+    const timerCard = document.querySelector('.timer-card');
+    const timerStart = document.getElementById('timer-start');
+    const timerPause = document.getElementById('timer-pause');
+    const timerReset = document.getElementById('timer-reset');
     const studyDurationInput = document.getElementById('study-duration-input');
     const breakDurationInput = document.getElementById('break-duration-input');
     const studyDurationRange = document.getElementById('study-duration-range');
     const breakDurationRange = document.getElementById('break-duration-range');
+    let isTimerFullscreen = false;
 
     function formatTwoDigits(value) {
       return String(value).padStart(2, '0');
@@ -215,6 +222,44 @@
       const progressAngle = total > 0 ? Math.min(360, (elapsed / total) * 360) : 0;
       timerProgressRing.style.background = `conic-gradient(#4f46e5 ${progressAngle}deg, #e9ecef ${progressAngle}deg)`;
     }
+
+    function updateTimerSessionMessage() {
+      if (!timerSessionMessage) return;
+      if (pomodoroInterval) {
+        timerSessionMessage.textContent = `Focus session in progress — ${timerModeLabel.textContent}`;
+      } else if (pomodoroMode === 'break') {
+        timerSessionMessage.textContent = 'Paused: break time ready when you are.';
+      } else {
+        timerSessionMessage.textContent = 'Ready to start your study session.';
+      }
+    }
+
+    function updateTimerControls() {
+      const isRunning = !!pomodoroInterval;
+      if (timerStart) timerStart.disabled = isRunning;
+      if (timerPause) timerPause.disabled = !isRunning;
+      if (timerReset) timerReset.disabled = false;
+      if (timerFullscreenButton) timerFullscreenButton.disabled = false;
+      updateTimerSessionMessage();
+    }
+
+    function toggleTimerFullscreen() {
+      if (!timerCard || !timerFullscreenButton) return;
+      if (!document.fullscreenElement) {
+        timerCard.requestFullscreen?.().catch(() => {});
+      } else {
+        document.exitFullscreen?.().catch(() => {});
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      isTimerFullscreen = !!document.fullscreenElement;
+      if (timerFullscreenButton) {
+        timerFullscreenButton.textContent = isTimerFullscreen ? 'Exit Full Screen' : 'Full Screen';
+      }
+      if (timerCard) timerCard.classList.toggle('fullscreen-card', isTimerFullscreen);
+      document.body.classList.toggle('fullscreen-active', isTimerFullscreen);
+    });
 
     function updateTimerSettings() {
       const studyMinutes = Number(studyDurationInput?.value) || 25;
@@ -288,6 +333,7 @@
         timerCurrentMode.textContent = mode === 'break' ? 'Break period' : 'Study period';
       }
       updateTimerDisplay();
+      updateTimerControls();
       updateBlockerState();
     }
 
@@ -313,10 +359,12 @@
           pomodoroInterval = null;
           lastPendingMinuteCount = 0;
           updateBlockerState();
+          updateTimerControls();
           alert('Session complete! Time to switch your focus. Your study game is now unlocked.');
         }
       }, 1000);
       updateBlockerState();
+      updateTimerControls();
     }
 
     function pausePomodoro() {
@@ -326,6 +374,7 @@
         pomodoroInterval = null;
       }
       updateBlockerState();
+      updateTimerControls();
     }
 
     function resetPomodoro() {
@@ -1010,6 +1059,7 @@
       timerReset?.addEventListener('click', resetPomodoro);
       timerStudyMode?.addEventListener('click', () => setPomodoroMode('study'));
       timerBreakMode?.addEventListener('click', () => setPomodoroMode('break'));
+      timerFullscreenButton?.addEventListener('click', toggleTimerFullscreen);
 
       const syncStudyDuration = () => {
         if (!studyDurationInput || !studyDurationRange) return;
