@@ -23,7 +23,31 @@ const transporter = nodemailer.createTransport({
 });
 
 app.get('/', (req, res) => {
-  res.render('index', { pageTitle: 'Home' });
+  res.render('index', {
+    pageTitle: '2AM Study - Focus Timer & Study Tools for Students',
+    metaDescription: '2AM Study helps students stay focused with a productivity timer, study tools, study tips and routines to improve concentration and academic performance.',
+  });
+});
+
+app.get('/focus-tips.html', (req, res) => {
+  res.render('focus-tips', {
+    pageTitle: 'Focus Tips - How to Stay Focused While Studying',
+    metaDescription: 'Explore practical focus tips for students that improve concentration, study productivity, and effective learning habits while studying.',
+  });
+});
+
+app.get('/study-routine.html', (req, res) => {
+  res.render('study-routine', {
+    pageTitle: 'Study Routine - Best Study Schedule for Students',
+    metaDescription: 'Discover the best study routine for students with daily habits, focus strategies, and productivity tips to help you study smarter every day.',
+  });
+});
+
+app.get('/study-at-night.html', (req, res) => {
+  res.render('study-at-night', {
+    pageTitle: 'Study at Night - How to Study at 2AM Effectively',
+    metaDescription: 'Learn how to study at night with a smart 2AM study strategy, nighttime productivity tips, and ways to balance rest and deep focus.',
+  });
 });
 
 app.get('/timer', (req, res) => {

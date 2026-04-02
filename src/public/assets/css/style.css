@@ -279,6 +279,60 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.content-card {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    color: #0f172a;
+}
+
+.content-card h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #111827;
+}
+
+.content-card h2 {
+    font-size: 1.4rem;
+    margin-top: 1.8rem;
+    color: #1d4ed8;
+}
+
+.content-card p,
+.content-card ul,
+.content-card li {
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.page-links a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.page-links a:hover {
+    text-decoration: underline;
+}
+
+.study-guide-links a {
+    min-width: 180px;
+}
+
+@media (max-width: 768px) {
+    .content-card {
+        padding: 2rem 1.25rem;
+    }
+
+    .bannerContent h1 {
+        font-size: 44px;
+    }
+
+    .bannerContent p {
+        font-size: 18px;
+    }
+}
+
+
 .calculator-expression {
     font-size: 0.82rem;
     line-height: 1.25;

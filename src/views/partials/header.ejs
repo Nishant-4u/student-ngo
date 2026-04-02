@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="<%= metaDescription || '2AM Study helps students stay focused with a productivity timer, study tools, study tips, and routines to improve concentration and academic performance.' %>" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css"/>
   <link rel="stylesheet" href="/assets/css/media.css"/>
-  <title><%= pageTitle ? pageTitle + ' | ' : '' %>Transformation Bridge</title>
+  <title><%= pageTitle || '2AM Study - Focus Timer & Study Tools for Students' %></title>
 </head>
 <body>
 <header class="container-fluid bg-white shadow-lg py-3">
@@ -35,6 +37,16 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Pricing</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Study Guides
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/focus-tips.html">Focus Tips</a></li>
+                <li><a class="dropdown-item" href="/study-routine.html">Study Routine</a></li>
+                <li><a class="dropdown-item" href="/study-at-night.html">Study at Night</a></li>
+              </ul>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
