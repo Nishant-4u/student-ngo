@@ -129,9 +129,11 @@
     ];
 
     const musicTracks = [
-      { label: 'Focus Beats', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-      { label: 'Calm Study', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-      { label: 'Deep Concentration', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
+      { label: 'Focus Beats', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', category: 'focus', description: 'Energy for deep focus', video: 'https://www.youtube.com/embed/5qap5aO4i9A' },
+      { label: 'Calm Study', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', category: 'focus', description: 'Calm concentration music', video: 'https://www.youtube.com/embed/2Vv-BfVoq4g' },
+      { label: 'Motivation Boost', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', category: 'motivational', description: 'Motivation for study persistence', video: 'https://www.youtube.com/embed/kXYiU_JCYtU' },
+      { label: 'Dreamy Romance', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', category: 'romantic', description: 'Soft romantic vibes for peaceful study', video: 'https://www.youtube.com/embed/JGwWNGJdvx8' },
+      { label: 'Night Reflection', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', category: 'sad', description: 'Mellow sad study melody', video: 'https://www.youtube.com/embed/JkK8g6FMEXE' }
     ];
 
     const tasksKey = 'studyTasks';
@@ -977,20 +979,45 @@
     }
 
     function initMusic() {
+      const musicCategory = document.getElementById('music-category');
       const musicSelect = document.getElementById('music-select');
       const musicPlayer = document.getElementById('focus-music-player');
-      if (!musicSelect || !musicPlayer) return;
-      musicTracks.forEach(track => {
-        const option = document.createElement('option');
-        option.value = track.src;
-        option.textContent = track.label;
-        musicSelect.appendChild(option);
-      });
-      musicSelect.value = musicTracks[0].src;
+      const musicIframe = document.getElementById('music-iframe');
+      const categoryDescription = document.getElementById('music-category-description');
+      if (!musicSelect || !musicPlayer || !musicCategory || !categoryDescription) return;
+
+      const populateTracks = () => {
+        const selectedCategory = musicCategory.value;
+        const filtered = musicTracks.filter(track => track.category === selectedCategory);
+        musicSelect.innerHTML = '';
+        filtered.forEach(track => {
+          const option = document.createElement('option');
+          option.value = track.src;
+          option.dataset.video = track.video || '';
+          option.dataset.description = track.description || '';
+          option.textContent = track.label;
+          musicSelect.appendChild(option);
+        });
+        if (filtered.length) {
+          const firstTrack = filtered[0];
+          musicSelect.value = firstTrack.src;
+          musicPlayer.src = firstTrack.src;
+          musicIframe.src = firstTrack.video || musicIframe.src;
+          categoryDescription.textContent = firstTrack.description || 'Pick a mood and play a track to match your study focus.';
+        }
+      };
+
+      musicCategory.addEventListener('change', populateTracks);
       musicSelect.addEventListener('change', () => {
-        musicPlayer.src = musicSelect.value;
+        const selectedOption = musicSelect.selectedOptions[0];
+        if (!selectedOption) return;
+        musicPlayer.src = selectedOption.value;
+        musicIframe.src = selectedOption.dataset.video || musicIframe.src;
+        categoryDescription.textContent = selectedOption.dataset.description || categoryDescription.textContent;
         musicPlayer.play().catch(() => {});
       });
+
+      populateTracks();
     }
 
     function showDistractionConfirmation() {

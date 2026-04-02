@@ -3,19 +3,32 @@
   <div class="container">
     <div class="bg-white shadow-lg rounded p-4">
       <h1>Focus Music</h1>
-      <p class="mb-4">Choose a study soundtrack and play focus music directly on this page.</p>
+      <p class="mb-4">Choose the right soundtrack for your mood. Explore focus, motivation, romance, or sad songs while you study.</p>
       <div class="tool-panel p-4">
-        <div class="mb-3">
-          <select id="music-select" class="form-select"></select>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="music-category" class="form-label">Choose mood</label>
+            <select id="music-category" class="form-select">
+              <option value="focus">Focus</option>
+              <option value="motivational">Motivational</option>
+              <option value="romantic">Romantic</option>
+              <option value="sad">Sad</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="music-select" class="form-label">Select track</label>
+            <select id="music-select" class="form-select"></select>
+          </div>
         </div>
+        <div class="mb-3 text-muted" id="music-category-description">Pick a mood and play a track to match your study focus.</div>
         <audio controls id="focus-music-player" class="w-100 mb-3">
           <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
-        <div class="ratio ratio-16x9">
+        <div class="ratio ratio-16x9 mb-3">
           <iframe id="music-iframe" src="https://www.youtube.com/embed/5qap5aO4i9A" title="Focus music" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <p class="tool-note">Pick from multiple relaxing tracks while you study.</p>
+        <p class="tool-note">Use the category selector to switch between focus songs, motivation tracks, romantic tunes, and mellow sad melodies.</p>
       </div>
       <a href="/" class="btn btn-link mt-4">← Back to Home</a>
     </div>

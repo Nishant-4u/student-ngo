@@ -36,6 +36,13 @@ app.get('/focus-tips.html', (req, res) => {
   });
 });
 
+app.get('/pricing-plan.html', (req, res) => {
+  res.render('pricing-plan', {
+    pageTitle: 'Pricing Plan - Free Study Tools for Students',
+    metaDescription: 'Discover all the free study tools available on 2AM Study, from timers and notes to quotes and streak tracking.',
+  });
+});
+
 app.get('/study-routine.html', (req, res) => {
   res.render('study-routine', {
     pageTitle: 'Study Routine - Best Study Schedule for Students',

@@ -21,6 +21,11 @@
     <priority>0.90</priority>
   </url>
   <url>
+    <loc>https://2amstudy.com/pricing-plan.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
     <loc>https://2amstudy.com/timer</loc>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
