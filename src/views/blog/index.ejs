@@ -7,6 +7,10 @@
     </div>
 </section>
 
+<div class="container mt-2">
+  <%- include('../partials/ad-unit', { adSlot: 'YOUR_AD_SLOT_ID' }) %>
+</div>
+
 <main class="container py-5 my-0">
   <div class="row g-4">
     <!-- Blog 1 -->
@@ -139,6 +143,9 @@
       </div>
     </div>
   </div>
-</main>
+
+  <div class="container py-4">
+    <%- include('../partials/ad-unit', { adSlot: 'YOUR_AD_SLOT_ID' }) %>
+  </div>
 
 <%- include('../partials/footer') %>
