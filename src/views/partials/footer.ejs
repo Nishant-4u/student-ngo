@@ -12,12 +12,11 @@
           <h5>Quick Links</h5>
           <ul class="footer-links list-unstyled mt-3">
             <li><a href="/"><i class="fa-solid fa-house"></i> Home</a></li>
-            <li><a href="/focus-tips.html"><i class="fa-solid fa-lightbulb"></i> Focus Tips</a></li>
-            <li><a href="/study-routine.html"><i class="fa-solid fa-clock"></i> Study Routine</a></li>
-            <li><a href="/study-at-night.html"><i class="fa-solid fa-moon"></i> Study at Night</a></li>
+            <li><a href="/blog/focus-tips"><i class="fa-solid fa-lightbulb"></i> Focus Tips</a></li>
+            <li><a href="/blog/study-routine-guide"><i class="fa-solid fa-clock"></i> Study Routine</a></li>
+            <li><a href="/blog/study-at-night"><i class="fa-solid fa-moon"></i> Study at Night</a></li>
             <li><a href="/timer"><i class="fa-solid fa-clock"></i> Timer</a></li>
-            <li><a href="/tasks"><i class="fa-solid fa-list-check"></i> Tasks / Planner</a></li>
-            <li><a href="/flashcards"><i class="fa-solid fa-clapperboard"></i> Flashcards</a></li>
+            <li><a href="/tasks"><i class="fa-solid fa-calendar-check"></i> Academic Planner Hub</a></li>
             <li><a href="/notes"><i class="fa-solid fa-file-pdf"></i> Notes</a></li>
             <li><a href="/chat"><i class="fa-solid fa-comments"></i> Chat</a></li>
           </ul>
@@ -46,6 +45,22 @@
     </div>
   </div>
 </footer>
+
+<script>
+  /* Mobile/tablet: toggle the PDF Tools nested submenu on click */
+  document.addEventListener('DOMContentLoaded', function () {
+    var trigger = document.querySelector('.pdf-submenu-toggle');
+    var submenu = trigger && trigger.nextElementSibling;
+    if (trigger && submenu) {
+      trigger.addEventListener('click', function (e) {
+        if (window.innerWidth < 992) {
+          e.preventDefault();
+          submenu.classList.toggle('show');
+        }
+      });
+    }
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script>
@@ -362,6 +377,10 @@
           lastPendingMinuteCount = 0;
           updateBlockerState();
           updateTimerControls();
+          // Play sound alert if enabled
+          if (typeof window.timerAlertSound === 'function') {
+            try { window.timerAlertSound(); } catch(e) {}
+          }
           alert('Session complete! Time to switch your focus. Your study game is now unlocked.');
         }
       }, 1000);
@@ -406,12 +425,27 @@
     function renderTasks() {
       const taskList = document.getElementById('task-list');
       if (!taskList) return;
+
+      const countBadge = document.getElementById('task-count');
+      if (countBadge) countBadge.textContent = tasks.filter(t => !t.completed).length;
+
+      if (tasks.length === 0) {
+        taskList.innerHTML = '<li class="list-group-item text-center py-4 text-muted fst-italic border-0">No active tasks. Time to relax!</li>';
+        return;
+      }
+
       taskList.innerHTML = tasks.map((task, index) => `
-        <li class="task-item ${task.completed ? 'completed' : ''}">
-          <span class="task-text">${task.title}</span>
-          <div class="d-flex gap-2 flex-wrap align-items-center">
-            <button data-index="${index}" class="btn btn-sm btn-outline-success task-toggle">${task.completed ? 'Undo' : 'Complete'}</button>
-            <button data-index="${index}" class="btn btn-sm btn-outline-danger task-delete">Delete</button>
+        <li class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 rounded-3 mb-2 task-item ${task.completed ? 'completed bg-light' : ''}">
+          <div class="d-flex align-items-center gap-3">
+            <span class="task-text fw-semibold ${task.completed ? 'text-decoration-line-through text-muted' : 'text-dark'}">${task.title}</span>
+          </div>
+          <div class="d-flex gap-2">
+            <button data-index="${index}" class="btn btn-sm btn-outline-success border-0 task-toggle" title="${task.completed ? 'Undo' : 'Complete'}">
+              <i class="fa-solid ${task.completed ? 'fa-rotate-left' : 'fa-check'}"></i>
+            </button>
+            <button data-index="${index}" class="btn btn-sm btn-outline-danger border-0 task-delete" title="Delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
           </div>
         </li>
       `).join('');

@@ -1,0 +1,172 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-10">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 mt-5">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <a href="/tasks" class="btn btn-sm btn-outline-secondary rounded-pill px-4" style="font-size: 0.8rem;"><i class="fa-solid fa-arrow-left me-1"></i> Back to Hub</a>
+          <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 border border-success border-opacity-10">
+            <i class="fa-solid fa-check-circle me-1"></i> Syllabus Management
+          </span>
+        </div>
+
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold mb-3 text-success"><i class="fa-solid fa-list-check me-2"></i> Syllabus Tracker</h1>
+            <p class="text-muted fs-5">Break down your curriculum into chapters and track your way to academic success.</p>
+        </div>
+
+        <div class="row g-3 mb-5">
+            <div class="col-md-9">
+                <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border border-2 border-success border-opacity-10">
+                  <input type="text" id="topicInput" class="form-control border-0 ps-4" placeholder="Enter chapter or topic name...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-success btn-lg w-100 fw-bold rounded-pill shadow-sm" onclick="addTopic()">
+                  <i class="fa-solid fa-plus me-2"></i> Add Topic
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-light p-4 p-md-5 rounded-4 mb-5 border border-success border-opacity-10 shadow-sm text-center">
+            <h5 class="fw-bold mb-4 text-dark uppercase tracking-wide" style="letter-spacing: 0.1em;">Total Completion</h5>
+            <div class="progress rounded-pill shadow-sm border" style="height: 40px; background-color: #e9ecef;">
+              <div id="progressBar" class="progress-bar bg-success progress-bar-striped progress-bar-animated fw-bold fs-5" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <p class="text-muted mt-3 small mb-0" id="topicStats">0 topics added - 0 completed</p>
+        </div>
+
+        <div class="bg-white p-2 p-md-3 rounded-4 shadow-sm border">
+          <ul id="topicList" class="list-group list-group-flush fs-5">
+              <!-- Topics rendered here -->
+          </ul>
+        </div>
+        
+        <div class="text-center mt-5">
+            <button class="btn btn-outline-danger btn-sm rounded-pill px-5 border-0 shadow-none hover-danger-text" onclick="clearAll()">
+              <i class="fa-solid fa-trash-can me-2"></i> Clear Entire Syllabus
+            </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<style>
+/* Syllabus Tracker Specific Styles */
+#topicList .list-group-item {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+#topicList .list-group-item:last-child { border-bottom: none; }
+#topicList .list-group-item:hover { background-color: rgba(25, 135, 84, 0.05); }
+
+.form-check-input {
+  cursor: pointer;
+  border: 2px solid #dee2e6;
+}
+.form-check-input:checked {
+  background-color: #198754;
+  border-color: #198754;
+}
+.text-decoration-line-through {
+  color: #adb5bd !important;
+}
+.hover-danger-text:hover {
+  background: none !important;
+  color: #dc3545 !important;
+  text-decoration: underline;
+}
+</style>
+
+<script>
+let topics = JSON.parse(localStorage.getItem('syllabusTracker')) || [];
+
+function save() {
+    localStorage.setItem('syllabusTracker', JSON.stringify(topics));
+    render();
+}
+
+function addTopic() {
+    const input = document.getElementById('topicInput');
+    const val = input.value.trim();
+    if (val) {
+        topics.push({ id: Date.now(), name: val, completed: false });
+        input.value = '';
+        save();
+    }
+}
+
+function toggleTopic(id) {
+    const topic = topics.find(t => t.id === id);
+    if (topic) {
+        topic.completed = !topic.completed;
+        save();
+    }
+}
+
+function removeTopic(id) {
+    topics = topics.filter(t => t.id !== id);
+    save();
+}
+
+function clearAll() {
+    if(confirm('Are you sure you want to clear your entire syllabus? This cannot be undone.')) {
+        topics = [];
+        save();
+    }
+}
+
+function updateProgress() {
+    if (topics.length === 0) {
+        document.getElementById('progressBar').style.width = '0%';
+        document.getElementById('progressBar').textContent = '0%';
+        document.getElementById('topicStats').textContent = '0 topics added — 0 completed';
+        return;
+    }
+    const completed = topics.filter(t => t.completed).length;
+    const percentage = Math.round((completed / topics.length) * 100);
+    document.getElementById('progressBar').style.width = `${percentage}%`;
+    document.getElementById('progressBar').textContent = `${percentage}%`;
+    document.getElementById('topicStats').textContent = `${topics.length} topics added — ${completed} completed`;
+}
+
+function render() {
+    const list = document.getElementById('topicList');
+    list.innerHTML = '';
+    
+    if (topics.length === 0) {
+      list.innerHTML = `<li class="list-group-item text-center py-5 text-muted fst-italic">No chapters added yet. Get started above!</li>`;
+    }
+
+    topics.forEach(topic => {
+        const li = document.createElement('li');
+        li.className = `list-group-item d-flex justify-content-between align-items-center py-3 border-0 rounded-3 mb-2 ${topic.completed ? 'bg-success bg-opacity-10' : ''}`;
+        
+        li.innerHTML = `
+            <div class="d-flex align-items-center">
+                <input class="form-check-input me-3 fs-5" type="checkbox" ${topic.completed ? 'checked' : ''} onchange="toggleTopic(${topic.id})">
+                <span class="fw-semibold ${topic.completed ? 'text-decoration-line-through' : 'text-dark'}">${topic.name}</span>
+            </div>
+            <button class="btn btn-sm btn-link text-danger p-0" onclick="removeTopic(${topic.id})"><i class="fa-solid fa-trash-can opacity-50 hover-opacity-100 fs-6"></i></button>
+        `;
+        list.appendChild(li);
+    });
+    
+    updateProgress();
+}
+
+// Ensure Enter key works
+document.getElementById('topicInput').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        addTopic();
+    }
+});
+
+window.onload = render;
+</script>
+
+<%- include('../partials/footer') %>

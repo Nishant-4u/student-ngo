@@ -1,0 +1,134 @@
+<%- include('partials/header') %>
+
+<section class="py-5 bg-light pb-5" style="padding-top: 100px !important;">
+    <div class="container py-5 mt-4 text-center">
+        <h1 class="display-4 fw-bold mb-3">Contact Us</h1>
+        <p class="lead text-muted mb-0" style="max-width: 600px; margin: 0 auto;">Have a question, feedback, or a feature request? We'd love to hear from you. Drop us a message below.</p>
+    </div>
+</section>
+
+<main class="container py-5 my-0" style="margin-top: -60px !important;">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0">
+        
+        <form id="contactForm" class="needs-validation" novalidate>
+            <input type="hidden" name="formName" value="Contact Us Page Form">
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                        <label for="name">Your Name</label>
+                        <div class="invalid-feedback">Please enter your name.</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                        <label for="email">Email Address</label>
+                        <div class="invalid-feedback">Please enter a valid email.</div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number" required>
+                        <label for="phone">Phone Number</label>
+                        <div class="invalid-feedback">Please enter your phone number.</div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" id="message" name="message" placeholder="Leave a message here" style="height: 150px" required></textarea>
+                        <label for="message">Your Message</label>
+                        <div class="invalid-feedback">Please provide a message.</div>
+                    </div>
+                </div>
+                <div class="col-12 mt-4">
+                    <button class="btn btn-primary btn-lg w-100 fw-bold py-3 premium-btn-primary" type="submit" id="submitBtn">
+                        <i class="fa-regular fa-paper-plane me-2"></i> Send Message
+                    </button>
+                </div>
+            </div>
+            
+            <div id="formMessage" class="mt-4 text-center d-none"></div>
+        </form>
+
+      </div>
+      
+      <div class="row text-center mt-5 g-4">
+          <div class="col-md-4">
+              <i class="fa-solid fa-envelope fs-2 text-primary mb-3"></i>
+              <h5 class="fw-bold">Email</h5>
+              <p class="text-muted small">support@2amstudy.com</p>
+          </div>
+          <div class="col-md-4">
+              <i class="fa-brands fa-whatsapp fs-2 text-success mb-3"></i>
+              <h5 class="fw-bold">WhatsApp</h5>
+              <p class="text-muted small">+91 6202225179</p>
+          </div>
+          <div class="col-md-4">
+              <i class="fa-solid fa-location-dot fs-2 text-danger mb-3"></i>
+              <h5 class="fw-bold">Location</h5>
+              <p class="text-muted small">Global Students</p>
+          </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    const formMessage = document.getElementById('formMessage');
+    const originalBtnHTML = submitBtn.innerHTML;
+
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Sending...';
+    submitBtn.disabled = true;
+
+    try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        // Form specific appending for message since backend only natively supports name, email, phone, formName in `/send-email`, but the text body can be adapted. Wait, backend reads `name, email, phone`. The message will be lost unless we put it in the formName or modify backend. Let's send message inside formName to not break backend.
+        data.formName = `${data.formName} | Message: ${data.message}`;
+
+        const response = await fetch('/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        formMessage.classList.remove('d-none', 'text-danger');
+        formMessage.classList.add('text-success');
+        
+        if (response.ok) {
+            formMessage.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${result.message}`;
+            form.reset();
+            form.classList.remove('was-validated');
+        } else {
+            throw new Error(result.error || 'Something went wrong');
+        }
+    } catch (error) {
+        formMessage.classList.remove('d-none', 'text-success');
+        formMessage.classList.add('text-danger');
+        formMessage.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${error.message}`;
+    } finally {
+        submitBtn.innerHTML = originalBtnHTML;
+        submitBtn.disabled = false;
+    }
+});
+</script>
+
+<%- include('partials/footer') %>

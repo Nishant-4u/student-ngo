@@ -1,0 +1,122 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 text-center">
+        
+        <h1 class="display-5 fw-bold mb-3 text-primary"><i class="fa-regular fa-clock me-2"></i> Exam Countdown</h1>
+        <p class="text-muted mb-5">Set your exam date and never lose track of the time you have left to study.</p>
+
+        <div class="row g-3 mb-5 justify-content-center">
+            <div class="col-md-8">
+                <input type="text" id="examName" class="form-control form-control-lg" placeholder="e.g. Final Math Exam">
+            </div>
+            <div class="col-md-8">
+                <input type="datetime-local" id="examDate" class="form-control form-control-lg">
+            </div>
+            <div class="col-md-8">
+                <button class="btn btn-primary btn-lg w-100 fw-bold premium-btn-primary" onclick="setCountdown()">Start Countdown</button>
+            </div>
+        </div>
+
+        <div id="countdownDisplay" class="d-none">
+            <h3 id="displayExamName" class="fw-bold mb-4"></h3>
+            
+            <div class="row g-3 justify-content-center">
+                <div class="col-3 col-md-2">
+                    <div class="bg-light rounded-4 p-3 shadow-sm border border-primary border-opacity-25">
+                        <h2 class="fw-bold mb-0 text-primary" id="days">00</h2>
+                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Days</small>
+                    </div>
+                </div>
+                <div class="col-3 col-md-2">
+                    <div class="bg-light rounded-4 p-3 shadow-sm border border-primary border-opacity-25">
+                        <h2 class="fw-bold mb-0 text-primary" id="hours">00</h2>
+                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Hours</small>
+                    </div>
+                </div>
+                <div class="col-3 col-md-2">
+                    <div class="bg-light rounded-4 p-3 shadow-sm border border-primary border-opacity-25">
+                        <h2 class="fw-bold mb-0 text-primary" id="minutes">00</h2>
+                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Mins</small>
+                    </div>
+                </div>
+                <div class="col-3 col-md-2">
+                    <div class="bg-light rounded-4 p-3 shadow-sm border border-primary border-opacity-25">
+                        <h2 class="fw-bold mb-0 text-primary" id="seconds">00</h2>
+                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Secs</small>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline-danger mt-4 btn-sm" onclick="clearCountdown()">Reset</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let countdownInterval;
+
+function setCountdown() {
+    const name = document.getElementById('examName').value;
+    const dateStr = document.getElementById('examDate').value;
+    
+    if (!name || !dateStr) return alert("Please enter both exam name and date.");
+    
+    localStorage.setItem('examName', name);
+    localStorage.setItem('examDate', new Date(dateStr).getTime());
+    
+    startTimer();
+}
+
+function startTimer() {
+    const storedDate = localStorage.getItem('examDate');
+    const storedName = localStorage.getItem('examName');
+    
+    if (!storedDate || !storedName) return;
+    
+    document.getElementById('countdownDisplay').classList.remove('d-none');
+    document.getElementById('displayExamName').textContent = storedName;
+    
+    clearInterval(countdownInterval);
+    
+    countdownInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = parseInt(storedDate) - now;
+        
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            document.getElementById('displayExamName').textContent = storedName + " - TIME'S UP!";
+            document.getElementById('days').textContent = "00";
+            document.getElementById('hours').textContent = "00";
+            document.getElementById('minutes').textContent = "00";
+            document.getElementById('seconds').textContent = "00";
+            return;
+        }
+        
+        document.getElementById('days').textContent = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+        document.getElementById('hours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        
+    }, 1000);
+}
+
+function clearCountdown() {
+    clearInterval(countdownInterval);
+    localStorage.removeItem('examDate');
+    localStorage.removeItem('examName');
+    document.getElementById('countdownDisplay').classList.add('d-none');
+    document.getElementById('examName').value = '';
+    document.getElementById('examDate').value = '';
+}
+
+// Load on start
+window.onload = startTimer;
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,516 @@
+<%- include('../partials/header') %>
+
+<!-- Professional PDF Libraries -->
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<main class="container-fluid py-5 bg-light" style="min-height: 100vh; padding-top: 100px !important;">
+  <div class="container">
+    
+    <div class="row pt-4 mb-4 align-items-center">
+        <div class="col-md-6">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="/pdf-tools" class="text-decoration-none">PDF Tools</a></li>
+                <li class="breadcrumb-item active">Professional PDF Maker</li>
+              </ol>
+            </nav>
+            <h1 class="h2 fw-bold text-dark mb-0"><i class="fa-solid fa-file-pdf text-danger me-2"></i> Professional PDF Maker</h1>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <button id="downloadBtn" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold shadow-sm d-none" onclick="generateAndSave()">
+                <i class="fa-solid fa-download me-2"></i> Download PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Sidebar Settings -->
+      <aside class="col-lg-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 100px;">
+          <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fa-solid fa-sliders me-2"></i> Settings</h5>
+          
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase">Page Size</label>
+            <select id="pageSize" class="form-select border-2 rounded-3" onchange="autoUpdate()">
+              <option value="A4">A4 (Standard)</option>
+              <option value="LETTER">Letter (US)</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase">Orientation</label>
+            <div class="btn-group w-100" role="group">
+              <input type="radio" class="btn-check" name="orientation" id="portrait" value="portrait" checked onchange="autoUpdate()">
+              <label class="btn btn-outline-secondary" for="portrait"><i class="fa-solid fa-arrows-up-down me-1"></i> Portrait</label>
+              
+              <input type="radio" class="btn-check" name="orientation" id="landscape" value="landscape" onchange="autoUpdate()">
+              <label class="btn btn-outline-secondary" for="landscape"><i class="fa-solid fa-arrows-left-right me-1"></i> Landscape</label>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase">Margins</label>
+            <select id="margins" class="form-select border-2 rounded-3" onchange="autoUpdate()">
+              <option value="0">None</option>
+              <option value="20">Small (20px)</option>
+              <option value="40" selected>Normal (40px)</option>
+              <option value="72">Large (1 inch)</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase">Watermark (Text)</label>
+            <input type="text" id="watermark" class="form-control border-2 rounded-3" placeholder="e.g. DRAFT" oninput="autoUpdateDebounced()">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase d-flex justify-content-between">
+              Image Quality <span id="qualityVal">80%</span>
+            </label>
+            <input type="range" class="form-range" id="quality" min="10" max="100" value="80" oninput="document.getElementById('qualityVal').innerText = this.value + '%'; autoUpdateDebounced();">
+          </div>
+
+          <hr>
+          <div class="d-grid gap-2">
+            <button class="btn btn-light rounded-pill btn-sm text-muted" onclick="resetAll()">Reset to Default</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Editor -->
+      <div class="col-lg-5">
+        <!-- File Dropzone -->
+        <div id="dropzone" class="bg-white border-2 border-dashed border-primary border-opacity-25 rounded-4 p-5 text-center mb-4 cursor-pointer hover-bg-light transition-all" style="cursor: pointer;">
+          <input type="file" id="fileInput" multiple accept="image/*,.txt" class="d-none">
+          <div class="mb-3">
+            <i class="fa-solid fa-cloud-arrow-up fa-3x text-primary opacity-50"></i>
+          </div>
+          <h5 class="fw-bold mb-1">Drag & Drop Files Here</h5>
+          <p class="text-muted small">Supports JPG, PNG, WEBP and Text files</p>
+          <button class="btn btn-primary btn-sm rounded-pill px-4 mt-2" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+        </div>
+
+        <!-- Page List (Sortable) -->
+        <div class="bg-white rounded-4 shadow-sm p-4">
+          <h5 class="fw-bold mb-4 d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-list-ol me-2"></i> Page Order</span>
+            <span id="pageCount" class="badge bg-secondary rounded-pill">0 Pages</span>
+          </h5>
+          
+          <div id="pageGrid" class="row g-3 row-cols-2 row-cols-md-3">
+            <!-- Thumbnails injected here -->
+          </div>
+
+          <div id="emptyState" class="text-center py-5 text-muted">
+            <i class="fa-regular fa-folder-open display-4 opacity-25 mb-3 d-block"></i>
+            <p>Upload images or text files to begin.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Preview -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden sticky-top" style="top: 100px; height: calc(100vh - 150px);">
+          <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0 small fw-bold">LIVE PREVIEW</h5>
+            <div id="previewStatus" class="spinner-border spinner-border-sm text-secondary d-none"></div>
+          </div>
+          <div class="card-body p-0 bg-secondary bg-opacity-10 overflow-auto d-flex justify-content-center align-items-start" id="previewContainer">
+            <canvas id="previewCanvas" class="shadow-sm mt-4 mb-4"></canvas>
+            <div id="previewPlaceholder" class="text-center py-5 opacity-50 m-auto">
+              <i class="fa-solid fa-eye-slash fa-3x mb-3 d-block"></i>
+              <p class="small fw-bold">Add content to see preview</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<style>
+.cursor-pointer { cursor: pointer; }
+.border-dashed { border-style: dashed !important; }
+.transition-all { transition: all 0.3s ease; }
+.hover-bg-light:hover { background-color: #f8f9fa !important; border-color: #0d6efd !important; }
+
+.page-thumb {
+    position: relative;
+    aspect-ratio: 1 / 1.414; /* A4 aspect */
+    background: #f1f5f9;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: grab;
+}
+.page-thumb:active { cursor: grabbing; }
+.page-thumb.sortable-ghost { opacity: 0.3; border-color: #0d6efd; }
+.page-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.page-thumb .page-num {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.page-thumb .btn-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 53, 69, 0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.page-thumb:hover .btn-delete { display: flex; }
+.page-thumb:hover .btn-delete:hover { background: #dc3545; }
+
+.page-thumb .file-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.9);
+    font-size: 0.6rem;
+    padding: 4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#previewCanvas {
+    max-width: 90%;
+    height: auto;
+}
+</style>
+
+<script>
+/**
+ * Professional PDF Maker Logic
+ * Using pdf-lib for construction, PDF.js for preview, SortableJS for interaction
+ */
+const { PDFDocument, rgb, StandardFonts } = PDFLib;
+let pages = []; // Array of objects { type: 'image'|'text', data: string (raw contents/url), name: string }
+let updateDebounce;
+
+// Initialize Sortable
+const sortable = Sortable.create(document.getElementById('pageGrid'), {
+    animation: 200,
+    ghostClass: 'sortable-ghost',
+    onEnd: () => {
+        recalculateOrder();
+        autoUpdate();
+    }
+});
+
+// Dropzone Handling
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('bg-light'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('bg-light'));
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('bg-light');
+    handleFiles(e.dataTransfer.files);
+});
+
+document.getElementById('fileInput').addEventListener('change', (e) => handleFiles(e.target.files));
+
+async function handleFiles(files) {
+    for (let file of files) {
+        if (file.type.startsWith('image/')) {
+            const dataUrl = await readFileAsDataURL(file);
+            pages.push({ type: 'image', data: dataUrl, name: file.name });
+        } else if (file.type === 'text/plain') {
+            const text = await readFileAsText(file);
+            pages.push({ type: 'text', data: text, name: file.name });
+        }
+    }
+    renderGrid();
+    autoUpdate();
+}
+
+function readFileAsDataURL(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(file);
+    });
+}
+function readFileAsText(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsText(file);
+    });
+}
+
+function renderGrid() {
+    const grid = document.getElementById('pageGrid');
+    const empty = document.getElementById('emptyState');
+    const pCount = document.getElementById('pageCount');
+    
+    grid.innerHTML = '';
+    if (pages.length === 0) {
+        empty.classList.remove('d-none');
+        pCount.innerText = '0 Pages';
+        document.getElementById('downloadBtn').classList.add('d-none');
+        return;
+    }
+    
+    empty.classList.add('d-none');
+    pCount.innerText = `${pages.length} Pages`;
+    document.getElementById('downloadBtn').classList.remove('d-none');
+
+    pages.forEach((page, index) => {
+        const div = document.createElement('div');
+        div.className = 'col';
+        div.setAttribute('data-id', index);
+        div.innerHTML = `
+            <div class="page-thumb shadow-sm">
+                <span class="page-num">${index + 1}</span>
+                <button class="btn-delete" onclick="removePage(${index}, event)"><i class="fa-solid fa-xmark"></i></button>
+                ${page.type === 'image' ? `<img src="${page.data}">` : `<div class="p-3 bg-white h-100 d-flex align-items-center justify-content-center text-muted"><i class="fa-solid fa-file-lines fa-2x"></i></div>`}
+                <div class="file-name">${page.name}</div>
+            </div>
+        `;
+        grid.appendChild(div);
+    });
+}
+
+function removePage(index, e) {
+    e.stopPropagation();
+    pages.splice(index, 1);
+    renderGrid();
+    autoUpdate();
+}
+
+function recalculateOrder() {
+    const gridItems = document.getElementById('pageGrid').children;
+    const newPages = [];
+    for (let item of gridItems) {
+        const oldIndex = parseInt(item.getAttribute('data-id'));
+        newPages.push(pages[oldIndex]);
+    }
+    pages = newPages;
+    renderGrid();
+}
+
+/**
+ * Image compression using Canvas to meet quality requirements
+ */
+async function getCompressedBytes(dataUrl, quality) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob((blob) => {
+                blob.arrayBuffer().then(resolve);
+            }, 'image/jpeg', quality);
+        };
+        img.src = dataUrl;
+    });
+}
+
+/**
+ * PDF Generation Logic
+ */
+async function generatePDF() {
+    const pdfDoc = await PDFDocument.create();
+    const sizeSetting = document.getElementById('pageSize').value;
+    const orientationSetting = document.querySelector('input[name="orientation"]:checked').value;
+    const margin = parseInt(document.getElementById('margins').value);
+    const watermarkText = document.getElementById('watermark').value.trim();
+    const quality = parseInt(document.getElementById('quality').value) / 100;
+    
+    // Page Dimesions in Points (1 pt = 1/72 inch)
+    const pageDims = sizeSetting === 'A4' ? [595, 842] : [612, 792];
+    const targetWidth = orientationSetting === 'portrait' ? pageDims[0] : pageDims[1];
+    const targetHeight = orientationSetting === 'portrait' ? pageDims[1] : pageDims[0];
+
+    const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    for (const pageObj of pages) {
+        const page = pdfDoc.addPage([targetWidth, targetHeight]);
+        const drawAreaWidth = targetWidth - (margin * 2);
+        const drawAreaHeight = targetHeight - (margin * 2);
+
+        if (pageObj.type === 'image') {
+            try {
+                // Professional Compression: Rescale via Canvas before embedding
+                const imgBytes = await getCompressedBytes(pageObj.data, quality);
+                
+                // Embed as JPG (canvas.toBlob uses jpeg for quality control)
+                const img = await pdfDoc.embedJpg(imgBytes);
+
+                const dims = img.scaleToFit(drawAreaWidth, drawAreaHeight);
+                page.drawImage(img, {
+                    x: margin + (drawAreaWidth - dims.width) / 2,
+                    y: margin + (drawAreaHeight - dims.height) / 2,
+                    width: dims.width,
+                    height: dims.height,
+                });
+            } catch (err) { console.error("Img Embed Error:", err); }
+        } else if (pageObj.type === 'text') {
+            // Professional Text Wrapping
+            const fontSize = 10;
+            const lineHeight = 12;
+            const lines = wrapText(pageObj.data, drawAreaWidth, helvetica, fontSize);
+            
+            let yOffset = targetHeight - margin - fontSize;
+            for (const line of lines) {
+                if (yOffset < margin) {
+                    // Start new page if text exceeds current page height
+                    // In a "professional" maker, we'd handle flow here, 
+                    // for now we draw what we can per page entry.
+                    break; 
+                }
+                page.drawText(line, {
+                    x: margin,
+                    y: yOffset,
+                    size: fontSize,
+                    font: helvetica,
+                    color: rgb(0.1, 0.1, 0.1),
+                });
+                yOffset -= lineHeight;
+            }
+        }
+
+        // Apply Watermark
+        if (watermarkText) {
+            const watermarkSize = 60;
+            const textWidth = helveticaBold.widthOfTextAtSize(watermarkText, watermarkSize);
+            page.drawText(watermarkText, {
+                x: (targetWidth / 2) - (textWidth / 3),
+                y: targetHeight / 2,
+                size: watermarkSize,
+                font: helveticaBold,
+                color: rgb(0.8, 0.8, 0.8),
+                opacity: 0.25,
+                rotate: { type: 'degrees', angle: 45 },
+            });
+        }
+    }
+
+    return await pdfDoc.save();
+}
+
+/**
+ * Text wrapping helper function
+ */
+function wrapText(text, maxWidth, font, fontSize) {
+    const lines = [];
+    text.split('\n').forEach(paragraph => {
+        const words = paragraph.split(' ');
+        let currentLine = '';
+        words.forEach(word => {
+            const testLine = currentLine ? currentLine + ' ' + word : word;
+            const width = font.widthOfTextAtSize(testLine, fontSize);
+            if (width < maxWidth) {
+                currentLine = testLine;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
+        });
+        lines.push(currentLine);
+    });
+    return lines;
+}
+
+// Global actions
+async function generateAndSave() {
+    try {
+        const bytes = await generatePDF();
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Document_${new Date().getTime()}.pdf`;
+        link.click();
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        alert("Generation failed. Please check your files.");
+    }
+}
+
+// Live Preview Logic using PDF.js
+async function autoUpdate() {
+    if (pages.length === 0) {
+        document.getElementById('previewPlaceholder').classList.remove('d-none');
+        document.getElementById('previewCanvas').classList.add('d-none');
+        return;
+    }
+
+    document.getElementById('previewStatus').classList.remove('d-none');
+    
+    try {
+        const bytes = await generatePDF();
+        const pdfData = new Uint8Array(bytes);
+        
+        const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1); // Render the first page for live preview
+
+        const canvas = document.getElementById('previewCanvas');
+        const context = canvas.getContext('2d');
+        
+        // Scale for high quality preview
+        const viewport = page.getViewport({ scale: 1.5 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = { canvasContext: context, viewport: viewport };
+        await page.render(renderContext).promise;
+
+        document.getElementById('previewPlaceholder').classList.add('d-none');
+        document.getElementById('previewCanvas').classList.remove('d-none');
+    } catch (err) {
+        console.error("Preview Render Error:", err);
+    } finally {
+        document.getElementById('previewStatus').classList.add('d-none');
+    }
+}
+
+function autoUpdateDebounced() {
+    clearTimeout(updateDebounce);
+    updateDebounce = setTimeout(autoUpdate, 1000);
+}
+
+function resetAll() {
+    if(!confirm("Are you sure you want to clear everything and reset settings?")) return;
+    pages = [];
+    document.getElementById('pageSize').value = 'A4';
+    document.getElementById('portrait').checked = true;
+    document.getElementById('margins').value = '40';
+    document.getElementById('watermark').value = '';
+    document.getElementById('quality').value = '80';
+    document.getElementById('qualityVal').innerText = '80%';
+    renderGrid();
+    autoUpdate();
+}
+
+// Configure PDF.js Worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+
+<%- include('../partials/footer') %>

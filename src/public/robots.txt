@@ -1,0 +1,6 @@
+# Standard robots.txt for 2AM Study
+User-agent: *
+Allow: /
+
+# Sitemap Location
+Sitemap: https://2amstudy.com/sitemap.xml

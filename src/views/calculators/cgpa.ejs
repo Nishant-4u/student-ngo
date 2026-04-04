@@ -1,0 +1,109 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/calculators">Calculators</a></li>
+            <li class="breadcrumb-item active" aria-current="page">CGPA</li>
+          </ol>
+        </nav>
+
+        <ul class="nav nav-pills nav-fill bg-light p-1 rounded-3 mb-5 mt-2">
+          <li class="nav-item"><a class="nav-link text-dark fw-bold" href="/calculator">Scientific Calculator</a></li>
+          <li class="nav-item"><a class="nav-link active fw-bold" href="/calculators/cgpa">CGPA</a></li>
+          <li class="nav-item"><a class="nav-link text-dark fw-bold" href="/calculators/percentage">Percentage</a></li>
+          <li class="nav-item"><a class="nav-link text-dark fw-bold" href="/calculators/age">Age</a></li>
+        </ul>
+
+        <h1 class="display-5 fw-bold mb-3 text-dark text-center"><i class="fa-solid fa-graduation-cap text-success me-2"></i> CGPA Calculator</h1>
+        <p class="text-muted text-center mb-5">Enter your credits and GPA for each subject/semester to compute your overall Cumulative GPA.</p>
+
+        <div id="cgpaForm">
+            <div class="row g-3 mb-2 fw-bold text-muted small px-3">
+                <div class="col-6">Subject / Semester</div>
+                <div class="col-3">Credits</div>
+                <div class="col-3">GPA (Scale 10 or 4)</div>
+            </div>
+            
+            <div id="subjectRows">
+                <!-- Rows injected by JS -->
+            </div>
+
+            <div class="d-flex gap-3 mt-4">
+                <button class="btn btn-light border flex-grow-1" onclick="addRow()"><i class="fa-solid fa-plus me-2"></i> Add Row</button>
+            </div>
+            
+            <hr class="my-5 opacity-25">
+            
+            <button class="btn btn-success btn-lg w-100 fw-bold shadow-sm" onclick="calculateCGPA()">Calculate CGPA</button>
+            
+            <div id="resultBox" class="mt-4 text-center d-none">
+                <h4 class="text-muted">Your CGPA is</h4>
+                <h1 class="display-1 fw-bold text-success" id="cgpaResult">0.00</h1>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function addRow() {
+    const container = document.getElementById('subjectRows');
+    const rowCount = container.children.length + 1;
+    
+    const row = document.createElement('div');
+    row.className = 'row g-3 mb-3 subject-row';
+    row.innerHTML = `
+        <div class="col-6">
+            <input type="text" class="form-control" placeholder="Sem ${rowCount} / Subject">
+        </div>
+        <div class="col-3">
+            <input type="number" class="form-control credit-input" placeholder="Credits" min="1" step="0.5">
+        </div>
+        <div class="col-3">
+            <input type="number" class="form-control gpa-input" placeholder="GPA" min="0" step="0.1">
+        </div>
+    `;
+    container.appendChild(row);
+}
+
+function calculateCGPA() {
+    const rows = document.querySelectorAll('.subject-row');
+    let totalCredits = 0;
+    let weightedGPA = 0;
+    
+    rows.forEach(row => {
+        const credit = parseFloat(row.querySelector('.credit-input').value);
+        const gpa = parseFloat(row.querySelector('.gpa-input').value);
+        
+        if (!isNaN(credit) && !isNaN(gpa)) {
+            totalCredits += credit;
+            weightedGPA += (credit * gpa);
+        }
+    });
+    
+    const resultBox = document.getElementById('resultBox');
+    const resultText = document.getElementById('cgpaResult');
+    
+    if (totalCredits === 0) {
+        alert("Please enter valid positive numbers for at least one row.");
+        return;
+    }
+    
+    const cgpa = (weightedGPA / totalCredits).toFixed(2);
+    resultText.textContent = cgpa;
+    resultBox.classList.remove('d-none');
+}
+
+// init 4 rows
+window.onload = () => {
+    for(let i=0; i<4; i++) addRow();
+};
+</script>
+
+<%- include('../partials/footer') %>

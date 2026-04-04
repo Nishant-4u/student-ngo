@@ -1,0 +1,787 @@
+<%- include('../partials/header') %>
+
+    <main id="aqi-app" class="min-vh-100 transition-all theme-light" style="padding-top: 100px !important;">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <div>
+                            <h1 class="display-5 fw-bold mb-0 theme-text">
+                                <i class="fa-solid fa-wind me-2 text-info"></i> Air Quality Pro
+                            </h1>
+                            <p class="theme-muted small mb-0 mt-1">Customizable monitoring for students & commuters.</p>
+                        </div>
+                        <div class="d-flex btn-group input-group-sm">
+                            <div
+                                class="input-group input-group-sm max-w-300 me-2 d-none d-md-flex shadow-sm rounded-pill overflow-hidden border">
+                                <input type="text" id="headerSearch" class="form-control border-0 px-3"
+                                    placeholder="Quick Search City...">
+                                <button class="btn btn-info text-white px-3"
+                                    onclick="fetchByCity(document.getElementById('headerSearch').value)"><i
+                                        class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                            <button class="btn btn-outline-info rounded-pill px-4 fw-bold shadow-sm"
+                                data-bs-toggle="modal" data-bs-target="#settingsModal">
+                                <i class="fa-solid fa-gears me-2"></i> Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="aqi-dashboard" class="row g-4 align-items-stretch">
+                        <!-- Loading -->
+                        <div id="aqi-loading" class="col-12 text-center py-5 d-none">
+                            <div class="spinner-border text-info mb-3" role="status"></div>
+                            <p class="fw-bold text-muted" id="loading-msg">Analyzing your local atmosphere...</p>
+                        </div>
+
+                        <!-- Error / Empty State -->
+                        <div id="aqi-error" class="col-12 text-center py-5">
+                            <div class="p-5 theme-card shadow-sm rounded-4 border">
+                                <i class="fa-solid fa-location-dot fa-4x text-info opacity-50 mb-3"></i>
+                                <h4 class="fw-bold theme-text">Choose a Location to Begin</h4>
+                                <p class="theme-muted" id="error-msg">Search for your current city to see real-time
+                                    student health alerts.</p>
+                                <div
+                                    class="input-group mb-3 max-w-400 mx-auto mt-4 shadow rounded-pill overflow-hidden border">
+                                    <input type="text" id="citySearch" class="form-control border-0 px-4"
+                                        placeholder="Enter City Name...">
+                                    <button class="btn btn-info text-white fw-bold px-4"
+                                        onclick="fetchByCity()">Search</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Gauge Card -->
+                        <div id="aqi-main-card" class="col-md-5 d-none">
+                            <div id="aqi-status-bg"
+                                class="h-100 rounded-4 p-5 text-white d-flex flex-column align-items-center justify-content-center text-center shadow-lg position-relative overflow-hidden">
+                                <div class="aqi-label small fw-bold text-uppercase mb-2 opacity-75">Current AQI Index
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                                    <div id="user-location-label" class="h4 fw-bold mb-0 opacity-90">---</div>
+                                    <button class="btn btn-sm btn-link text-white opacity-75 p-0"
+                                        onclick="initApp(true)" title="Force Refresh Data"><i
+                                            class="fa-solid fa-rotate"></i></button>
+                                    <button class="btn btn-sm btn-link text-white opacity-75 p-0"
+                                        onclick="document.getElementById('aqi-error').classList.toggle('d-none'); document.getElementById('citySearch').focus();"
+                                        title="Search Manually"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                </div>
+                                <div id="aqi-cache-badge" class="x-small fw-bold text-uppercase mb-2 d-none"
+                                    style="background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 100px;">
+                                    <i class="fa-solid fa-database me-1"></i> Cached: <span id="cache-time">--</span>
+                                </div>
+                                <div id="aqi-value" class="display-1 fw-bold mb-0">--</div>
+                                <div id="aqi-category" class="h3 fw-bold mb-1">...</div>
+                                <div id="aqi-dominent-tag"
+                                    class="small fw-bold text-uppercase opacity-75 mb-3 bg-white bg-opacity-10 px-3 py-1 rounded-pill d-none">
+                                    Main Pollutant: <span id="aqi-dominent">--</span>
+                                </div>
+                                <div id="aqi-description" class="small opacity-90 px-lg-3">--</div>
+                                <div id="aqi-timestamp" class="x-small fw-bold text-uppercase mt-2 opacity-50">Just
+                                    updated</div>
+                                
+                                <div class="mt-4 pt-3 border-top border-white border-opacity-25 w-100 fs-6 fw-bold">
+                                    <span id="station-name">---</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Details & Personalized Student Insights -->
+                        <div id="aqi-details-card" class="col-md-7 d-none">
+                            <div id="aqi-details-border"
+                                class="theme-card h-100 rounded-4 p-4 border-top border-5 shadow-sm d-flex flex-column transition-all"
+                                style="border-top-color: #cbd5e1;">
+
+                                <!-- Interactive Tab Section -->
+                                <ul class="nav nav-pills mb-4 gap-2 bg-light p-1 rounded-pill d-inline-flex"
+                                    id="aqi-tabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active rounded-pill px-4 small fw-bold"
+                                            data-bs-toggle="pill" data-bs-target="#tab-health">Health Tips</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link rounded-pill px-4 small fw-bold" data-bs-toggle="pill"
+                                            data-bs-target="#tab-student">Student Insights</button>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content flex-grow-1" id="aqi-tabsContent">
+                                    <!-- Standard Health Advice -->
+                                    <div class="tab-pane fade show active" id="tab-health" role="tabpanel">
+                                        <div id="health-advice" class="d-flex flex-column gap-3 mb-4"></div>
+                                    </div>
+
+                                    <!-- Student Personalized Insights -->
+                                    <div class="tab-pane fade" id="tab-student" role="tabpanel">
+                                        <div id="student-insights" class="row g-3">
+                                            <div class="col-12 mb-3 px-2">
+                                                <h6 class="fw-bold mb-3 d-flex align-items-center"><i
+                                                        class="fa-solid fa-graduation-cap text-primary me-2"></i>
+                                                    Personalized Productivity Hacks</h6>
+                                                <div
+                                                    class="p-3 bg-primary bg-opacity-5 border-start border-primary border-4 rounded-end">
+                                                    <p id="insight-main" class="small mb-0 fw-medium">Calculating the
+                                                        best study environment for you...</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div
+                                                    class="theme-mini p-3 rounded-4 border transition-hover text-center shadow-sm">
+                                                    <div class="small theme-muted mb-1 fw-bold text-uppercase">Study
+                                                        Time</div>
+                                                    <div id="insight-time" class="fw-bold text-primary">Best: --</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div
+                                                    class="theme-mini p-3 rounded-4 border transition-hover text-center shadow-sm">
+                                                    <div class="small theme-muted mb-1 fw-bold text-uppercase">Outdoor
+                                                        Break</div>
+                                                    <div id="insight-walk" class="fw-bold text-success">Good: --</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mini Weather -->
+                                <div class="mt-auto pt-4 border-top">
+                                    <div class="row text-center g-3">
+                                        <div class="col-4">
+                                            <div class="theme-mini rounded-3 p-2 border shadow-xs transition-hover">
+                                                <div class="x-small theme-muted fw-bold">TEMP</div>
+                                                <div class="fw-bold" id="w-temp">--</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="theme-mini rounded-3 p-2 border shadow-xs transition-hover">
+                                                <div class="x-small theme-muted fw-bold">HUMIDITY</div>
+                                                <div class="fw-bold" id="w-hum">--</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="theme-mini rounded-3 p-2 border shadow-xs transition-hover">
+                                                <div class="x-small theme-muted fw-bold">WIND</div>
+                                                <div class="fw-bold" id="w-wind">--</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pollutants Grid -->
+                        <div id="aqi-pollutants" class="col-12 d-none mt-4">
+                            <div class="theme-card border rounded-4 p-4 shadow-sm">
+                                <h6 class="fw-bold mb-4 opacity-75"><i class="fa-solid fa-microchip me-2"></i> Real-time
+                                    Sensor Breakdown</h6>
+                                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3" id="pollutant-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                    <div class="modal-header bg-info text-white py-3 px-4">
+                        <h5 class="modal-title fw-bold">Customization & Alerts</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+
+                        <div class="mb-4">
+                            <label class="fw-bold small text-muted text-uppercase mb-2 d-block text-info">Station
+                                Customization</label>
+                            <div id="savedLocationStatus"
+                                class="p-3 bg-light rounded-4 border d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="x-small text-muted fw-bold">SAVED LOCATION</div>
+                                    <div id="savedCityName" class="small fw-bold">None (Using GPS)</div>
+                                </div>
+                                <button class="btn btn-link text-danger btn-sm p-0 d-none" id="btnClearSaved"
+                                    onclick="clearSavedLocation()"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-bold small text-muted text-uppercase mb-2 d-block">App Appearance</label>
+                            <div class="btn-group w-100 shadow-sm rounded-pill overflow-hidden p-1 bg-light border">
+                                <button type="button"
+                                    class="btn btn-sm btn-white btn-theme border-0 rounded-pill active"
+                                    onclick="setTheme('light')">Light Mode</button>
+                                <button type="button" class="btn btn-sm btn-white btn-theme border-0 rounded-pill"
+                                    onclick="setTheme('dark')">Dark Mode</button>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-10">
+
+                        <div class="mb-4">
+                            <label class="fw-bold small text-muted text-uppercase mb-2 d-block">Default Alert
+                                Threshold</label>
+                            <p class="x-small text-muted mb-3">Receive a browser notification if AQI exceeds this level.
+                            </p>
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="range" class="form-range flex-grow-1" id="thresholdRange" min="50"
+                                    max="300" step="10" value="100"
+                                    oninput="document.getElementById('thresholdVal').innerText = this.value">
+                                <span id="thresholdVal" class="badge bg-info fw-bold py-2 px-3 fs-6">100</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-bold small text-muted text-uppercase mb-2 d-block">Station Sync</label>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="prefGPS" checked>
+                                <label class="form-check-label small" for="prefGPS">Auto-detect location
+                                    (GPS/IP)</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="prefNotify"
+                                    onchange="toggleNotifications(this)">
+                                <label class="form-check-label small" for="prefNotify">Enable Air Alerts
+                                    (Notifications)</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer bg-light border-0 py-3">
+                        <button type="button" class="btn btn-info w-100 rounded-pill fw-bold" onclick="savePrefs()">Save
+                            & Apply Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        /* CSS Variable System for Themes */
+        :root {
+            --aqi-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --mini-bg: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .theme-dark {
+            --aqi-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --mini-bg: #334155;
+            --text-primary: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #aqi-app {
+            background-color: var(--aqi-bg);
+            color: var(--text-primary);
+        }
+
+        .theme-card {
+            background-color: var(--card-bg) !important;
+            border-color: var(--border-color) !important;
+            backdrop-filter: blur(8px);
+        }
+
+        .theme-mini {
+            background-color: var(--mini-bg) !important;
+            border-color: var(--border-color) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .theme-text {
+            color: var(--text-primary) !important;
+        }
+
+        .theme-muted {
+            color: var(--text-muted) !important;
+        }
+
+        /* Custom Badge Colors */
+        .bg-orange {
+            background-color: #f97316 !important;
+        }
+
+        .bg-purple {
+            background-color: #a855f7 !important;
+        }
+
+        .bg-maroon {
+            background-color: #7f1d1d !important;
+        }
+
+        .advice-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .insight-box {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+        }
+
+        .x-small {
+            font-size: 0.7rem;
+        }
+
+        .transition-all {
+            transition: all 0.4s ease;
+        }
+
+        .transition-hover:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Range Slider Styles */
+        .form-range::-webkit-slider-thumb {
+            background: #0dcaf0;
+        }
+
+        .btn-theme.active {
+            background: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            color: #0dcaf0;
+            font-weight: 800;
+        }
+
+        .theme-dark .btn-theme.active {
+            background: #0f172a;
+            color: #38bdf8;
+        }
+
+        #aqi-status-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+    </style>
+
+    <script>
+        /**
+         * Fully Customizable Pro Air Quality Checker
+         */
+
+        const WAQI_TOKEN = 'demo';
+        const CACHE_TTL = 15 * 60 * 1000; // 15 Minutes for AQI
+        const GEO_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 Days for City Geocoding
+
+        let currentAQI = 0;
+        let userPrefs = {
+            theme: 'light',
+            threshold: 100,
+            autoGPS: true,
+            notifications: false,
+            lastStation: null,
+            savedCity: null, // Stores the slug (e.g. 'delhi')
+            savedCityName: null // Stores the display name
+        };
+
+        // --- Cache Engine ---
+        function getCache(key) {
+            const entry = localStorage.getItem(`aqi_v2_cache_${key}`);
+            if (!entry) return null;
+            const { data, timestamp } = JSON.parse(entry);
+            if (Date.now() - timestamp > (key.startsWith('geo_') ? GEO_CACHE_TTL : CACHE_TTL)) {
+                localStorage.removeItem(`aqi_v2_cache_${key}`);
+                return null;
+            }
+            return { data, timestamp };
+        }
+
+        function setCache(key, data) {
+            const entry = { data, timestamp: Date.now() };
+            localStorage.setItem(`aqi_v2_cache_${key}`, JSON.stringify(entry));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPrefs();
+            initApp();
+
+            // Add Enter Key listeners
+            document.getElementById('headerSearch').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') fetchByCity(e.target.value);
+            });
+            document.getElementById('citySearch').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') fetchByCity();
+            });
+        });
+
+        // Settings & Theme Logic
+        function setTheme(mode) {
+            const app = document.getElementById('aqi-app');
+            const btns = document.querySelectorAll('.btn-theme');
+
+            app.className = mode === 'dark' ? 'min-vh-100 transition-all theme-dark' : 'min-vh-100 transition-all theme-light';
+            btns.forEach(b => b.classList.toggle('active', (mode === 'dark' && b.innerText.includes('Dark')) || (mode === 'light' && b.innerText.includes('Light'))));
+            userPrefs.theme = mode;
+        }
+
+        function loadPrefs() {
+            const saved = localStorage.getItem('aqi_pro_prefs');
+            if (saved) {
+                userPrefs = JSON.parse(saved);
+                setTheme(userPrefs.theme);
+                document.getElementById('thresholdRange').value = userPrefs.threshold;
+                document.getElementById('thresholdVal').innerText = userPrefs.threshold;
+                document.getElementById('prefGPS').checked = userPrefs.autoGPS;
+                document.getElementById('prefNotify').checked = userPrefs.notifications;
+
+                updateSavedStatusUI();
+            }
+        }
+
+        function updateSavedStatusUI() {
+            const nameEl = document.getElementById('savedCityName');
+            const clearBtn = document.getElementById('btnClearSaved');
+
+            if (userPrefs.savedCity) {
+                nameEl.innerText = userPrefs.savedCityName;
+                nameEl.classList.add('text-primary');
+                clearBtn.classList.remove('d-none');
+            } else {
+                nameEl.innerText = "None (Using GPS)";
+                nameEl.classList.remove('text-primary');
+                clearBtn.classList.add('d-none');
+            }
+        }
+
+        function saveAsDefault() {
+            if (!window.currentStationData) return alert("Select a location first!");
+
+            userPrefs.savedCity = window.currentStationSlug;
+            userPrefs.savedCityName = window.currentStationData.city.name;
+            userPrefs.autoGPS = false; // Disable GPS if explicitly saving a city
+            document.getElementById('prefGPS').checked = false;
+
+            savePrefs();
+            updateSavedStatusUI();
+            alert(`Success: ${userPrefs.savedCityName} is now your default location.`);
+        }
+
+        function clearSavedLocation() {
+            userPrefs.savedCity = null;
+            userPrefs.savedCityName = null;
+            userPrefs.autoGPS = true; // Resume GPS by default
+            document.getElementById('prefGPS').checked = true;
+
+            savePrefs();
+            updateSavedStatusUI();
+        }
+
+        function savePrefs() {
+            userPrefs.threshold = parseInt(document.getElementById('thresholdRange').value);
+            userPrefs.autoGPS = document.getElementById('prefGPS').checked;
+            userPrefs.notifications = document.getElementById('prefNotify').checked;
+
+            localStorage.setItem('aqi_pro_prefs', JSON.stringify(userPrefs));
+
+            // Refresh data if location mode changed
+            if (userPrefs.autoGPS) initApp();
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
+        }
+
+        async function toggleNotifications(checkbox) {
+            if (checkbox.checked) {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    alert("Notification permission denied by browser. Alerts won't show.");
+                    checkbox.checked = false;
+                }
+            }
+        }
+
+        // Data Fetching
+        function initApp(forceRefresh = false) {
+            if (!userPrefs.autoGPS && userPrefs.savedCity) {
+                window.lastSearchName = userPrefs.savedCityName;
+                fetchAirData(userPrefs.savedCity, null, forceRefresh);
+            } else if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (pos) => {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+
+                        // Show temporary detecting message
+                        document.getElementById('aqi-loading').classList.remove('d-none');
+                        document.getElementById('loading-msg').innerText = "Locating your city for accuracy...";
+
+                        // Perform Reverse Geocoding to get City Name
+                        const cityName = await getCityNameFromCoords(lat, lon);
+                        window.lastSearchName = cityName || "Detected Location";
+
+                        fetchAirData(`geo:${lat};${lon}`, null, forceRefresh);
+                    },
+                    () => {
+                        handleError("We couldn't detect your exact location. Please use the search bar above or below.");
+                    }
+                );
+            } else {
+                handleError("Location services unavailable. Please search for a city manually.");
+            }
+        }
+
+        async function getCityNameFromCoords(lat, lon) {
+            try {
+                // High zoom (12) for detailed district/town detection
+                const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=12`);
+                const data = await resp.json();
+                const addr = data.address;
+                
+                // Return highly specific name: Suburb -> City -> Town -> Village
+                const name = addr.suburb || addr.city_district || addr.city || addr.town || addr.village || addr.county || addr.state;
+                return (name && !name.includes("Shanghai")) ? name : "Your Area";
+            } catch (e) {
+                console.warn("Reverse Geocoding Failed:", e);
+                return "Current Location";
+            }
+        }
+
+        async function fetchByCity(inputVal) {
+            const city = (inputVal || document.getElementById('citySearch').value)?.trim();
+            if (!city || city === "") return;
+
+            // Clean UI for start - Explicitly hide old data and error
+            document.getElementById('aqi-error').classList.add('d-none');
+            document.getElementById('aqi-loading').classList.remove('d-none');
+            document.getElementById('aqi-main-card').classList.add('d-none');
+            document.getElementById('aqi-details-card').classList.add('d-none');
+            document.getElementById('loading-msg').innerText = `Probing air in ${city}...`;
+            document.getElementById('user-location-label').innerText = "---";
+            window.currentStationData = null; // Explicit Reset
+
+            // Clear inputs for clean UX
+            document.getElementById('headerSearch').value = "";
+            document.getElementById('citySearch').value = "";
+
+            // Check Geocoding Cache
+            const cachedGeo = getCache(`geo_${city.toLowerCase()}`);
+            if (cachedGeo) {
+                window.lastSearchName = city;
+                await fetchAirData(`geo:${cachedGeo.data.lat};${cachedGeo.data.lon}`, city);
+                return;
+            }
+
+            try {
+                // Step 1: Geocode City Name
+                const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`);
+                if (!geoResp.ok) throw new Error(`HTTP Error ${geoResp.status}`);
+                const geoData = await geoResp.json();
+
+                if (geoData && geoData.length > 0) {
+                    const { lat, lon } = geoData[0];
+                    const cleanLat = parseFloat(lat).toFixed(6);
+                    const cleanLon = parseFloat(lon).toFixed(6);
+
+                    setCache(`geo_${city.toLowerCase()}`, { lat: cleanLat, lon: cleanLon });
+                    window.lastSearchName = city;
+                    await fetchAirData(`geo:${cleanLat};${cleanLon}`, city);
+                } else {
+                    // Step 2 Fallback: Direct WAQI native search - FIXED: Using @ prefix for UID
+                    const waqiSearchResp = await fetch(`https://api.waqi.info/search/?token=${WAQI_TOKEN}&keyword=${encodeURIComponent(city)}`);
+                    const waqiSearchData = await waqiSearchResp.json();
+
+                    if (waqiSearchData.status === 'ok' && waqiSearchData.data.length > 0) {
+                        const bestStation = waqiSearchData.data[0];
+                        window.lastSearchName = city;
+                        // Important: Using @ prefix ensures reliably finding the specific station
+                        await fetchAirData(`@${bestStation.uid}`, city);
+                    } else {
+                        handleError(`City "${city}" was not found but we searched nearby.`);
+                    }
+                }
+            } catch (e) {
+                console.error("Search Logic Failure:", e);
+                handleError("Search system is temporarily busy. Please wait 10 seconds.");
+            }
+        }
+
+        async function fetchAirData(slug, originalQuery = null, forceRefresh = false) {
+            if (!slug) return;
+
+            if (!forceRefresh) {
+                const cached = getCache(slug);
+                if (cached) {
+                    window.currentStationData = cached.data;
+                    window.currentStationSlug = slug;
+                    renderApp(cached.data, cached.timestamp);
+                    return;
+                }
+            }
+
+            document.getElementById('aqi-loading').classList.remove('d-none');
+            document.getElementById('aqi-error').classList.add('d-none');
+
+            try {
+                const response = await fetch(`https://api.waqi.info/feed/${slug}/?token=${WAQI_TOKEN}`);
+                const data = await response.json();
+                if (data.status === 'ok') {
+                    setCache(slug, data.data); // Store for future
+                    window.currentStationData = data.data;
+                    window.currentStationSlug = slug;
+                    renderApp(data.data);
+                    userPrefs.lastStation = slug;
+                    checkThreshold(data.data.aqi);
+                } else {
+                    console.warn("WAQI API Response Error for:", slug, data);
+                    handleError(`We found "${originalQuery || slug}", but we couldn't retrieve the live oxygen levels. Try another district.`);
+                }
+            } catch (e) {
+                console.error("AQI Data Fetch Failure:", e);
+                handleError("Station search failed due to a network timeout.");
+            }
+        }
+
+        function checkThreshold(aqi) {
+            if (userPrefs.notifications && aqi > userPrefs.threshold) {
+                new Notification("Air Quality Alert!", {
+                    body: `The AQI has reached ${aqi}, which exceeds your preferred threshold of ${userPrefs.threshold}.`,
+                    icon: "/assets/images/logo.jpg"
+                });
+            }
+        }
+
+        function renderApp(data, cachedTime = null) {
+            const aqi = data.aqi;
+            const cat = getAQICategory(aqi);
+            const insights = getStudentInsights(aqi);
+
+            // Cache Indicator
+            const cacheEl = document.getElementById('aqi-cache-badge');
+            if (cachedTime) {
+                cacheEl.classList.remove('d-none');
+                const mins = Math.floor((Date.now() - cachedTime) / 60000);
+                document.getElementById('cache-time').innerText = mins === 0 ? 'Just now' : `${mins} min ago`;
+            } else {
+                cacheEl.classList.add('d-none');
+            }
+
+            // Visibility
+            document.getElementById('aqi-loading').classList.add('d-none');
+            document.getElementById('aqi-error').classList.add('d-none');
+            document.getElementById('aqi-main-card').classList.remove('d-none');
+            document.getElementById('aqi-details-card').classList.remove('d-none');
+            document.getElementById('aqi-pollutants').classList.remove('d-none');
+
+            // Values & Accuracy
+            const dominent = data.dominentpol || 'pm25';
+            const domEl = document.getElementById('aqi-dominent-tag');
+            if (dominent) {
+                domEl.classList.remove('d-none');
+                document.getElementById('aqi-dominent').innerText = dominent.toUpperCase();
+            }
+
+            if (data.time && data.time.s) {
+                document.getElementById('aqi-timestamp').innerText = `Updated ${getRelativeTime(data.time.s)}`;
+            }
+
+            // Global Shanghai Filter: Ensure incorrect defaults are hidden
+            const rawName = window.lastSearchName || "";
+            const isNameShanghai = rawName.includes('Shanghai') || rawName.includes('上海');
+            const finalLocationName = (rawName && !isNameShanghai) ? rawName : "Local Monitoring Area";
+            document.getElementById('user-location-label').innerText = finalLocationName;
+            
+            document.getElementById('aqi-value').innerText = aqi;
+            document.getElementById('aqi-category').innerText = cat.label;
+            document.getElementById('aqi-status-bg').style.backgroundColor = cat.color;
+            document.getElementById('aqi-description').innerText = cat.desc;
+            
+            // Station Name Filter: If API defaults to Shanghai but user is elsewhere, show their city name instead
+            const station = data.city.name || "";
+            const isStationShanghai = station.includes('Shanghai') || station.includes('上海');
+            
+            let displayStation = station;
+            if (isStationShanghai) {
+                displayStation = (finalLocationName !== "Local Monitoring Area") 
+                    ? `Station near ${finalLocationName}` 
+                    : "Official Air Monitoring Station";
+            }
+            document.getElementById('station-name').innerText = displayStation;
+            
+            document.getElementById('aqi-details-border').style.borderTopColor = cat.color;
+
+            // Advice & Insights
+            document.getElementById('health-advice').innerHTML = cat.advice.map(a => `
+        <div class="advice-item shadow-sm">
+            <i class="${a.icon} text-info"></i>
+            <span>${a.text}</span>
+        </div>
+    `).join('');
+
+            document.getElementById('insight-main').innerText = insights.main;
+            document.getElementById('insight-time').innerText = insights.time;
+            document.getElementById('insight-walk').innerText = insights.walk;
+
+            // Weather
+            document.getElementById('w-temp').innerText = (data.iaqi.t ? data.iaqi.t.v : '--') + '°C';
+            document.getElementById('w-hum').innerText = (data.iaqi.h ? data.iaqi.h.v : '--') + '%';
+            document.getElementById('w-wind').innerText = (data.iaqi.w ? data.iaqi.w.v : '--') + ' m/s';
+
+            // Pollutants
+            const pollutants = ['pm25', 'pm10', 'o3', 'no2', 'so2', 'co'];
+            document.getElementById('pollutant-list').innerHTML = pollutants.map(p => {
+                if (!data.iaqi[p]) return '';
+                return `
+            <div class="col">
+                <div class="theme-mini p-3 rounded-4 border text-center transition-hover shadow-sm h-100">
+                    <div class="x-small theme-muted fw-bold mb-1">${p === 'pm25' ? 'PM 2.5' : p.toUpperCase()}</div>
+                    <div class="h5 fw-bold mb-0">${data.iaqi[p].v}</div>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function handleError(msg) {
+            document.getElementById('aqi-loading').classList.add('d-none');
+            document.getElementById('aqi-error').classList.remove('d-none');
+            if (msg) document.getElementById('error-msg').innerText = msg;
+        }
+
+        function getAQICategory(v) {
+            if (v <= 50) return { label: 'Good', color: '#10b981', desc: 'Air is clean. Perfect conditions for focus.', advice: [{ icon: 'fa-solid fa-cloud-sun', text: 'Excellent for outdoor study sessions.' }, { icon: 'fa-solid fa-fan', text: 'Open windows to refresh your study space.' }] };
+            if (v <= 100) return { label: 'Moderate', color: '#f59e0b', desc: 'Acceptable quality. Sensitive groups take note.', advice: [{ icon: 'fa-solid fa-leaf', text: 'Regular outdoor study is still safe for most.' }, { icon: 'fa-solid fa-circle-info', text: 'Keep an eye on trends if you have asthma.' }] };
+            if (v <= 150) return { label: 'Sensitive', color: '#f97316', desc: 'Sensitive groups should limit exertion.', advice: [{ icon: 'fa-solid fa-house-laptop', text: 'Switch to indoor study for peak focus.' }, { icon: 'fa-solid fa-mask-face', text: 'Wear a mask during campus commutes.' }] };
+            if (v <= 200) return { label: 'Unhealthy', color: '#ef4444', desc: 'Adverse effects likely for everyone.', advice: [{ icon: 'fa-solid fa-circle-xmark', text: 'Avoid outdoor campus activities today.' }, { icon: 'fa-solid fa-head-side-mask', text: 'N95 masks are highly recommended.' }] };
+            return { label: 'Critical', color: '#7f1d1d', desc: 'Emergency conditions. Remain indoors.', advice: [{ icon: 'fa-solid fa-biohazard', text: 'Stay inside a room with air filtration.' }, { icon: 'fa-solid fa-phone-medical', text: 'Monitor for chest pain or breathing issues.' }] };
+        }
+
+        function getStudentInsights(aqi) {
+            if (aqi <= 50) return { main: "Premium air quality. Peak brain oxygen levels—great for high-intensity exam prep!", time: "Best: All Day", walk: "Ideal for walking" };
+            if (aqi <= 100) return { main: "Satisfactory air. A good time to clear your head with a 15-min walk between lectures.", time: "Best: Morning", walk: "Safe to walk" };
+            if (aqi <= 150) return { main: "Moderate pollution. Outdoor breaks might cause slight fatigue for some students.", time: "Best: Night", walk: "Limit walking" };
+            return { main: "High pollution levels. Stay indoors to maintain higher energy levels and focus.", time: "Best: Indoor", walk: "Commute only" };
+        }
+
+        function getRelativeTime(iso) {
+            const d = new Date(iso);
+            const diff = Math.floor((new Date() - d) / 60000); // Mins
+            if (diff < 1) return "Just Now";
+            if (diff < 60) return `${diff} min ago`;
+            const hours = Math.floor(diff / 60);
+            if (hours < 24) return `${hours} hr ago`;
+            return d.toLocaleDateString();
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

@@ -1,0 +1,96 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 text-center">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center mb-4">
+            <li class="breadcrumb-item"><a href="/calculators">Calculators</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Percentage</li>
+          </ol>
+        </nav>
+
+        <ul class="nav nav-pills nav-fill bg-light p-1 rounded-3 mb-5 mt-2">
+          <li class="nav-item"><a class="nav-link text-dark fw-bold" href="/calculator">Scientific Calculator</a></li>
+          <li class="nav-item"><a class="nav-link text-dark fw-bold" href="/calculators/cgpa">CGPA</a></li>
+          <li class="nav-item"><a class="nav-link active fw-bold" href="/calculators/percentage">Percentage</a></li>
+          <li class="nav-item"><a class="nav-link text-dark fw-bold" href="/calculators/age">Age</a></li>
+        </ul>
+
+        <h1 class="display-5 fw-bold mb-3 text-warning"><i class="fa-solid fa-percent me-2"></i> Percentage Calculator</h1>
+        <p class="text-muted mb-5">Easily solve 3 common types of percentage problems.</p>
+
+        <!-- Tool 1 -->
+        <div class="bg-light p-4 rounded-4 text-start mb-4">
+            <h5 class="fw-bold mb-3">1. What is X% of Y?</h5>
+            <div class="input-group mb-3 input-group-lg">
+              <span class="input-group-text bg-white">What is</span>
+              <input type="number" id="val1" class="form-control" placeholder="X">
+              <span class="input-group-text bg-white">% of</span>
+              <input type="number" id="val2" class="form-control" placeholder="Y">
+              <button class="btn btn-warning fw-bold" onclick="calc1()">Solve</button>
+            </div>
+            <div class="fw-bold fs-5 text-success d-none" id="res1">Result: <span></span></div>
+        </div>
+
+        <!-- Tool 2 -->
+        <div class="bg-light p-4 rounded-4 text-start mb-4">
+            <h5 class="fw-bold mb-3">2. X is what percent of Y?</h5>
+            <div class="input-group mb-3 input-group-lg">
+              <input type="number" id="val3" class="form-control" placeholder="X">
+              <span class="input-group-text bg-white">is what % of</span>
+              <input type="number" id="val4" class="form-control" placeholder="Y">
+              <button class="btn btn-warning fw-bold" onclick="calc2()">Solve</button>
+            </div>
+            <div class="fw-bold fs-5 text-success d-none" id="res2">Result: <span></span></div>
+        </div>
+
+        <!-- Tool 3 -->
+        <div class="bg-light p-4 rounded-4 text-start">
+            <h5 class="fw-bold mb-3">3. Exam Score Percentage</h5>
+            <div class="input-group mb-3 input-group-lg">
+              <span class="input-group-text bg-white">Marks Obtained</span>
+              <input type="number" id="val5" class="form-control" placeholder="X">
+              <span class="input-group-text bg-white">Total Marks</span>
+              <input type="number" id="val6" class="form-control" placeholder="Y">
+              <button class="btn btn-warning fw-bold" onclick="calc3()">Solve</button>
+            </div>
+            <div class="fw-bold fs-5 text-success d-none" id="res3">Result: <span></span>%</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function calc1() {
+    const x = parseFloat(document.getElementById('val1').value);
+    const y = parseFloat(document.getElementById('val2').value);
+    if(isNaN(x) || isNaN(y)) return;
+    const res = (x / 100) * y;
+    document.querySelector('#res1 span').textContent = res;
+    document.getElementById('res1').classList.remove('d-none');
+}
+
+function calc2() {
+    const x = parseFloat(document.getElementById('val3').value);
+    const y = parseFloat(document.getElementById('val4').value);
+    if(isNaN(x) || isNaN(y) || y === 0) return;
+    const res = (x / y) * 100;
+    document.querySelector('#res2 span').textContent = res.toFixed(2) + '%';
+    document.getElementById('res2').classList.remove('d-none');
+}
+
+function calc3() {
+    const x = parseFloat(document.getElementById('val5').value);
+    const y = parseFloat(document.getElementById('val6').value);
+    if(isNaN(x) || isNaN(y) || y === 0) return;
+    const res = (x / y) * 100;
+    document.querySelector('#res3 span').textContent = res.toFixed(2);
+    document.getElementById('res3').classList.remove('d-none');
+}
+</script>
+
+<%- include('../partials/footer') %>

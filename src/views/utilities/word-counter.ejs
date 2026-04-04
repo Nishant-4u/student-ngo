@@ -1,0 +1,230 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-10">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 mt-5">
+        
+        <div class="text-center mb-5">
+          <h1 class="display-5 fw-bold mb-3 text-dark">
+            <i class="fa-solid fa-file-word me-2" style="color: #4f46e5;"></i> Professional Word Counter
+          </h1>
+          <p class="text-muted fs-5">Get detailed insights into your writing with advanced metrics and performance stats.</p>
+        </div>
+
+        <!-- Input Area -->
+        <div class="position-relative mb-5 shadow-sm rounded-4 overflow-hidden border border-2 border-primary border-opacity-10">
+          <textarea id="textInput" class="form-control border-0 p-4 fs-5" rows="12" 
+            placeholder="Type, paste, or drag your text here..." 
+            oninput="updateMetrics()" style="resize: none; background: #fafafa;"></textarea>
+          <div class="position-absolute bottom-0 right-0 p-3">
+            <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="clearText()"><i class="fa-solid fa-trash me-1"></i> Clear</button>
+            <button class="btn btn-sm btn-primary rounded-pill px-3 ms-2 shadow-sm" onclick="copyText()"><i class="fa-solid fa-copy me-1"></i> Copy</button>
+          </div>
+        </div>
+
+        <!-- Main Stats Grid -->
+        <div class="row g-3 mb-5">
+          <div class="col-6 col-md-3">
+            <div class="card border-0 bg-primary bg-opacity-10 rounded-4 p-3 text-center h-100">
+              <h2 class="fw-bold text-primary mb-0" id="wordCount">0</h2>
+              <small class="text-primary fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.1em;">Words</small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card border-0 bg-success bg-opacity-10 rounded-4 p-3 text-center h-100">
+              <h2 class="fw-bold text-success mb-0" id="charCount">0</h2>
+              <small class="text-success fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.1em;">Characters</small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card border-0 bg-warning bg-opacity-10 rounded-4 p-3 text-center h-100">
+              <h2 class="fw-bold text-warning mb-0" id="sentenceCount">0</h2>
+              <small class="text-warning fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.1em;">Sentences</small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card border-0 bg-danger bg-opacity-10 rounded-4 p-3 text-center h-100">
+              <h2 class="fw-bold text-danger mb-0" id="paraCount">0</h2>
+              <small class="text-danger fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.1em;">Paragraphs</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Advanced Insights -->
+          <div class="col-md-6">
+            <div class="bg-light p-4 rounded-4 h-100 border shadow-sm">
+              <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fa-solid fa-chart-line text-primary me-2"></i> Writing Performance</h5>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted fw-bold small"><i class="fa-solid fa-clock me-1"></i> Reading Time</span>
+                  <span class="fw-bold" id="readingTime">0 min</span>
+                </div>
+                <div class="progress rounded-pill" style="height: 6px;">
+                  <div id="readingProgress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted fw-bold small"><i class="fa-solid fa-microphone me-1"></i> Speaking Time</span>
+                  <span class="fw-bold" id="speakingTime">0 min</span>
+                </div>
+                <div class="progress rounded-pill" style="height: 6px;">
+                  <div id="speakingProgress" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                </div>
+              </div>
+              <hr class="my-4 opacity-50">
+              <div class="d-flex justify-content-between small">
+                <span class="text-muted fw-bold"><i class="fa-solid fa-text-height me-1"></i> Avg. Word Length</span>
+                <span class="fw-bold" id="avgWordLen">0 chars</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Keyword Density -->
+          <div class="col-md-6">
+            <div class="bg-light p-4 rounded-4 h-100 border shadow-sm">
+              <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fa-solid fa-tags text-success me-2"></i> Keyword Density</h5>
+              <div id="keywordList" class="d-flex flex-wrap gap-2">
+                <p class="text-muted small fst-italic">Start typing to see keyword frequency...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<style>
+/* Professional Word Counter Styles */
+#textInput:focus {
+  background: white !important;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.05) !important;
+}
+.keyword-pill {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: 0.2s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+.keyword-pill:hover {
+  transform: translateY(-2px);
+  border-color: #4f46e5;
+  color: #4f46e5;
+}
+</style>
+
+<script>
+function updateMetrics() {
+    const text = document.getElementById('textInput').value;
+    const cleanText = text.trim();
+    
+    // Character Counts
+    const charCount = text.length;
+    document.getElementById('charCount').textContent = charCount;
+    
+    // Word Count
+    const words = cleanText === '' ? 0 : cleanText.split(/\s+/).length;
+    document.getElementById('wordCount').textContent = words;
+    
+    // Sentence Count
+    const sentences = cleanText === '' ? 0 : text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+    document.getElementById('sentenceCount').textContent = sentences;
+
+    // Paragraph Count
+    const paragraphs = cleanText === '' ? 0 : text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
+    document.getElementById('paraCount').textContent = paragraphs;
+
+    // Reading & Speaking Time (225 wpm read, 150 wpm speak)
+    const readMinutes = (words / 225);
+    const speakMinutes = (words / 150);
+    
+    document.getElementById('readingTime').textContent = words < 10 ? "0 min" : (readMinutes < 1 ? "Under 1 min" : Math.ceil(readMinutes) + " min");
+    document.getElementById('speakingTime').textContent = words < 10 ? "0 min" : (speakMinutes < 1 ? "Under 1 min" : Math.ceil(speakMinutes) + " min");
+    
+    const readProg = Math.min(100, (readMinutes / 10) * 100);
+    const speakProg = Math.min(100, (speakMinutes / 10) * 100);
+    document.getElementById('readingProgress').style.width = readProg + "%";
+    document.getElementById('speakingProgress').style.width = speakProg + "%";
+
+    // Average Word Length
+    if (words > 0) {
+      const avgLen = (cleanText.replace(/\s+/g, '').length / words).toFixed(1);
+      document.getElementById('avgWordLen').textContent = avgLen + " chars";
+    } else {
+      document.getElementById('avgWordLen').textContent = "0 chars";
+    }
+
+    // Keyword Density
+    updateKeywordDensity(cleanText);
+}
+
+function updateKeywordDensity(text) {
+    const container = document.getElementById('keywordList');
+    if (!text) {
+      container.innerHTML = '<p class="text-muted small fst-italic">Start typing to see keyword frequency...</p>';
+      return;
+    }
+
+    const words = text.toLowerCase().match(/\b\w{4,}\b/g); // Only words with 4+ characters
+    if (!words) {
+      container.innerHTML = '<p class="text-muted small">Type longer words to see density.</p>';
+      return;
+    }
+
+    const dict = {};
+    words.forEach(w => dict[w] = (dict[w] || 0) + 1);
+    
+    const sorted = Object.entries(dict)
+      .sort((a,b) => b[1] - a[1])
+      .slice(0, 10); // Top 10 words
+
+    container.innerHTML = sorted.map(([word, count]) => `
+      <div class="keyword-pill">
+        ${word} <span class="badge bg-primary bg-opacity-10 text-primary ms-1">${count}</span>
+      </div>
+    `).join('');
+}
+
+function clearText() {
+    if (confirm("Are you sure you want to clear your current progress?")) {
+      document.getElementById('textInput').value = '';
+      updateMetrics();
+    }
+}
+
+function copyText() {
+    const textEl = document.getElementById('textInput');
+    if (!textEl.value) return;
+    textEl.select();
+    document.execCommand('copy');
+    const b = event.target.closest('button');
+    const oldHtml = b.innerHTML;
+    b.innerHTML = '<i class="fa-solid fa-check me-1"></i> Copied!';
+    setTimeout(() => b.innerHTML = oldHtml, 2000);
+}
+
+// Support for dragging text files
+const textarea = document.getElementById('textInput');
+textarea.addEventListener('dragover', e => { e.preventDefault(); textarea.style.borderColor = '#4f46e5'; });
+textarea.addEventListener('dragleave', e => { e.preventDefault(); textarea.style.borderColor = 'rgba(79, 70, 229, 0.1)'; });
+textarea.addEventListener('drop', e => {
+  e.preventDefault();
+  textarea.style.borderColor = 'rgba(79, 70, 229, 0.1)';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'text/plain') {
+    const reader = new FileReader();
+    reader.onload = e => { textarea.value = e.target.result; updateMetrics(); };
+    reader.readAsText(file);
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>

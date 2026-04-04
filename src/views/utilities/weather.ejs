@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-6">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 text-center">
+        
+        <h1 class="display-5 fw-bold mb-3" style="color: #0ea5e9;"><i class="fa-solid fa-cloud-sun me-2"></i> Weather App</h1>
+        <p class="text-muted mb-4">Check current weather conditions in your area so you can plan your study location effectively.</p>
+
+        <button id="locateBtn" class="btn btn-primary btn-lg rounded-pill fw-bold premium-btn-primary mb-4" onclick="getWeather()"><i class="fa-solid fa-location-crosshairs me-2"></i> Detect My Location</button>
+
+        <div id="loader" class="d-none">
+            <div class="spinner-border text-info" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-muted mt-2">Fetching meteorological data...</p>
+        </div>
+
+        <div id="weatherResult" class="bg-light p-4 rounded-4 shadow-sm border border-info border-opacity-25 d-none">
+            <h3 class="fw-bold text-dark mb-0" id="w-temp">--°C</h3>
+            <p class="text-muted text-uppercase mb-4 fw-bold" id="w-desc">Condition</p>
+            
+            <div class="row g-3 text-start">
+                <div class="col-6">
+                    <p class="mb-1 text-muted small"><i class="fa-solid fa-wind me-1"></i> Wind Speed</p>
+                    <h5 class="fw-bold" id="w-wind">-- km/h</h5>
+                </div>
+                <div class="col-6">
+                    <p class="mb-1 text-muted small"><i class="fa-solid fa-droplet me-1"></i> Precipitation</p>
+                    <h5 class="fw-bold" id="w-precip">-- mm</h5>
+                </div>
+            </div>
+        </div>
+        <p id="errorMsg" class="text-danger mt-3 d-none"></p>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function getWeather() {
+    const btn = document.getElementById('locateBtn');
+    const loader = document.getElementById('loader');
+    const result = document.getElementById('weatherResult');
+    const errorMsg = document.getElementById('errorMsg');
+    
+    btn.classList.add('d-none');
+    loader.classList.remove('d-none');
+    result.classList.add('d-none');
+    errorMsg.classList.add('d-none');
+
+    if (!navigator.geolocation) {
+        showError("Geolocation is not supported by your browser.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        
+        try {
+            // Use Open-Meteo free API (No API key required)
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+            const response = await fetch(url);
+            
+            if(!response.ok) throw new Error("Weather API Error");
+            
+            const data = await response.json();
+            
+            const cw = data.current_weather;
+            
+            document.getElementById('w-temp').textContent = cw.temperature + "°C";
+            document.getElementById('w-wind').textContent = cw.windspeed + " km/h";
+            document.getElementById('w-desc').textContent = getWeatherDescription(cw.weathercode);
+            document.getElementById('w-precip').textContent = "Auto"; // Add specific logic if needed
+            
+            loader.classList.add('d-none');
+            result.classList.remove('d-none');
+            btn.classList.remove('d-none');
+            btn.textContent = "Refresh";
+            
+        } catch (err) {
+            showError("Failed to fetch weather data: " + err.message);
+        }
+        
+    }, (error) => {
+        showError("Unable to retrieve your location: " + error.message);
+    });
+}
+
+function showError(msg) {
+    document.getElementById('loader').classList.add('d-none');
+    document.getElementById('locateBtn').classList.remove('d-none');
+    const err = document.getElementById('errorMsg');
+    err.textContent = msg;
+    err.classList.remove('d-none');
+}
+
+// WMO Weather interpretation codes
+function getWeatherDescription(code) {
+    const codes = {
+        0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+        45: 'Fog', 48: 'Depositing rime fog', 51: 'Light drizzle', 53: 'Moderate drizzle', 
+        55: 'Dense drizzle', 61: 'Slight rain', 63: 'Moderate rain', 65: 'Heavy rain',
+        71: 'Slight snow', 73: 'Moderate snow', 75: 'Heavy snow', 95: 'Thunderstorm'
+    };
+    return codes[code] || 'Unknown';
+}
+</script>
+
+<%- include('../partials/footer') %>

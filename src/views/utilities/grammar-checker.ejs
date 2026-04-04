@@ -1,0 +1,394 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-10">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 mt-5">
+        
+        <div class="text-center mb-5">
+          <h1 class="display-5 fw-bold mb-3 text-dark">
+            <i class="fa-solid fa-spell-check me-2" style="color: #10b981;"></i> Smart Grammar & Spell Checker
+          </h1>
+          <p class="text-muted fs-5">Advanced writing assistant powered by LanguageTool. Identify and fix mistakes in real-time.</p>
+        </div>
+
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label fw-bold text-muted small text-uppercase tracking-wider">Select Language</label>
+                <select id="languageSelect" class="form-select border-2 rounded-pill shadow-sm">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="en-CA">English (Canada)</option>
+                    <option value="en-AU">English (Australia)</option>
+                    <option value="hi">Hindi (Experimental)</option>
+                </select>
+            </div>
+            <div class="col-md-7 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end align-items-center">
+                <div class="form-check form-switch me-2">
+                    <input class="form-check-input" type="checkbox" id="realtimeToggle" checked>
+                    <label class="form-check-label small fw-bold text-muted" for="realtimeToggle">Real-time Check</label>
+                </div>
+                <button class="btn btn-outline-secondary rounded-pill px-3 btn-sm" onclick="clearText()"><i class="fa-solid fa-trash me-1"></i> Clear</button>
+                <button id="fixAllBtn" class="btn btn-primary rounded-pill px-3 btn-sm d-none" onclick="fixAll()"><i class="fa-solid fa-magic me-1"></i> Fix All Suggestions</button>
+            </div>
+        </div>
+
+        <!-- Input Area Wrapper for Highlights -->
+        <div id="editorWrapper" class="position-relative mb-4 shadow rounded-4 overflow-hidden border border-2 border-success border-opacity-10 bg-white" style="min-height: 400px;">
+          <!-- Highlight Layer (Behind) -->
+          <div id="highlightOverlay" class="editor-layer pe-none"></div>
+          
+          <!-- Input Layer (Front) -->
+          <textarea id="grammarInput" class="editor-layer form-control border-0 p-4 fs-5 bg-transparent" rows="10" 
+            placeholder="Type or paste your text here to check for grammar, spelling, and style errors..." 
+            style="resize: none; outline: none; box-shadow: none; overflow-y: auto;"></textarea>
+          
+          <!-- Activity Overlay -->
+          <div id="checkLoader" class="position-absolute top-50 start-50 translate-middle d-none">
+            <div class="spinner-border text-success" role="status"></div>
+          </div>
+        </div>
+
+        <button id="checkButton" class="btn btn-success btn-lg w-100 fw-bold rounded-pill shadow-sm py-3 mb-5" onclick="checkGrammar()">
+          <i class="fa-solid fa-bolt me-2"></i> Analyze My Writing
+        </button>
+
+        <!-- Results Section -->
+        <div id="resultsArea" class="d-none mt-5">
+          <div class="row g-4">
+            <div class="col-md-8">
+              <div class="bg-light p-4 rounded-4 border shadow-sm h-100">
+                <h5 class="fw-bold mb-4 d-flex justify-content-between align-items-center">
+                  <span><i class="fa-solid fa-list-ul me-2 text-success"></i> Suggestions</span>
+                  <span id="issueCount" class="badge bg-danger rounded-pill">0 Issues</span>
+                </h5>
+                <div id="suggestionList" class="d-flex flex-column gap-3">
+                  <!-- Suggestions will be injected here -->
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="bg-light p-4 rounded-4 border shadow-sm h-100 position-sticky" style="top: 20px;">
+                <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fa-solid fa-circle-info text-info me-2"></i> Quality Score</h5>
+                <div class="text-center py-4">
+                  <h1 class="display-1 fw-bold text-success mb-0" id="qualityScore">100</h1>
+                  <p class="text-muted fw-bold">Overall Writing Score</p>
+                </div>
+                <div class="small">
+                  <div class="d-flex justify-content-between mb-1"><span>Spelling</span><i id="spellingStatus" class="fa-solid fa-circle-check text-success"></i></div>
+                  <div class="d-flex justify-content-between mb-1"><span>Grammar</span><i id="grammarStatus" class="fa-solid fa-circle-check text-success"></i></div>
+                  <div class="d-flex justify-content-between"><span>Style</span><i id="styleStatus" class="fa-solid fa-circle-check text-success"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<style>
+/* Smart Grammar Checker Styles */
+#editorWrapper {
+    height: 400px;
+}
+
+.editor-layer {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 1.5rem !important; /* Matches Bootstrap p-4 */
+    font-family: inherit;
+    font-size: 1.25rem !important; /* Matches Bootstrap fs-5 */
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: none !important;
+}
+
+#highlightOverlay {
+    color: transparent;
+    z-index: 1;
+}
+
+#grammarInput {
+    z-index: 2;
+    caret-color: #333;
+    color: #333;
+}
+
+/* Scroll Syncing */
+#grammarInput {
+    scrollbar-width: thin;
+}
+
+/* Highlight Markings */
+.err-highlight {
+    border-bottom: 2px solid;
+    background-color: rgba(255, 255, 0, 0.2);
+    border-radius: 2px;
+}
+.err-spelling { border-bottom-color: #ef4444; background-color: rgba(239, 68, 68, 0.1); }
+.err-grammar { border-bottom-color: #f59e0b; background-color: rgba(245, 158, 11, 0.1); }
+.err-style { border-bottom-color: #3b82f6; background-color: rgba(59, 130, 246, 0.1); }
+
+.suggestion-card {
+  background: white;
+  border-left: 5px solid #10b981;
+  padding: 15px;
+  border-radius: 12px;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.suggestion-card:hover { transform: translateX(5px); }
+.suggestion-card.issue-spelling { border-color: #ef4444; }
+.suggestion-card.issue-grammar { border-color: #f59e0b; }
+.suggestion-card.issue-style { border-color: #3b82f6; }
+
+.replacement-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-weight: 700;
+  color: #10b981;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: 0.2s;
+}
+.replacement-btn:hover { background: #10b981; color: white; }
+</style>
+
+<script>
+let lastMatches = [];
+let debounceTimer;
+
+// Core Editor Sync
+const input = document.getElementById('grammarInput');
+const overlay = document.getElementById('highlightOverlay');
+
+input.addEventListener('input', () => {
+    // Update plain text overlay for visual placeholder
+    overlay.innerText = input.value + "\n"; // Adding newline prevents some jumpiness
+    
+    if (document.getElementById('realtimeToggle').checked) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            checkGrammar(true);
+        }, 2000); // 2 second debounce
+    }
+});
+
+// Scroll Syncing
+input.addEventListener('scroll', () => {
+    overlay.scrollTop = input.scrollTop;
+});
+
+async function checkGrammar(silent = false) {
+  const text = input.value;
+  const lang = document.getElementById('languageSelect').value;
+  const btn = document.getElementById('checkButton');
+  const loader = document.getElementById('checkLoader');
+  const resultsArea = document.getElementById('resultsArea');
+  const fixAllBtn = document.getElementById('fixAllBtn');
+
+  if (!text.trim()) return;
+  if (!silent) {
+    btn.disabled = true;
+    loader.classList.remove('d-none');
+  }
+  
+  try {
+    const response = await fetch('https://api.languagetoolplus.com/v2/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ text, language: lang })
+    });
+    
+    const data = await response.json();
+    lastMatches = data.matches || [];
+    
+    if (!silent) {
+        btn.disabled = false;
+        loader.classList.add('d-none');
+        resultsArea.classList.remove('d-none');
+    }
+
+    renderResults(lastMatches, text);
+    renderHighlights(lastMatches, text);
+    
+    // Show/Hide Fix All button
+    if (lastMatches.length > 0) fixAllBtn.classList.remove('d-none');
+    else fixAllBtn.classList.add('d-none');
+
+  } catch (err) {
+    if (!silent) {
+        btn.disabled = false;
+        loader.classList.add('d-none');
+        alert("Check failed. Ensure you have an internet connection.");
+    }
+  }
+}
+
+function renderHighlights(matches, text) {
+    if (matches.length === 0) {
+        overlay.innerText = text + "\n";
+        return;
+    }
+
+    // Sort matches from end to start to avoid shifting index issues during string manipulation (if we used string inject)
+    // Actually, for the overlay, we need to build the HTML once.
+    let html = '';
+    let lastIndex = 0;
+
+    const sortedMatches = [...matches].sort((a, b) => a.offset - b.offset);
+
+    sortedMatches.forEach(match => {
+        // Text before the match
+        html += escapeHtml(text.substring(lastIndex, match.offset));
+        
+        // The match itself
+        const type = match.rule.category.id.toLowerCase();
+        let colorClass = 'err-style';
+        if (type.includes('spelling')) colorClass = 'err-spelling';
+        else if (type.includes('grammar')) colorClass = 'err-grammar';
+
+        html += `<span class="err-highlight ${colorClass}">${escapeHtml(text.substring(match.offset, match.offset + match.length))}</span>`;
+        lastIndex = match.offset + match.length;
+    });
+
+    // Remaining text
+    html += escapeHtml(text.substring(lastIndex));
+    overlay.innerHTML = html + "\n";
+}
+
+function renderResults(matches, text) {
+  const list = document.getElementById('suggestionList');
+  const countBadge = document.getElementById('issueCount');
+  const score = document.getElementById('qualityScore');
+  
+  countBadge.textContent = matches.length + " Issues";
+  
+  const finalScore = Math.max(0, 100 - (matches.length * 5));
+  score.textContent = finalScore;
+  score.className = `display-1 fw-bold mb-0 ${finalScore > 80 ? 'text-success' : finalScore > 50 ? 'text-warning' : 'text-danger'}`;
+
+  // Update Status Icons
+  let hasSpelling = false, hasGrammar = false, hasStyle = false;
+
+  if (matches.length === 0) {
+    list.innerHTML = `
+      <div class="text-center py-5">
+        <i class="fa-solid fa-circle-check fa-4x text-success mb-3"></i>
+        <h5 class="fw-bold">No errors found!</h5>
+        <p class="text-muted">Your writing looks excellent.</p>
+      </div>
+    `;
+    resetStatuses(true);
+    return;
+  }
+
+  list.innerHTML = matches.map((match, i) => {
+    const type = match.rule.category.id.toLowerCase();
+    let typeClass = 'issue-style';
+    if (type.includes('spelling')) { typeClass = 'issue-spelling'; hasSpelling = true; }
+    else if (type.includes('grammar')) { typeClass = 'issue-grammar'; hasGrammar = true; }
+    else { hasStyle = true; }
+
+    const context = match.context.text;
+    const offset = match.context.offset;
+    const length = match.context.length;
+    const errorPart = context.substring(offset, offset + length);
+
+    const replacements = match.replacements.slice(0, 3).map(r => 
+      `<button class="replacement-btn" onclick="applyReplace(${match.offset}, ${match.length}, '${r.value.replace(/'/g, "\\'")}')">${r.value}</button>`
+    ).join('');
+
+    return `
+      <div class="suggestion-card ${typeClass}">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="badge ${typeClass.replace('issue-', 'bg-')} bg-opacity-10 ${typeClass.replace('issue-', 'text-')}">${match.rule.category.name}</span>
+          <small class="text-muted fw-bold">#${i + 1}</small>
+        </div>
+        <p class="mb-2 fw-bold text-dark">"${errorPart}" → ${match.message}</p>
+        <div class="d-flex flex-wrap gap-1 mt-3">
+          ${replacements || '<small class="text-muted italic">No automatic replacement available.</small>'}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  updateStatuses(hasSpelling, hasGrammar, hasStyle);
+}
+
+function applyReplace(offset, length, replacement) {
+  const text = input.value;
+  const newText = text.substring(0, offset) + replacement + text.substring(offset + length);
+  input.value = newText;
+  
+  // Trigger UI sync and re-check
+  overlay.innerText = input.value + "\n";
+  checkGrammar(true);
+}
+
+function fixAll() {
+    if (lastMatches.length === 0) return;
+    
+    let text = input.value;
+    // We must apply fixes from end to start to maintain offsets
+    const sorted = [...lastMatches].sort((a,b) => b.offset - a.offset);
+    
+    sorted.forEach(match => {
+        if (match.replacements && match.replacements.length > 0) {
+            const replacement = match.replacements[0].value;
+            text = text.substring(0, match.offset) + replacement + text.substring(match.offset + match.length);
+        }
+    });
+    
+    input.value = text;
+    overlay.innerText = input.value + "\n";
+    checkGrammar(true);
+}
+
+function resetStatuses(ok) {
+  const icons = ['spellingStatus', 'grammarStatus', 'styleStatus'];
+  icons.forEach(id => {
+    const el = document.getElementById(id);
+    el.className = ok ? 'fa-solid fa-circle-check text-success' : 'fa-solid fa-circle-info text-muted';
+  });
+}
+
+function updateStatuses(s, g, st) {
+  document.getElementById('spellingStatus').className = s ? 'fa-solid fa-circle-xmark text-danger' : 'fa-solid fa-circle-check text-success';
+  document.getElementById('grammarStatus').className = g ? 'fa-solid fa-circle-xmark text-danger' : 'fa-solid fa-circle-check text-success';
+  document.getElementById('styleStatus').className = st ? 'fa-solid fa-circle-info text-warning' : 'fa-solid fa-circle-check text-success';
+}
+
+function clearText() {
+  if (confirm("Clear your text?")) {
+    input.value = '';
+    overlay.innerText = '';
+    document.getElementById('resultsArea').classList.add('d-none');
+    document.getElementById('fixAllBtn').classList.add('d-none');
+    resetStatuses(false);
+  }
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+</script>
+
+<%- include('../partials/footer') %>

@@ -1062,3 +1062,39 @@ body.fullscreen-active {
         background-color: #000;
     }
 }
+
+/* ── Nested submenu (PDF Tools inside Study Tools) ── */
+.dropdown-submenu .pdf-submenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-top: -4px;
+    display: none !important;
+    z-index: 1050;
+    border-radius: 0.75rem;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Desktop: show on hover */
+@media (min-width: 992px) {
+    .dropdown-submenu:hover > .pdf-submenu {
+        display: block !important;
+    }
+}
+
+/* Mobile: submenu drops below the trigger instead of flying right */
+@media (max-width: 991.98px) {
+    .dropdown-submenu .pdf-submenu {
+        position: static;
+        left: auto;
+        top: auto;
+        box-shadow: none !important;
+        border-left: 3px solid #dc3545;
+        border-radius: 0;
+        margin-left: 1rem;
+    }
+    .dropdown-submenu .pdf-submenu.show {
+        display: block !important;
+    }
+}

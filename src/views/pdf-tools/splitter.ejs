@@ -1,0 +1,168 @@
+<%- include('../partials/header') %>
+
+<!-- pdf-lib CDN -->
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 text-center">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center mb-4">
+            <li class="breadcrumb-item"><a href="/pdf-tools">PDF Tools</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Splitter</li>
+          </ol>
+        </nav>
+
+        <div class="alert alert-warning d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-4 rounded-pill border-0 shadow-sm transition-hover" style="background: linear-gradient(145deg, #fff3e0, #ffe0b2);">
+           <span class="badge bg-warning rounded-pill px-3 py-2 border shadow-sm text-dark">1. Upload PDF</span>
+           <i class="fa-solid fa-arrow-right text-warning opacity-75 d-none d-sm-block"></i><i class="fa-solid fa-arrow-down text-warning opacity-75 d-block d-sm-none"></i>
+           <span class="badge bg-warning rounded-pill px-3 py-2 border shadow-sm text-dark">2. Select Action</span>
+           <i class="fa-solid fa-arrow-right text-warning opacity-75 d-none d-sm-block"></i><i class="fa-solid fa-arrow-down text-warning opacity-75 d-block d-sm-none"></i>
+           <span class="badge bg-warning rounded-pill px-3 py-2 border shadow-sm text-dark">3. Download</span>
+        </div>
+
+        <h1 class="display-5 fw-bold mb-3 text-warning"><i class="fa-solid fa-scissors me-2"></i> PDF Splitter</h1>
+        <p class="text-muted mb-5">Extract a specific range of pages from a PDF. Processes locally in your browser.</p>
+
+        <div class="p-4 border border-warning border-2 border-dashed rounded-4 bg-light mb-4 position-relative">
+            <i class="fa-solid fa-file-pdf fa-3x text-warning opacity-75 mb-3"></i>
+            <h5 class="fw-bold">Upload PDF File</h5>
+            <input type="file" id="splitInput" accept=".pdf" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer;" onchange="handleFile()">
+            <p id="fileNameDisplay" class="text-muted fw-bold d-none"></p>
+        </div>
+        
+        <div id="splitControls" class="d-none text-start bg-light p-4 rounded-4 mb-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-muted">Start Page (1-indexed)</label>
+                    <input type="number" id="startPage" class="form-control" min="1" value="1">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-muted">End Page (1-indexed)</label>
+                    <input type="number" id="endPage" class="form-control" min="1" value="1">
+                </div>
+                <div class="col-12 text-center mt-4">
+                    <p class="small text-muted mb-2">Total Pages in PDF: <span id="totalPages" class="fw-bold text-dark">0</span></p>
+                    <button class="btn btn-warning btn-lg w-100 fw-bold shadow-sm" onclick="splitPDF()"><i class="fa-solid fa-scissors me-2"></i> Split & Download</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loader" class="mt-4 d-none">
+            <div class="progress mb-2 rounded-pill shadow-sm" style="height: 12px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: 100%"></div>
+            </div>
+            <p class="fw-bold text-warning small mb-0">Processing your document...</p>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-5">
+            <a href="/" class="btn btn-outline-secondary rounded-pill px-4 fw-bold shadow-sm transition-hover"><i class="fa-solid fa-house me-2"></i>Back to Hub</a>
+            <button class="btn btn-outline-warning rounded-pill px-4 fw-bold shadow-sm transition-hover" onclick="shareTool()"><i class="fa-solid fa-share-nodes me-2"></i>Share Tool</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let loadedPdfFile = null;
+let totalPgCount = 0;
+
+async function handleFile() {
+    const input = document.getElementById('splitInput');
+    const nameDisplay = document.getElementById('fileNameDisplay');
+    const controls = document.getElementById('splitControls');
+    const totalPagesSpan = document.getElementById('totalPages');
+    const endPageInput = document.getElementById('endPage');
+    
+    if (input.files.length > 0) {
+        loadedPdfFile = input.files[0];
+        nameDisplay.textContent = `Selected: ${loadedPdfFile.name}`;
+        nameDisplay.classList.remove('d-none');
+        
+        // Fast read to get total pages
+        const arrayBuffer = await loadedPdfFile.arrayBuffer();
+        try {
+            const { PDFDocument } = PDFLib;
+            const pdfDoc = await PDFDocument.load(arrayBuffer);
+            totalPgCount = pdfDoc.getPageCount();
+            
+            totalPagesSpan.textContent = totalPgCount;
+            endPageInput.value = totalPgCount;
+            endPageInput.max = totalPgCount;
+            
+            controls.classList.remove('d-none');
+        } catch(e) {
+            alert("Error reading PDF. Ensure it's a valid PDF file.");
+        }
+    }
+}
+
+async function splitPDF() {
+    const startObj = document.getElementById('startPage');
+    const endObj = document.getElementById('endPage');
+    
+    let start = parseInt(startObj.value);
+    let end = parseInt(endObj.value);
+    
+    if (start < 1 || end > totalPgCount || start > end) {
+        return alert("Invalid page range.");
+    }
+    
+    document.getElementById('splitControls').classList.add('d-none');
+    document.getElementById('loader').classList.remove('d-none');
+
+    try {
+        const arrayBuffer = await loadedPdfFile.arrayBuffer();
+        const { PDFDocument } = PDFLib;
+        const originalPdf = await PDFDocument.load(arrayBuffer);
+        const newPdf = await PDFDocument.create();
+        
+        // Convert to 0-indexed and generate an array of indices
+        const indices = [];
+        for(let i = start - 1; i <= end - 1; i++) {
+            indices.push(i);
+        }
+        
+        const copiedPages = await newPdf.copyPages(originalPdf, indices);
+        copiedPages.forEach((page) => newPdf.addPage(page));
+        
+        const newPdfBytes = await newPdf.save();
+        download(newPdfBytes, `Split_${loadedPdfFile.name}`, "application/pdf");
+        
+    } catch (error) {
+        alert("Failed to split PDF.");
+        console.error(error);
+    } finally {
+        document.getElementById('loader').classList.add('d-none');
+        document.getElementById('splitControls').classList.remove('d-none');
+    }
+}
+
+function download(data, filename, type) {
+    const blob = new Blob([data], { type: type });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    setTimeout(() => window.URL.revokeObjectURL(link.href), 100);
+}
+
+function shareTool() {
+    if (navigator.share) {
+        navigator.share({ title: document.title, text: 'Check out this awesome free PDF tool on 2AM Study!', url: window.location.href }).catch(console.error);
+    } else {
+        const tempInput = document.createElement("input");
+        tempInput.value = window.location.href;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Link copied to clipboard!");
+    }
+}
+</script>
+
+<%- include('../partials/footer') %>

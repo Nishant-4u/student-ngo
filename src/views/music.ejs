@@ -1,37 +1,323 @@
 <%- include('partials/header') %>
-<section class="container-fluid py-5 bg-light">
-  <div class="container">
-    <div class="bg-white shadow-lg rounded p-4">
-      <h1>Focus Music</h1>
-      <p class="mb-4">Choose the right soundtrack for your mood. Explore focus, motivation, romance, or sad songs while you study.</p>
-      <div class="tool-panel p-4">
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label for="music-category" class="form-label">Choose mood</label>
-            <select id="music-category" class="form-select">
-              <option value="focus">Focus</option>
-              <option value="motivational">Motivational</option>
-              <option value="romantic">Romantic</option>
-              <option value="sad">Sad</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="music-select" class="form-label">Select track</label>
-            <select id="music-select" class="form-select"></select>
-          </div>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-10">
+      <div class="bg-white p-3 p-md-5 rounded-4 shadow-lg border-0">
+
+        <div class="text-center mb-5">
+          <h1 class="display-5 fw-bold mb-3 text-dark">
+            <i class="fa-solid fa-music me-2" style="color:#8b5cf6;"></i>Focus Music Studio
+          </h1>
+          <p class="text-muted">Search Hindi songs or pick a curated ambient track to boost your study focus.</p>
         </div>
-        <div class="mb-3 text-muted" id="music-category-description">Pick a mood and play a track to match your study focus.</div>
-        <audio controls id="focus-music-player" class="w-100 mb-3">
-          <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-          Your browser does not support the audio element.
-        </audio>
-        <div class="ratio ratio-16x9 mb-3">
-          <iframe id="music-iframe" src="https://www.youtube.com/embed/5qap5aO4i9A" title="Focus music" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+        <!-- Missing API Key Alert -->
+        <% if (!youtubeApiKey || youtubeApiKey === 'YOUR_API_KEY_HERE') { %>
+        <div class="alert alert-info border-0 rounded-4 shadow-sm p-4 mb-5" role="alert">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-key fa-2x text-primary me-3"></i>
+            <h5 class="alert-heading fw-bold mb-0">YouTube API Key Needed</h5>
+          </div>
+          <p class="mb-3 small">To use the search feature, you need to add a YouTube Data API v3 key to your <code>.env</code> file. Don't worry, it's free and takes only a few minutes!</p>
+          <ol class="small mb-0">
+            <li>Visit the <a href="https://console.cloud.google.com/" target="_blank" class="fw-bold">Google Cloud Console</a>.</li>
+            <li>Create a project and enable the <strong>YouTube Data API v3</strong>.</li>
+            <li>Go to <strong>APIs & Services > Credentials</strong> to generate an API key.</li>
+            <li>Add it to your <code>.env</code> file as <code>YOUTUBE_API_KEY=YOUR_KEY_HERE</code>.</li>
+          </ol>
         </div>
-        <p class="tool-note">Use the category selector to switch between focus songs, motivation tracks, romantic tunes, and mellow sad melodies.</p>
+        <% } %>
+
+        <!-- Tabs -->
+        <ul class="nav nav-pills nav-justified mb-4 fw-bold custom-tabs" id="musicTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill px-4 me-2" id="yt-tab"
+              data-bs-toggle="tab" data-bs-target="#yt-panel" type="button" role="tab">
+              <i class="fa-brands fa-youtube me-2 text-danger"></i>YouTube Search Player
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill px-4 ms-2" id="focus-tab"
+              data-bs-toggle="tab" data-bs-target="#focus-panel" type="button" role="tab">
+              <i class="fa-solid fa-headphones me-2" style="color:#10b981;"></i>Ambient Focus Music
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="musicTabContent">
+
+          <!-- YouTube Search Tab -->
+          <div class="tab-pane fade show active p-3 p-md-4 bg-light rounded-4 border" id="yt-panel" role="tabpanel">
+            <h4 class="fw-bold mb-1">Search & Play Hindi Songs</h4>
+            <p class="text-muted small mb-4">Search results are filtered for embeddable videos. Click a card to play it instantly.</p>
+
+            <!-- Search Box -->
+            <div class="input-group mb-3 shadow-sm rounded-pill overflow-hidden">
+              <input type="text" id="ytSearchInput" class="form-control form-control-lg border-0 ps-4"
+                placeholder="Search Arijit Singh, Hindi Lofi, etc..." value="Hindi lofi study mix">
+              <button class="btn btn-danger px-4 fw-bold" onclick="searchYoutube()">
+                <i class="fa-solid fa-search me-1"></i>Search
+              </button>
+            </div>
+
+            <!-- Quick Tags -->
+            <div class="d-flex flex-wrap gap-1 gap-md-2 mb-4">
+              <button class="btn btn-xs btn-outline-danger rounded-pill px-3" onclick="quickSearch('Hindi lofi study mix')">Hindi Lofi</button>
+              <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="quickSearch('Arijit Singh hits')">Arijit Singh</button>
+              <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="quickSearch('Bollywood instrumental study')">Instrumental</button>
+              <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="quickSearch('Hindi motivational songs 2024')">Motivation</button>
+            </div>
+
+            <!-- Loader -->
+            <div id="ytLoader" class="text-center py-4 d-none">
+              <div class="spinner-border text-danger" role="status"></div>
+              <p class="text-muted mt-2 small">Finding best results...</p>
+            </div>
+
+            <!-- Error -->
+            <div id="ytError" class="alert alert-warning d-none rounded-3 border-0 py-2 small" role="alert">
+              <i class="fa-solid fa-circle-exclamation me-2"></i>
+              <span id="ytErrorText">Could not load results. Try another search.</span>
+            </div>
+
+            <!-- Results Grid -->
+            <div id="ytResults" class="row g-2 g-md-3 mb-4"></div>
+
+            <!-- Player -->
+            <div id="ytPlayerWrap" class="d-none mt-4 p-3 bg-dark rounded-4 shadow">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold mb-0 text-white text-truncate" id="ytNowPlaying">Now Playing...</h6>
+                <button class="btn btn-sm btn-outline-light rounded-pill px-3 py-1" onclick="closePlayer()">Close</button>
+              </div>
+              <div class="ratio ratio-16x9 rounded overflow-hidden shadow">
+                <div id="player"></div> <!-- YouTube IFrame API Target -->
+              </div>
+              <p class="text-center small text-secondary mt-2 mb-0">Playing only embeddable videos for free users.</p>
+            </div>
+          </div>
+
+          <!-- Ambient Focus Tab -->
+          <div class="tab-pane fade p-3 p-md-4 bg-light rounded-4 border" id="focus-panel" role="tabpanel">
+            <h4 class="fw-bold mb-3">Built-in Focus Tracks</h4>
+            <p class="text-muted small mb-4">Ambient sounds designed to block distraction.</p>
+
+            <div class="row g-2 g-md-3 mb-4">
+              <div class="col-6 col-md-4">
+                <div class="card border-0 shadow-sm text-center c-pointer h-100 hover-lift rounded-4"
+                  onclick="playAudio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3','Study Lofi Chill')">
+                  <div class="card-body py-4">
+                    <i class="fa-solid fa-mug-hot fa-2x text-success mb-2"></i>
+                    <h6 class="fw-bold mb-0 small text-uppercase">Lofi</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="card border-0 shadow-sm text-center c-pointer h-100 hover-lift rounded-4"
+                  onclick="playAudio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_c6ccf3232f.mp3','Heavy Rain sounds')">
+                  <div class="card-body py-4">
+                    <i class="fa-solid fa-cloud-rain fa-2x text-info mb-2"></i>
+                    <h6 class="fw-bold mb-0 small text-uppercase">Rain</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-md-4 mx-auto">
+                <div class="card border-0 shadow-sm text-center c-pointer h-100 hover-lift rounded-4"
+                  onclick="playAudio('https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3','Piano Instrumental')">
+                  <div class="card-body py-4">
+                    <i class="fa-solid fa-guitar fa-2x text-warning mb-2"></i>
+                    <h6 class="fw-bold mb-0 small text-uppercase">Piano</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-3 p-md-4 rounded-4 shadow-sm border text-center">
+              <h5 class="fw-bold text-dark mb-4" id="audioTitle">Select a track above</h5>
+              <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-volume-high text-muted"></i>
+                <audio id="nativeAudio" class="w-100" controls loop>
+                  <source src="" type="audio/mpeg">
+                </audio>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <a href="/" class="btn btn-link mt-4">← Back to Home</a>
     </div>
   </div>
-</section>
+</main>
+
+<style>
+.custom-tabs .nav-link { font-size: 0.9rem; padding: 0.75rem; color: #495057; border: 1px solid #dee2e6; }
+.custom-tabs .nav-link.active { background-color: #6366f1; color: white; border-color: #6366f1; }
+.yt-card { cursor: pointer; transition: 0.2s; border-radius: 1rem !important; overflow: hidden; }
+.yt-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+.yt-card img { width: 100%; height: 100px; object-fit: cover; }
+.yt-card .card-body { padding: 0.5rem; }
+.yt-card .card-title { font-size: 0.75rem; font-weight: 700; line-height: 1.2; height: 30px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+@media (max-width: 768px) {
+  .display-5 { font-size: 2rem; }
+  .custom-tabs .nav-link { font-size: 0.8rem; padding: 0.5rem; }
+  .yt-card img { height: 80px; }
+}
+</style>
+
+<script>
+const API_KEY = '<%= youtubeApiKey %>';
+let player;
+let currentVideoId = '';
+let searchResults = [];
+
+// Load IFrame API
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    height: '360',
+    width: '640',
+    videoId: '',
+    playerVars: { 'autoplay': 0, 'rel': 0, 'playsinline': 1 },
+    events: {
+      'onReady': onPlayerReady,
+      'onError': onPlayerError
+    }
+  });
+}
+
+function onPlayerReady(event) {}
+
+function onPlayerError(event) {
+  const code = event.data;
+  console.log('Player Error:', code);
+  let errorMsg = 'Video not available.';
+  
+  if (code === 101 || code === 150) {
+    errorMsg = 'This video is not embeddable. Automatically trying the next result...';
+  } else if (code === 100) {
+    errorMsg = 'Video removed or private. Trying next result...';
+  } else {
+    errorMsg = 'Something went wrong. Let\'s try the next song.';
+  }
+
+  showError(errorMsg);
+  
+  // Auto-play the next video in the search results
+  const nextIdx = searchResults.findIndex(v => v.id.videoId === currentVideoId) + 1;
+  if (nextIdx < searchResults.length) {
+    setTimeout(() => {
+      const v = searchResults[nextIdx];
+      playVideo(v.id.videoId, v.snippet.title);
+    }, 2000);
+  }
+}
+
+async function searchYoutube() {
+  const term = document.getElementById('ytSearchInput').value.trim();
+  if (!term) return;
+  if (!API_KEY || API_KEY === 'YOUR_API_KEY_HERE' || API_KEY === '') {
+    showError('Missing API Key. Please add it to .env');
+    return;
+  }
+
+  const loader  = document.getElementById('ytLoader');
+  const errorBox = document.getElementById('ytError');
+  const results = document.getElementById('ytResults');
+
+  loader.classList.remove('d-none');
+  errorBox.classList.add('d-none');
+  results.innerHTML = '';
+
+  try {
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&q=${encodeURIComponent(term)}&type=video&videoEmbeddable=true&key=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    loader.classList.add('d-none');
+    
+    if (data.error) {
+      showError(data.error.message || 'API Error.');
+      return;
+    }
+
+    searchResults = data.items || [];
+    if (searchResults.length === 0) {
+      showError('No playable results found.');
+      return;
+    }
+
+    results.innerHTML = searchResults.map(v => `
+      <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm yt-card h-100" onclick="playVideo('${v.id.videoId}', '${v.snippet.title.replace(/'/g, "\\'")}')">
+          <img src="${v.snippet.thumbnails.medium.url}" alt="${v.snippet.title}" loading="lazy">
+          <div class="card-body">
+            <p class="card-title text-dark">${v.snippet.title}</p>
+            <small class="text-muted d-block text-truncate">${v.snippet.channelTitle}</small>
+          </div>
+        </div>
+      </div>`).join('');
+
+  } catch (err) {
+    loader.classList.add('d-none');
+    showError('Search failed. Check your network or API key.');
+  }
+}
+
+function quickSearch(term) {
+  document.getElementById('ytSearchInput').value = term;
+  searchYoutube();
+}
+
+function playVideo(videoId, title) {
+  currentVideoId = videoId;
+  const wrap  = document.getElementById('ytPlayerWrap');
+  const label  = document.getElementById('ytNowPlaying');
+
+  if (player && player.loadVideoById) {
+    player.loadVideoById(videoId);
+    label.innerHTML = `<i class="fa-solid fa-play-circle text-danger me-1"></i> ${title}`;
+    wrap.classList.remove('d-none');
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    hideError();
+  }
+}
+
+function closePlayer() {
+  if (player && player.stopVideo) player.stopVideo();
+  document.getElementById('ytPlayerWrap').classList.add('d-none');
+}
+
+function showError(msg) {
+  const box = document.getElementById('ytError');
+  const txt = document.getElementById('ytErrorText');
+  if (txt) txt.textContent = msg;
+  box.classList.remove('d-none');
+}
+
+function hideError() {
+  const box = document.getElementById('ytError');
+  if (box) box.classList.add('d-none');
+}
+
+document.getElementById('ytSearchInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') searchYoutube();
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (API_KEY && API_KEY !== 'YOUR_API_KEY_HERE' && API_KEY !== '') searchYoutube();
+});
+
+// Ambient logic
+function playAudio(url, title) {
+  const audio = document.getElementById('nativeAudio');
+  document.getElementById('audioTitle').textContent = `Playing: ${title}`;
+  audio.src = url;
+  audio.play();
+}
+</script>
+
 <%- include('partials/footer') %>

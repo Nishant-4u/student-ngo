@@ -1,20 +1,474 @@
 <%- include('partials/header') %>
-<section class="container-fluid py-5 bg-light">
-  <div class="container">
-    <div class="bg-white shadow-lg rounded p-4">
-      <h1>Flashcards</h1>
-      <p class="mb-4">Create, flip, and remove flashcards while storing them locally for review later.</p>
-      <div class="tool-panel p-4">
-        <div class="row g-2 mb-3">
-          <div class="col-sm-6"><input id="flashcard-front" class="form-control" type="text" placeholder="Question / front"></div>
-          <div class="col-sm-6"><input id="flashcard-back" class="form-control" type="text" placeholder="Answer / back"></div>
+
+<!-- Advanced PDF & OCR Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<main class="container py-5 my-0" style="padding-top: 100px !important;">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-12">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 min-vh-75">
+        
+        <div class="text-center mb-5">
+          <h1 class="display-5 fw-bold mb-3 text-dark">
+            <i class="fa-solid fa-brain me-2 text-primary"></i> Advanced PDF-to-Flashcards Maker
+          </h1>
+          <p class="text-muted fs-5">Study smarter by transforming your lecture notes and PDFs into interactive study decks instantly with AI extraction.</p>
         </div>
-        <button id="flashcard-add" class="btn btn-outline-primary btn-sm mb-3">Add Card</button>
-        <div id="flashcards-container" class="flashcards-list"></div>
-        <p class="tool-note">Add custom study cards, flip to reveal answers, and delete cards when you’re done.</p>
+
+        <!-- Multi-Step Wizard Progress -->
+        <div class="row mb-5 justify-content-center">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between position-relative">
+                    <div class="wizard-step active" id="step-link-1">1<span>Upload</span></div>
+                    <div class="wizard-step" id="step-link-2">2<span>Extract</span></div>
+                    <div class="wizard-step" id="step-link-3">3<span>Review</span></div>
+                    <div class="wizard-step" id="step-link-4">4<span>Study</span></div>
+                    <div class="step-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Resource Upload -->
+        <div id="step-1" class="wizard-content">
+            <div id="dropzone" class="dropzone-area border-2 border-dashed border-primary bg-light rounded-4 p-5 text-center cursor-pointer transition-hover">
+                <input type="file" id="pdfInput" accept="application/pdf" class="d-none">
+                <i class="fa-solid fa-file-pdf fa-4x text-primary opacity-50 mb-3"></i>
+                <h4 class="fw-bold">Drag & Drop Lecture PDF</h4>
+                <p class="text-muted">Or click to browse your files</p>
+                <div id="file-info" class="mt-3 fw-bold text-success d-none"></div>
+            </div>
+            
+            <div class="mt-5 text-center">
+                <button class="btn btn-primary btn-lg rounded-pill px-5 fw-bold d-none shadow" id="btn-goto-2" onclick="processPDF()">Continue to Extraction <i class="fa-solid fa-arrow-right ms-2"></i></button>
+            </div>
+        </div>
+
+        <!-- Step 2: Extraction & Editing -->
+        <div id="step-2" class="wizard-content d-none">
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-file-lines me-2"></i> Extracted Text Review</h5>
+                    <div class="position-relative">
+                        <textarea id="extractedText" class="form-control bg-light rounded-4 p-4 border-0 shadow-sm" rows="12" placeholder="Text will appear here... Edit if needed before generating cards."></textarea>
+                        <div id="ocrLoader" class="position-absolute top-50 start-50 translate-middle text-center d-none">
+                            <div class="spinner-border text-primary mb-3" role="status"></div>
+                            <p id="ocrStatus" class="fw-bold text-primary">Reading OCR...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="bg-primary bg-opacity-10 p-4 rounded-4 border border-primary border-opacity-10">
+                        <h6 class="fw-bold text-primary mb-3">Extraction Settings</h6>
+                        <div class="mb-3">
+                            <label class="form-check-label small fw-bold">Manual Page Selection</label>
+                            <input type="number" id="pdfPageLimit" class="form-control form-control-sm" value="5" min="1">
+                            <small class="text-muted">Max pages for optimal performance.</small>
+                        </div>
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" id="ocrToggle">
+                            <label class="form-check-label small fw-bold" for="ocrToggle">Enable OCR (For scanned images)</label>
+                        </div>
+                        <p class="small text-muted"><i class="fa-solid fa-circle-info me-1"></i> Rule-based generation looks for patterns like <b>terminologies, colons (:)</b> and <b>questions (?)</b> to create your smart cards.</p>
+                        <button class="btn btn-primary w-100 rounded-pill fw-bold py-3 mt-3 shadow-sm" onclick="generateCards()">Generate Flashcards <i class="fa-solid fa-wand-magic-sparkles ms-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Card Review & Edit -->
+        <div id="step-3" class="wizard-content d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">Review & Polish Your Cards</h5>
+                <span id="cardCountBadge" class="badge bg-primary rounded-pill">0 Cards</span>
+            </div>
+            
+            <div id="cardReviewList" class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+                <!-- Editable card items will be injected here -->
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-outline-secondary rounded-pill px-4 me-2" onclick="gotoStep(2)">Back</button>
+                <button class="btn btn-success btn-lg rounded-pill px-5 fw-bold shadow" onclick="saveDeck()">Save Deck & Start Study <i class="fa-solid fa-check ms-2"></i></button>
+            </div>
+        </div>
+
+        <!-- Step 4: Study Mode -->
+        <div id="step-4" class="wizard-content d-none">
+            <div class="row justify-content-center">
+                <div class="col-md-7 col-lg-5">
+                    <div class="flip-card-container mb-5">
+                      <div id="active-flashcard" class="flip-card" onclick="flipActiveCard()">
+                        <!-- Card Content via JS -->
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <button class="btn btn-light rounded-circle shadow-sm p-3" onclick="prevCard()"><i class="fa-solid fa-chevron-left"></i></button>
+                        <div class="text-center">
+                            <div id="progressText" class="fw-bold mb-1">Card 1 of 5</div>
+                            <div class="progress" style="height: 6px; width: 100px;">
+                                <div id="progressBar" class="progress-bar bg-success" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-light rounded-circle shadow-sm p-3" onclick="nextCard()"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <button class="btn btn-outline-danger btn-sm rounded-pill px-4" onclick="location.reload()"><i class="fa-solid fa-rotate me-2"></i> New Deck</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="empty-decks-state" class="mt-5 pt-5 text-center d-none">
+            <i class="fa-solid fa-box-open fa-3x opacity-25 mb-3"></i>
+            <h5 class="text-muted">No saved decks yet.</h5>
+        </div>
+
       </div>
-      <a href="/" class="btn btn-link mt-4">← Back to Home</a>
     </div>
   </div>
-</section>
+</main>
+
+<style>
+/* Wizard Stages */
+.wizard-step {
+    width: 50px;
+    height: 50px;
+    background: #f1f5f9;
+    color: #94a3b8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    position: relative;
+    z-index: 5;
+    transition: all 0.3s ease;
+}
+.wizard-step span {
+    position: absolute;
+    top: 55px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0.6;
+}
+.wizard-step.active {
+    background: #6366f1;
+    color: white;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+}
+.wizard-step.active span { opacity: 1; color: #6366f1; font-weight: bold; }
+.step-line {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #e2e8f0;
+    z-index: 1;
+}
+
+/* Dropzone */
+.dropzone-area {
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.dropzone-area:hover {
+    background: white !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.05);
+}
+
+/* Study Card 3D Flip */
+.flip-card-container {
+  perspective: 1000px;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+}
+.flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.flip-card.is-flipped {
+  transform: rotateY(180deg);
+}
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+  font-size: 1.5rem;
+  font-weight: 500;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.flip-card-front {
+  background-color: #fff;
+  color: #1e293b;
+}
+.flip-card-back {
+  background-color: #6366f1;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+/* Editor Input Sync */
+.card-edit-preview {
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    border-radius: 12px;
+    background: #fff;
+}
+.x-small { font-size: 0.75rem; }
+.transition-hover:hover { transform: scale(1.02); }
+</style>
+
+<script>
+/**
+ * Professional Advanced PDF-to-Flashcards System
+ * Powered by pdf.js and Tesseract.js (Experimental OCR)
+ */
+
+let extractedTextBuffer = "";
+let currentDeck = [];
+let currentCardIndex = 0;
+let pdfDoc = null;
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('dropzone');
+    const input = document.getElementById('pdfInput');
+
+    dropzone.onclick = () => input.click();
+    input.onchange = (e) => loadFileInfo(e.target.files[0]);
+    
+    dropzone.ondragover = (e) => { e.preventDefault(); dropzone.classList.add('bg-white'); };
+    dropzone.ondragleave = () => dropzone.classList.remove('bg-white');
+    dropzone.ondrop = (e) => {
+        e.preventDefault();
+        loadFileInfo(e.dataTransfer.files[0]);
+    };
+});
+
+function loadFileInfo(file) {
+    if (!file || file.type !== 'application/pdf') return alert("Please select a valid PDF file.");
+    
+    window.selectedFile = file;
+    const fileInfo = document.getElementById('file-info');
+    fileInfo.innerHTML = `<i class="fa-solid fa-check-circle me-1"></i> Ready: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+    fileInfo.classList.remove('d-none');
+    document.getElementById('btn-goto-2').classList.remove('d-none');
+}
+
+function gotoStep(step) {
+    document.querySelectorAll('.wizard-content').forEach(c => c.classList.add('d-none'));
+    document.querySelectorAll('.wizard-step').forEach((s, idx) => {
+        if (idx + 1 <= step) s.classList.add('active');
+        else s.classList.remove('active');
+    });
+    document.getElementById(`step-${step}`).classList.remove('d-none');
+    window.scrollTo(0, 0);
+}
+
+async function processPDF() {
+    const file = window.selectedFile;
+    gotoStep(2);
+    
+    const textarea = document.getElementById('extractedText');
+    const ocrToggle = document.getElementById('ocrToggle').checked;
+    const pageLimit = parseInt(document.getElementById('pdfPageLimit').value) || 5;
+
+    textarea.value = "Reading document core... Please wait.";
+
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const totalPages = Math.min(pdfDoc.numPages, pageLimit);
+        
+        let fullText = "";
+
+        for (let i = 1; i <= totalPages; i++) {
+            const page = await pdfDoc.getPage(i);
+            const content = await page.getTextContent();
+            const pageText = content.items.map(item => item.str).join(' ');
+            
+            // If text is minimal and OCR is on, we try OCR
+            if (pageText.trim().length < 50 && ocrToggle) {
+                fullText += await runOCR(page);
+            } else {
+                fullText += pageText + "\n\n";
+            }
+            
+            textarea.value = `Processing Page ${i} of ${totalPages}...`;
+        }
+
+        extractedTextBuffer = fullText;
+        textarea.value = fullText;
+
+    } catch (e) {
+        textarea.value = "Error reading PDF. This file might be password protected or corrupted.";
+        console.error(e);
+    }
+}
+
+async function runOCR(page) {
+    const ocrLoader = document.getElementById('ocrLoader');
+    ocrLoader.classList.remove('d-none');
+    
+    try {
+        const viewport = page.getViewport({ scale: 2 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        await page.render({ canvasContext: context, viewport }).promise;
+        const result = await Tesseract.recognize(canvas.toDataURL(), 'eng');
+        
+        ocrLoader.classList.add('d-none');
+        return result.data.text + "\n\n";
+    } catch (e) {
+        ocrLoader.classList.add('d-none');
+        return "";
+    }
+}
+
+function generateCards() {
+    const text = document.getElementById('extractedText').value;
+    if (text.length < 20) return alert("Please provide more text for card generation.");
+
+    // Smart Rule-based Splitter
+    // 1. Split by newlines or sentences ending in ? or :
+    const rawPairs = text.split(/[\n\.]+/);
+    const deck = [];
+
+    rawPairs.forEach(p => {
+        let front, back;
+        
+        // Pattern 1: Definitions (Term: Definition)
+        if (p.includes(':')) {
+            const split = p.split(':');
+            front = split[0].trim();
+            back = split.slice(1).join(':').trim();
+        } 
+        // Pattern 2: Questions (Question? Answer)
+        else if (p.includes('?')) {
+            const split = p.split('?');
+            front = split[0].trim() + '?';
+            back = split.slice(1).join('?').trim();
+        }
+        // Pattern 3: Bullet points or split chunks (Lengthy fallback)
+        else if (p.trim().length > 30) {
+            const words = p.trim().split(' ');
+            front = words.slice(0, 5).join(' ') + '...';
+            back = words.slice(5).join(' ');
+        }
+
+        if (front && back && front.length > 3 && back.length > 5) {
+            deck.push({ front, back });
+        }
+    });
+
+    currentDeck = deck.slice(0, 30); // Max 30 cards per auto-generate
+    renderCardReview();
+    gotoStep(3);
+}
+
+function renderCardReview() {
+    const container = document.getElementById('cardReviewList');
+    const badge = document.getElementById('cardCountBadge');
+    
+    badge.innerText = `${currentDeck.length} Cards`;
+    container.innerHTML = "";
+
+    currentDeck.forEach((card, idx) => {
+        const div = document.createElement('div');
+        div.className = 'col';
+        div.innerHTML = `
+            <div class="card-edit-preview h-100 shadow-sm border-0">
+                <div class="mb-3">
+                    <label class="x-small fw-bold text-muted text-uppercase mb-1">Front (Question)</label>
+                    <input type="text" class="form-control form-control-sm card-front-input" value="${card.front}" oninput="updateBuffer(${idx}, 'front', this.value)">
+                </div>
+                <div>
+                    <label class="x-small fw-bold text-muted text-uppercase mb-1">Back (Answer)</label>
+                    <textarea class="form-control form-control-sm card-back-input" rows="3" oninput="updateBuffer(${idx}, 'back', this.value)">${card.back}</textarea>
+                </div>
+                <div class="text-end mt-2">
+                    <button class="btn btn-link text-danger btn-sm p-0" onclick="removeCard(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function updateBuffer(idx, field, value) {
+    currentDeck[idx][field] = value;
+}
+
+function removeCard(idx) {
+    currentDeck.splice(idx, 1);
+    renderCardReview();
+}
+
+function saveDeck() {
+    if (currentDeck.length === 0) return alert("Deck is empty!");
+    
+    // Logic for Study Mode
+    currentCardIndex = 0;
+    updateActiveFlashcard();
+    gotoStep(4);
+}
+
+function updateActiveFlashcard() {
+    const card = currentDeck[currentCardIndex];
+    const container = document.getElementById('active-flashcard');
+    
+    container.innerHTML = `
+        <div class="flip-card-front">${card.front}</div>
+        <div class="flip-card-back">${card.back}</div>
+    `;
+    container.classList.remove('is-flipped');
+
+    // Progress
+    document.getElementById('progressText').innerText = `Card ${currentCardIndex + 1} of ${currentDeck.length}`;
+    document.getElementById('progressBar').style.width = `${((currentCardIndex + 1) / currentDeck.length) * 100}%`;
+}
+
+function flipActiveCard() {
+    document.getElementById('active-flashcard').classList.toggle('is-flipped');
+}
+
+function nextCard() {
+    if (currentCardIndex < currentDeck.length - 1) {
+        currentCardIndex++;
+        updateActiveFlashcard();
+    }
+}
+function prevCard() {
+    if (currentCardIndex > 0) {
+        currentCardIndex--;
+        updateActiveFlashcard();
+    }
+}
+</script>
+
 <%- include('partials/footer') %>

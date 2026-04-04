@@ -1,19 +1,80 @@
 <%- include('partials/header') %>
-<section class="container-fluid py-5 bg-light">
-  <div class="container">
-    <div class="bg-white shadow-lg rounded p-4">
-      <h1>Planner & Tasks</h1>
-      <p class="mb-4">Build a simple to-do list, mark tasks complete, and save your progress in localStorage.</p>
-      <div class="tool-panel p-4">
-        <div class="input-group mb-3">
-          <input id="task-title" class="form-control" type="text" placeholder="Add a new task">
-          <button id="task-add" class="btn btn-primary">Add</button>
-        </div>
-        <ul id="task-list" class="task-list"></ul>
-        <p class="tool-note">Tasks are saved automatically in your browser so your list stays between visits.</p>
+
+<section class="container-fluid py-5 bg-light min-vh-100">
+  <div class="container mt-5">
+    
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bold mb-3 text-dark"><i class="fa-solid fa-list-check me-2" style="color: #10b981;"></i> Daily Goal Manager</h1>
+      <p class="text-muted fs-5 text-center px-md-5 mx-md-5">Stay consistent and track your daily wins. Your tasks are saved automatically to your local browser.</p>
+      <div class="mt-4">
+          <a href="/study-tools" class="btn btn-sm btn-outline-primary rounded-pill px-4 fw-bold">
+            <i class="fa-solid fa-graduation-cap me-1"></i> Explore All Planning Tools
+          </a>
       </div>
-      <a href="/" class="btn btn-link mt-4">← Back to Home</a>
     </div>
+
+    <!-- Main Task Planner -->
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="bg-white shadow-lg rounded-4 p-4 p-md-5 border-0 position-relative overflow-hidden">
+          
+          <!-- Decorative Background Element -->
+          <div class="position-absolute top-0 end-0 p-5 opacity-10 d-none d-lg-block" style="transform: translate(20%, -20%);">
+              <i class="fa-solid fa-check-double display-1 text-primary" style="font-size: 15rem;"></i>
+          </div>
+
+          <div class="position-relative">
+              <div class="tool-panel">
+                <div class="input-group input-group-lg mb-4 shadow-sm rounded-pill overflow-hidden border border-2 border-primary border-opacity-10">
+                  <input id="task-title" class="form-control border-0 ps-4" type="text" placeholder="What is your main goal for today?">
+                  <button id="task-add" class="btn btn-primary px-4 px-md-5 fw-bold">Add Task</button>
+                </div>
+                
+                <div class="bg-light p-3 p-md-4 rounded-4 shadow-sm border mb-4">
+                  <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+                    <h5 class="fw-bold mb-0 text-dark">Your Daily Checklist</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small fw-bold">Active:</span>
+                        <span id="task-count" class="badge bg-primary rounded-pill px-3 py-2">0</span>
+                    </div>
+                  </div>
+                  <ul id="task-list" class="list-group list-group-flush fs-5">
+                      <!-- Tasks injected via footer script -->
+                  </ul>
+                </div>
+
+                <div class="text-center mt-5">
+                   <p class="text-muted small mb-0"><i class="fa-solid fa-shield-halved me-1"></i> Private & Local: Your data never leaves this device.</p>
+                </div>
+              </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
+
+<style>
+/* Focused Task Manager Styles */
+.task-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px !important;
+  margin-bottom: 8px;
+}
+.task-item:hover {
+  background-color: #fff !important;
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+.task-item.completed {
+    background-color: #f8fafc !important;
+}
+.task-item.completed .task-text {
+  text-decoration: line-through;
+  color: #94a3b8 !important;
+}
+</style>
+
 <%- include('partials/footer') %>

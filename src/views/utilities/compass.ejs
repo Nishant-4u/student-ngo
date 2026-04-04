@@ -1,0 +1,145 @@
+<%- include('../partials/header') %>
+
+<style>
+.compass-ring {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    border: 8px solid #333;
+    position: relative;
+    margin: 0 auto;
+    transition: transform 0.1s ease-out;
+    background: radial-gradient(circle, #f8f9fa 0%, #e9ecef 100%);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.1);
+}
+.compass-n { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: red; font-weight: bold; font-size: 1.5rem; }
+.compass-s { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 1.2rem; }
+.compass-e { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); font-weight: bold; font-size: 1.2rem; }
+.compass-w { position: absolute; top: 50%; left: 10px; transform: translateY(-50%); font-weight: bold; font-size: 1.2rem; }
+.compass-needle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 140px;
+    background: linear-gradient(to bottom, red 50%, #333 50%);
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    z-index: 10;
+}
+.compass-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border: 4px solid #333;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+}
+</style>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-6">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 text-center">
+        
+        <h1 class="display-5 fw-bold mb-3 text-dark"><i class="fa-regular fa-compass me-2"></i> Digital Compass</h1>
+        <p class="text-muted mb-5">Ensure you are sitting correctly according to Vastu or just find your bearings.</p>
+
+        <div id="permissionBtn" class="mb-4 d-none">
+            <button class="btn btn-warning rounded-pill mt-3" onclick="requestPermission()">Enable Compass Sensor</button>
+            <p class="text-muted small mt-2">iOS Devices require manual permission to access orientation.</p>
+        </div>
+
+        <div class="compass-wrapper my-5 position-relative">
+            <!-- Triangle indicator for fixed top -->
+            <div style="width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid red; margin: 0 auto 10px auto;"></div>
+            
+            <div class="compass-ring" id="compassRing">
+                <div class="compass-n">N</div>
+                <div class="compass-e">E</div>
+                <div class="compass-s">S</div>
+                <div class="compass-w">W</div>
+                <div class="compass-needle"></div>
+                <div class="compass-center"></div>
+            </div>
+        </div>
+
+        <h2 class="fw-bold mt-4" id="headingText">0°</h2>
+        <p class="text-muted fw-bold" id="cardinalText">NORTH</p>
+        
+        <p class="text-danger small mt-4 d-none" id="errorOrientation">Device orientation is not supported on your browser/device.</p>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const ring = document.getElementById('compassRing');
+const headingText = document.getElementById('headingText');
+const cardinalText = document.getElementById('cardinalText');
+const errorOrientation = document.getElementById('errorOrientation');
+const permissionBtn = document.getElementById('permissionBtn');
+
+// Detect if iOS 13+ permission is needed
+if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    permissionBtn.classList.remove('d-none');
+} else {
+    initCompass();
+}
+
+function requestPermission() {
+    DeviceOrientationEvent.requestPermission()
+        .then(response => {
+            if (response == 'granted') {
+                permissionBtn.classList.add('d-none');
+                initCompass();
+            } else {
+                alert("Permission denied.");
+            }
+        })
+        .catch(console.error);
+}
+
+function initCompass() {
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientationabsolute', handleOrientation);
+        // Fallback for some browsers
+        window.addEventListener('deviceorientation', handleOrientation);
+    } else {
+        errorOrientation.classList.remove('d-none');
+    }
+}
+
+function handleOrientation(e) {
+    let heading = null;
+    
+    // Check absolute first, then webkit, then relative
+    if (e.absolute && e.alpha !== null) {
+        heading = 360 - e.alpha; // alpha is counter-clockwise
+    } else if (e.webkitCompassHeading) {
+        heading = e.webkitCompassHeading;
+    } else if (e.alpha !== null) {
+        heading = 360 - e.alpha; 
+    }
+    
+    if (heading !== null) {
+        // Smooth rotation using CSS
+        ring.style.transform = `rotate(${-heading}deg)`;
+        headingText.textContent = `${Math.round(heading)}°`;
+        cardinalText.textContent = getCardinal(heading);
+    }
+}
+
+function getCardinal(heading) {
+    const directions = ['NORTH', 'NORTH EAST', 'EAST', 'SOUTH EAST', 'SOUTH', 'SOUTH WEST', 'WEST', 'NORTH WEST'];
+    const index = Math.round(((heading %= 360) < 0 ? heading + 360 : heading) / 45) % 8;
+    return directions[index];
+}
+</script>
+
+<%- include('../partials/footer') %>

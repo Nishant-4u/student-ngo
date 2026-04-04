@@ -1,0 +1,109 @@
+<%- include('../partials/header') %>
+
+<section class="py-5 bg-primary text-white text-center pb-5 shadow-sm" style="padding-top: 100px !important; background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;">
+    <div class="container py-5 mt-4">
+        <h1 class="display-4 fw-bold mb-3"><i class="fa-solid fa-graduation-cap me-2"></i>Complete Academic Toolkit</h1>
+        <p class="lead fw-light mb-0" style="max-width: 600px; margin: 0 auto;">The premium featured study tools every student needs to master their academic journey.</p>
+    </div>
+</section>
+
+<main class="container py-5 my-0">
+  <div class="row g-4">
+    <!-- Syllabus Tracker -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift border-bottom border-4 border-success">
+        <div class="card-body">
+          <div class="bg-success bg-opacity-10 rounded-circle d-inline-block p-4 mb-3">
+             <i class="fa-solid fa-list-check fa-3x text-success"></i>
+          </div>
+          <h4 class="fw-bold">Syllabus Tracker</h4>
+          <p class="text-muted small">Visualize your progress by tracking chapter and subject completion.</p>
+          <a href="/syllabus-tracker" class="btn btn-outline-success rounded-pill w-100 fw-bold py-2 mt-2">Launch Tracker</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Timetable Generator -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift border-bottom border-4 border-primary">
+        <div class="card-body">
+          <div class="bg-primary bg-opacity-10 rounded-circle d-inline-block p-4 mb-3">
+             <i class="fa-solid fa-table-cells fa-3x text-primary"></i>
+          </div>
+          <h4 class="fw-bold">Weekly Timetable</h4>
+          <p class="text-muted small">Generate, customize, and print a professional study schedule.</p>
+          <a href="/timetable-generator" class="btn btn-outline-primary rounded-pill w-100 fw-bold py-2 mt-2">Generate Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exam Countdown -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift border-bottom border-4 border-danger">
+        <div class="card-body">
+          <div class="bg-danger bg-opacity-10 rounded-circle d-inline-block p-4 mb-3">
+             <i class="fa-solid fa-clock fa-3x text-danger"></i>
+          </div>
+          <h4 class="fw-bold">Exam Countdown</h4>
+          <p class="text-muted small">Stay aware of your deadlines with live countdown timers for your finals.</p>
+          <a href="/exam-countdown" class="btn btn-outline-danger rounded-pill w-100 fw-bold py-2 mt-2">Set Deadlines</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flashcards -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift border-bottom border-4 border-warning">
+        <div class="card-body">
+          <div class="bg-warning bg-opacity-10 rounded-circle d-inline-block p-4 mb-3">
+             <i class="fa-solid fa-brain fa-3x text-warning"></i>
+          </div>
+          <h4 class="fw-bold">Advanced Flashcards</h4>
+          <p class="text-muted small">Convert PDFs to cards instantly with OCR and smart extraction technology.</p>
+          <a href="/flashcards" class="btn btn-outline-warning rounded-pill w-100 fw-bold py-2 mt-2 text-dark">Build Your Deck</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reminder System -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift border-bottom border-4 border-info">
+        <div class="card-body">
+          <div class="bg-info bg-opacity-10 rounded-circle d-inline-block p-4 mb-3">
+             <i class="fa-solid fa-bell fa-3x text-info"></i>
+          </div>
+          <h4 class="fw-bold">Reminder System</h4>
+          <p class="text-muted small">Set time-based alerts for study sessions and break-time notifications.</p>
+          <a href="/reminder" class="btn btn-outline-info rounded-pill w-100 fw-bold py-2 mt-2">Setup Alerts</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goal Manager (Task Link) -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift border-bottom border-4 border-secondary">
+        <div class="card-body">
+          <div class="bg-secondary bg-opacity-10 rounded-circle d-inline-block p-4 mb-3">
+             <i class="fa-solid fa-list-check fa-3x text-secondary"></i>
+          </div>
+          <h4 class="fw-bold">Daily Goal Manager</h4>
+          <p class="text-muted small">Keep track of your daily wins with our high-performance to-do list.</p>
+          <a href="/tasks" class="btn btn-outline-secondary rounded-pill w-100 fw-bold py-2 mt-2">Manage Goals</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<style>
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+</style>
+
+<%- include('../partials/footer') %>

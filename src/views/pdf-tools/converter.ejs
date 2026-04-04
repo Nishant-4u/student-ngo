@@ -1,0 +1,119 @@
+<%- include('../partials/header') %>
+
+<!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<main class="container py-5 my-0">
+  <div class="row pt-5 justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border-0 text-center">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center mb-4">
+            <li class="breadcrumb-item"><a href="/pdf-tools">PDF Tools</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Converter</li>
+          </ol>
+        </nav>
+
+        <div class="alert alert-danger d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-4 rounded-pill border-0 shadow-sm transition-hover" style="background: linear-gradient(145deg, #ffebee, #ffcdd2);">
+           <span class="badge bg-danger rounded-pill px-3 py-2 border shadow-sm text-white">1. Upload Image</span>
+           <i class="fa-solid fa-arrow-right text-danger opacity-75 d-none d-sm-block"></i><i class="fa-solid fa-arrow-down text-danger opacity-75 d-block d-sm-none"></i>
+           <span class="badge bg-danger rounded-pill px-3 py-2 border shadow-sm text-white">2. Select Action</span>
+           <i class="fa-solid fa-arrow-right text-danger opacity-75 d-none d-sm-block"></i><i class="fa-solid fa-arrow-down text-danger opacity-75 d-block d-sm-none"></i>
+           <span class="badge bg-danger rounded-pill px-3 py-2 border shadow-sm text-white">3. Download</span>
+        </div>
+
+        <h1 class="display-5 fw-bold mb-3 text-danger"><i class="fa-solid fa-right-left me-2"></i> Image to PDF Analyzer</h1>
+        <p class="text-muted mb-5">Convert your JPG or PNG images into a standard PDF file instantly.</p>
+
+        <div class="p-4 border border-danger border-2 border-dashed rounded-4 bg-light mb-4 position-relative">
+            <i class="fa-regular fa-images fa-3x text-danger opacity-75 mb-3"></i>
+            <h5 class="fw-bold">Upload Images</h5>
+            <p class="text-muted small">Select one or multiple images</p>
+            <input type="file" id="imgInput" accept="image/png, image/jpeg" multiple class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer;" onchange="handleImages()">
+        </div>
+        
+        <ul id="imgList" class="list-group mb-4 text-start">
+        </ul>
+
+        <button id="convertBtn" class="btn btn-danger btn-lg w-100 fw-bold shadow-sm d-none" onclick="convertToPDF()">Generate PDF</button>
+
+        <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-5">
+            <a href="/" class="btn btn-outline-secondary rounded-pill px-4 fw-bold shadow-sm transition-hover"><i class="fa-solid fa-house me-2"></i>Back to Hub</a>
+            <button class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm transition-hover" onclick="shareTool()"><i class="fa-solid fa-share-nodes me-2"></i>Share Tool</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let imgFiles = [];
+
+function handleImages() {
+    const input = document.getElementById('imgInput');
+    const list = document.getElementById('imgList');
+    const btn = document.getElementById('convertBtn');
+    
+    imgFiles = Array.from(input.files);
+    list.innerHTML = '';
+    
+    if (imgFiles.length > 0) {
+        imgFiles.forEach(f => {
+            list.innerHTML += `<li class="list-group-item text-muted"><i class="fa-regular fa-image me-2 text-danger"></i> ${f.name}</li>`;
+        });
+        btn.classList.remove('d-none');
+    } else {
+        btn.classList.add('d-none');
+    }
+}
+
+async function convertToPDF() {
+    if (imgFiles.length === 0) return;
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    for (let i = 0; i < imgFiles.length; i++) {
+        const file = imgFiles[i];
+        const base64Data = await readFileAsBase64(file);
+        
+        if (i > 0) doc.addPage();
+        
+        // Very basic fitting strategy: A4 dimensions roughly 210x297 mm
+        // We will just draw the image scaled to fit A4 width
+        const imgProps = doc.getImageProperties(base64Data);
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        
+        doc.addImage(base64Data, file.type === 'image/png' ? 'PNG' : 'JPEG', 0, 0, pdfWidth, pdfHeight);
+    }
+    
+    doc.save('Converted_Images.pdf');
+}
+
+function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+function shareTool() {
+    if (navigator.share) {
+        navigator.share({ title: document.title, text: 'Check out this awesome free PDF tool on 2AM Study!', url: window.location.href }).catch(console.error);
+    } else {
+        const tempInput = document.createElement("input");
+        tempInput.value = window.location.href;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Link copied to clipboard!");
+    }
+}
+</script>
+
+<%- include('../partials/footer') %>

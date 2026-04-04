@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<section class="py-5 bg-dark text-white text-center pb-5" style="padding-top: 100px !important;">
+    <div class="container py-5 mt-4">
+        <h1 class="display-4 fw-bold mb-3">Calculator Hub</h1>
+        <p class="lead fw-light mb-0" style="max-width: 600px; margin: 0 auto;">Free, fast, and easy-to-use calculators for students.</p>
+    </div>
+</section>
+
+<main class="container py-5 my-0">
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift">
+        <div class="card-body">
+          <i class="fa-solid fa-calculator fa-3x text-primary mb-3"></i>
+          <h4 class="fw-bold">Scientific</h4>
+          <p class="text-muted small">Standard scientific calculator for complex math.</p>
+          <a href="/calculator" class="btn btn-outline-primary rounded-pill w-100 fw-bold">Open</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift">
+        <div class="card-body">
+          <i class="fa-solid fa-graduation-cap fa-3x text-success mb-3"></i>
+          <h4 class="fw-bold">CGPA</h4>
+          <p class="text-muted small">Calculate your semester or overall CGPA easily.</p>
+          <a href="/calculators/cgpa" class="btn btn-outline-success rounded-pill w-100 fw-bold">Open</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift">
+        <div class="card-body">
+          <i class="fa-solid fa-percent fa-3x text-warning mb-3"></i>
+          <h4 class="fw-bold">Percentage</h4>
+          <p class="text-muted small">Find percentage scores, increases, or fractions.</p>
+          <a href="/calculators/percentage" class="btn btn-outline-warning rounded-pill w-100 fw-bold text-dark">Open</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-3 text-center hover-lift">
+        <div class="card-body">
+          <i class="fa-solid fa-cake-candles fa-3x text-danger mb-3"></i>
+          <h4 class="fw-bold">Age Evaluator</h4>
+          <p class="text-muted small">Calculate precise age in years, months, and days.</p>
+          <a href="/calculators/age" class="btn btn-outline-danger rounded-pill w-100 fw-bold">Open</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
