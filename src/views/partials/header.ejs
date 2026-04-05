@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : '2AM Study helps students stay focused with a productivity timer, study tools, study tips, and routines to improve concentration and academic performance.' %>" />
-  
+  <meta name="description"
+    content="<%= typeof metaDescription !== 'undefined' ? metaDescription : '2AM Study helps students stay focused with a productivity timer, study tools, study tips, and routines to improve concentration and academic performance.' %>" />
+
   <!-- Performance Optimization: Resource Hints -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
@@ -12,98 +14,129 @@
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
+
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/style.css"/>
-  <link rel="stylesheet" href="/assets/css/media.css"/>
-  <title><%= pageTitle || '2AM Study - Focus Timer & Study Tools for Students' %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/media.css" />
+  <title>
+    <%= pageTitle || '2AM Study - Focus Timer & Study Tools for Students' %>
+  </title>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9292902162318803"
-     crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0HF04M8D2K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-0HF04M8D2K');
+  </script>
 </head>
+
 <body>
-<header class="container-fluid bg-white shadow-lg py-3">
-  <div class="container">
-    <div class="d-flex align-items-center flex-wrap gap-3">
-      <a class="navbar-brand mb-0" href="/">
-        <img src="/assets/images/logo.jpg" alt="Logo" style="height:50px;">
-      </a>
+  <header class="container-fluid bg-white shadow-lg py-3">
+    <div class="container">
+      <div class="d-flex align-items-center flex-wrap gap-3">
+        <a class="navbar-brand mb-0" href="/">
+          <img src="/assets/images/logo.jpg" alt="Logo" style="height:50px;">
+        </a>
 
-      <nav class="navbar navbar-expand-lg p-0 flex-grow-1">
-        <button class="navbar-toggler ms-auto mobile-menu-btn border-0 shadow-none" type="button" data-bs-toggle="offcanvas" 
-          data-bs-target="#mobileMenuOffcanvas" aria-controls="mobileMenuOffcanvas" 
-          aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <nav class="navbar navbar-expand-lg p-0 flex-grow-1">
+          <button class="navbar-toggler ms-auto mobile-menu-btn border-0 shadow-none" type="button"
+            data-bs-toggle="offcanvas" data-bs-target="#mobileMenuOffcanvas" aria-controls="mobileMenuOffcanvas"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <div class="offcanvas offcanvas-end premium-mobile-menu" tabindex="-1" id="mobileMenuOffcanvas" aria-labelledby="mobileMenuOffcanvasLabel">
-          <div class="offcanvas-header d-lg-none">
-            <h5 class="offcanvas-title fw-bold" id="mobileMenuOffcanvasLabel">
-              <img src="/assets/images/logo.jpg" alt="Logo" style="height:40px; border-radius: 6px;">
-            </h5>
-            <button type="button" class="btn-close premium-close-btn" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          
-          <div class="offcanvas-body">
-            <ul class="navbar-nav me-auto fw-semibold">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/#features-section">Features</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/pricing-plan.html">Pricing</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Company
+          <div class="offcanvas offcanvas-end premium-mobile-menu" tabindex="-1" id="mobileMenuOffcanvas"
+            aria-labelledby="mobileMenuOffcanvasLabel">
+            <div class="offcanvas-header d-lg-none">
+              <h5 class="offcanvas-title fw-bold" id="mobileMenuOffcanvasLabel">
+                <img src="/assets/images/logo.jpg" alt="Logo" style="height:40px; border-radius: 6px;">
+              </h5>
+              <button type="button" class="btn-close premium-close-btn" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-body">
+              <ul class="navbar-nav me-auto fw-semibold">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/#features-section">Features</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/pricing-plan.html">Pricing</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Company
+                  </a>
+                  <ul class="dropdown-menu mobile-dropdown border-0 shadow-sm">
+                    <li><a class="dropdown-item" href="/privacy-policy">Privacy Policy</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/blog">Blog</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Study Tools
+                  </a>
+                  <ul class="dropdown-menu mobile-dropdown border-0 shadow-sm" style="min-width: 230px;">
+                    <li>
+                      <h6 class="dropdown-header text-uppercase small fw-bold opacity-50 ps-3 pt-3">Academic Excellence
+                      </h6>
+                    </li>
+                    <li><a class="dropdown-item" href="/study-tools"><i
+                          class="fa-solid fa-graduation-cap me-2 opacity-75 text-primary"></i>Study Tools Hub</a></li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                      <h6 class="dropdown-header text-uppercase small fw-bold opacity-50 ps-3">Learning Tools</h6>
+                    </li>
+                    <li><a class="dropdown-item" href="/timer">Timer</a></li>
+                    <li><a class="dropdown-item" href="/notes">Notes</a></li>
+                    <li><a class="dropdown-item" href="/chat">Chat</a></li>
+                    <li><a class="dropdown-item" href="/streak">Goals / Streak</a></li>
+                    <li><a class="dropdown-item" href="/music">Music</a></li>
+                    <li><a class="dropdown-item" href="/quotes">Quotes</a></li>
+                    <li><a class="dropdown-item" href="/game">Study Game</a></li>
+                    <li><a class="dropdown-item" href="/calculators">Calculator Tools</a></li>
+                    <li><a class="dropdown-item" href="/college-student">College Student Support</a></li>
+                    <li><a class="dropdown-item" href="/pdf-tools">PDF Tools Hub</a></li>
+                    <li><a class="dropdown-item" href="/utilities">Utilities Hub (AQI, Grammar)</a></li>
+                  </ul>
+                </li>
+              </ul>
+
+              <div
+                class="mobile-action-buttons d-flex flex-column flex-lg-row gap-3 align-items-stretch align-items-lg-center mt-4 mt-lg-0">
+                <a class="btn btn-outline-success d-flex align-items-center justify-content-center premium-btn-outline"
+                  href="https://wa.me/+916202225179" target="_blank" rel="noopener noreferrer"
+                  data-login-protected="whatsapp" data-bs-toggle="tooltip" data-bs-placement="top"
+                  data-bs-custom-class="custom-tooltip" data-bs-title="Chat with us on WhatsApp">
+                  <i class="fa-brands fa-whatsapp me-2"></i> Chat with Us
                 </a>
-                <ul class="dropdown-menu mobile-dropdown border-0 shadow-sm">
-                  <li><a class="dropdown-item" href="/privacy-policy">Privacy Policy</a></li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/blog">Blog</a>
-              </li>
-
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Study Tools
+                <a class="btn btn-primary d-flex align-items-center justify-content-center premium-btn-primary"
+                  href="tel:+916202225179">
+                  <i class="fa-brands fa-whatsapp me-2"></i> Call Us
                 </a>
-                <ul class="dropdown-menu mobile-dropdown border-0 shadow-sm" style="min-width: 230px;">
-                  <li><h6 class="dropdown-header text-uppercase small fw-bold opacity-50 ps-3 pt-3">Academic Excellence</h6></li>
-                  <li><a class="dropdown-item" href="/study-tools"><i class="fa-solid fa-graduation-cap me-2 opacity-75 text-primary"></i>Study Tools Hub</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><h6 class="dropdown-header text-uppercase small fw-bold opacity-50 ps-3">Learning Tools</h6></li>
-                  <li><a class="dropdown-item" href="/timer">Timer</a></li>
-                  <li><a class="dropdown-item" href="/notes">Notes</a></li>
-                  <li><a class="dropdown-item" href="/chat">Chat</a></li>
-                  <li><a class="dropdown-item" href="/streak">Goals / Streak</a></li>
-                  <li><a class="dropdown-item" href="/music">Music</a></li>
-                  <li><a class="dropdown-item" href="/quotes">Quotes</a></li>
-                  <li><a class="dropdown-item" href="/game">Study Game</a></li>
-                  <li><a class="dropdown-item" href="/calculators">Calculator Tools</a></li>
-                  <li><a class="dropdown-item" href="/college-student">College Student Support</a></li>
-                  <li><a class="dropdown-item" href="/pdf-tools">PDF Tools Hub</a></li>
-                  <li><a class="dropdown-item" href="/utilities">Utilities Hub (AQI, Grammar)</a></li>
-                </ul>
-              </li>
-            </ul>
-
-            <div class="mobile-action-buttons d-flex flex-column flex-lg-row gap-3 align-items-stretch align-items-lg-center mt-4 mt-lg-0">
-              <a class="btn btn-outline-success d-flex align-items-center justify-content-center premium-btn-outline" href="https://wa.me/+916202225179" target="_blank" rel="noopener noreferrer" data-login-protected="whatsapp" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="Chat with us on WhatsApp">
-                <i class="fa-brands fa-whatsapp me-2"></i> Chat with Us
-              </a>
-              <a class="btn btn-primary d-flex align-items-center justify-content-center premium-btn-primary" href="tel:+916202225179">
-                <i class="fa-brands fa-whatsapp me-2"></i> Call Us
-              </a>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
