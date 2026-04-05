@@ -20,6 +20,11 @@ app.use(express.static(path.join(__dirname, 'public'), {
     lastModified: true
 }));
 
+// Route for ads.txt at the root
+app.get('/ads.txt', (req, res) => {
+  res.sendFile(path.join(__dirname, '../ads.txt'));
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
