@@ -37,9 +37,12 @@
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <div class="small text-uppercase text-muted fw-bold">Daily Goal</div>
-                  <div class="fw-semibold">3 hrs | Completed: <span id="goal-completed">0.0 hrs</span></div>
+                  <div class="fw-semibold"><span id="goal-target-display">3 hrs</span> | Completed: <span id="goal-completed">0.0 hrs</span></div>
                 </div>
-                <span class="badge bg-warning text-dark"><i class="fa-solid fa-bullseye"></i> Goal</span>
+                <div class="d-flex flex-column gap-2">
+                  <span class="badge bg-warning text-dark"><i class="fa-solid fa-bullseye"></i> Goal</span>
+                  <button onclick="setDailyGoal()" class="btn btn-sm btn-link text-decoration-none p-0 text-warning fw-bold no-print" style="font-size: 0.75rem;">Change Goal</button>
+                </div>
               </div>
               <div class="progress mt-3 goal-progress-bar" style="height: 10px;">
                 <div id="goal-progress-fill" class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>

@@ -1,0 +1,350 @@
+<%- include('../partials/header') %>
+
+  <style>
+    .blog-post-page {
+      background: #676964;
+      min-height: 100vh;
+      padding-top: 100px;
+    }
+
+    .blog-card {
+      background: #c5c5c3;
+      border-radius: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      border: 0;
+      overflow: hidden;
+    }
+
+    .blog-header-img {
+      height: 400px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
+      border-left: 5px solid #6366f1;
+      border-radius: 1rem;
+      padding: 2rem;
+      margin: 2.5rem 0;
+    }
+
+    .step-roadmap {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .step-roadmap::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .step-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .step-number {
+      position: absolute;
+      left: -48px;
+      width: 32px;
+      height: 32px;
+      background: #6366f1;
+      color: rgb(19, 17, 17);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .yt-search-box {
+      background: #1e1b4b;
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      color: rgb(180, 196, 90);
+      text-align: center;
+      margin: 3rem 0;
+    }
+
+    .btn-yt {
+      background: #ef4444;
+      color: rgb(19, 17, 17);
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+
+    .btn-yt:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+      color: rgb(12, 11, 11);
+    }
+
+    .blog-content p {
+      color: #4b5563;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .blog-content h2 {
+      color: #111827;
+      font-weight: 800;
+      margin-top: 3.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Reading Progress Bar ── */
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      z-index: 9999;
+      background: transparent;
+    }
+
+    .progress-bar-top {
+      height: 5px;
+      background: linear-gradient(to right, #6366f1, #ec4899);
+      width: 0%;
+    }
+
+    /* ── Checklist Items ── */
+    .checklist-item {
+      background: #535c91;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: flex-start;
+      transition: all 0.2s ease;
+    }
+
+    .checklist-item:hover {
+      border-color: #6366f1;
+      background: rgba(204, 202, 91, 0.02);
+      transform: translateX(5px);
+    }
+
+    .checklist-icon {
+      width: 24px;
+      height: 24px;
+      color: #6366f1;
+      margin-right: 1rem;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+  </style>
+
+  <div class="progress-container">
+    <div class="progress-bar-top" id="topProgress"></div>
+  </div>
+
+  <div class="blog-post-page pb-5">
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+
+          <!-- Breadcrumbs -->
+          <nav aria-label="breadcrumb" class="mb-5">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/" class="text-secondary text-decoration-none small">Home</a></li>
+              <li class="breadcrumb-item"><a href="/blog" class="text-secondary text-decoration-none small">Blog</a>
+              </li>
+              <li class="breadcrumb-item active small" aria-current="page">No Motivation?</li>
+            </ol>
+          </nav>
+
+          <article class="blog-card p-4 p-md-5">
+            <!-- Article Header -->
+            <header class="mb-5 text-center">
+              <span class="badge bg-indigo-100 text-indigo-700 px-3 py-2 rounded-pill mb-4 fw-bold"
+                style="background:#a9b86a; color: #4338ca;">
+                <i class="fa-solid fa-brain me-2"></i>Mindset Masterclass
+              </span>
+              <h1 class="display-4 fw-bold mb-4" style="letter-spacing: -1px;">No Motivation? Start 2 AM Study With Me
+              </h1>
+              <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                Your desk feels like a desert, your books feel like lead. Here is the exact psychological roadmap to
+                break the stalemate tonight.
+              </p>
+            </header>
+
+            <div class="blog-header-img shadow-sm"
+              style="background-image: url('https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=2070&auto=format&fit=crop');">
+            </div>
+
+            <div class="blog-content fs-5">
+              <p>
+                It’s 11:00 PM. You have an exam in three days, a stack of notes that looks like a mountain,
+                and exactly <strong>zero motivation</strong> to start. You’ve scrolled through every social media app
+                twice,
+                and now you’re just staring at your lamp, feeling that heavy weight of guilt in your chest.
+              </p>
+
+              <h2 id="motivation-trap"><i class="fa-solid fa-thumbtack text-primary me-3"></i>The Motivation Trap</h2>
+              <p>
+                The biggest mistake students make is waiting for "motivation" to arrive.
+                Think of motivation like a fair-weather friend; it shows up when things are easy
+                and disappears when the work gets tough.
+              </p>
+              <p>
+                The secret? <strong>Action creates motivation.</strong> Not the other way around.
+                Once you start—even for just 5 minutes—your brain shifts from "procrastination mode" (fear)
+                to "task mode" (execution). It's physics: an object in motion stays in motion.
+              </p>
+
+              <div class="highlight-box">
+                <h4 class="fw-bold mb-3 d-flex align-items-center">
+                  <i class="fa-solid fa-flask-vial text-indigo-600 me-3"></i> The Science of "Body Doubling"
+                </h4>
+                <p class="mb-0 text-dark">
+                  Studying in a library is 10x more effective than studying in your bedroom.
+                  When your brain sees others working, it releases subtle signals that "this is the time to focus."
+                  By studying "with us" using a digital hub, you trick your brain into Focus Mode.
+                </p>
+              </div>
+
+              <h2 id="quick-start"><i class="fa-solid fa-map-location-dot text-primary me-3"></i>The Quick-Start Roadmap
+              </h2>
+              <div class="step-roadmap mt-5">
+                <div class="step-item">
+                  <div class="step-number">1</div>
+                  <h5 class="fw-bold">Clear the Visual Chaos</h5>
+                  <p class="text-muted small mb-0">Don't clean the whole room. Just clear exactly 1 square foot of desk
+                    space. Your brain needs an "oasis of calm" to start.</p>
+                </div>
+                <div class="step-item">
+                  <div class="step-number">2</div>
+                  <h5 class="fw-bold">Set Your Micro-Goal</h5>
+                  <p class="text-muted small mb-0">Open the <a href="/clock" class="text-indigo-600 fw-bold">Clock
+                      Hub</a> and type in "Read 2 Pages." Not the whole chapter—just 2 pages.</p>
+                </div>
+                <div class="step-item">
+                  <div class="step-number">3</div>
+                  <h5 class="fw-bold">The 25-Minute Contract</h5>
+                  <p class="text-muted small mb-0">Start the <a href="/timer" class="text-indigo-600 fw-bold">Pomodoro
+                      Timer</a>. You are legally allowed to stop after 25 minutes. (But you won't.)</p>
+                </div>
+                <div class="step-item">
+                  <div class="step-number">4</div>
+                  <h5 class="fw-bold">Mask the Silence</h5>
+                  <p class="text-muted small mb-0">Choose a Lofi vibe from the <a href="/music"
+                      class="text-indigo-600 fw-bold">Music Room</a>. Silence feeds overthinking; ambient beats feed
+                    productivity.</p>
+                </div>
+              </div>
+
+              <!-- YouTube CTA -->
+              <div class="yt-search-box shadow-lg">
+                <i class="fa-brands fa-youtube fa-4x text-danger mb-4"></i>
+                <h3 class="fw-bold mb-3">Don't Overthink. Just Watch.</h3>
+                <p class="mb-4 opacity-75">Sometimes you just need to see someone else doing it. Search for our "Study
+                  With Me" sessions and let's work together.</p>
+                <a href="https://www.youtube.com/results?search_query=2+am+study+with+me+youtube+channel"
+                  target="_blank" class="btn btn-yt">
+                  <i class="fa-solid fa-magnifying-glass me-2"></i> Search "2 am study with me youtube channel"
+                </a>
+              </div>
+
+              <h2 id="science"><i class="fa-solid fa-microscope text-primary me-3"></i>Why This Works</h2>
+              <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                  <div class="checklist-item h-100">
+                    <i class="fa-solid fa-user-group checklist-icon"></i>
+                    <span><strong>Not Alone:</strong> Seeing others work reduces the feeling of isolation and
+                      study-fatigue.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100">
+                    <i class="fa-solid fa-shield-halved checklist-icon"></i>
+                    <span><strong>Reduces Procrastination:</strong> The shared environment creates a "social contract"
+                      to stay focused.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100">
+                    <i class="fa-solid fa-clock-rotate-left checklist-icon"></i>
+                    <span><strong>Builds Discipline:</strong> Consistent study-with-me habits train your brain to enter
+                      deep focus faster.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100">
+                    <i class="fa-solid fa-wand-magic-sparkles checklist-icon"></i>
+                    <span><strong>Real Study Vibes:</strong> Creates an immersive environment even if you're in a noisy
+                      dorm or bedroom.</span>
+                  </div>
+                </div>
+              </div>
+
+              <h2 id="final-thoughts"><i class="fa-solid fa-check-double text-success me-3"></i>Final Thoughts</h2>
+              <p>
+                You don't need a 5-hour study block to be productive. You just need to win the fight against
+                the <strong>first 300 seconds</strong>. Use the tools at 2 AM Study to build your own digital library
+                and let the environment do the heavy lifting for you.
+              </p>
+              <p class="mt-5 text-center mb-5">
+                <a href="/timer" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-lg py-3">
+                  Start My Timer Now <i class="fa-solid fa-bolt ms-2"></i>
+                </a>
+              </p>
+            </div>
+
+            <hr class="my-5 opacity-5">
+            <footer class="d-flex align-items-center bg-light p-4 rounded-4 border-0">
+              <div class="flex-shrink-0">
+                <div
+                  class="rounded-circle bg-indigo-600 text-white d-flex align-items-center justify-content-center shadow"
+                  style="width: 64px; height: 64px;">
+                  <i class="fa-solid fa-feather-pointed fa-lg"></i>
+                </div>
+              </div>
+              <div class="ms-4">
+                <h6 class="fw-bold mb-1 text-dark">The 2AM Editorial Team</h6>
+                <p class="text-muted small mb-0">Curating the best productivity hacks and mindset shifts for over 50,000
+                  students worldwide.</p>
+              </div>
+            </footer>
+
+            <div class="mt-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+              <a href="/blog" class="btn btn-link text-decoration-none text-secondary fw-bold p-0">
+                <i class="fa-solid fa-arrow-left-long me-2"></i> Back to Blog
+              </a>
+              <div class="d-flex align-items-center gap-3">
+                <span class="text-muted small fw-bold">SHARE THIS GUIDE:</span>
+                <a href="#" class="text-secondary"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="text-secondary"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="text-secondary"><i class="fa-brands fa-linkedin-in"></i></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onscroll = function () {
+      var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      document.getElementById("topProgress").style.width = scrolled + "%";
+    };
+  </script>
+  <%- include('../partials/footer') %>

@@ -183,6 +183,12 @@ app.get('/blog/daily-study-routine', (req, res) => {
 app.get('/blog/build-consistency', (req, res) => {
   res.render('blog/build-consistency', { pageTitle: 'How to build consistency in study' });
 });
+app.get('/blog/no-motivation-2am-study', (req, res) => {
+  res.render('blog/no-motivation-2am-study', { 
+    pageTitle: 'No Motivation? Start 2AM Study With Me',
+    metaDescription: 'Learn how to overcome a lack of study motivation with our actionable 2AM strategy and focus tools.'
+  });
+});
 
 app.get('/blog/focus-tips', (req, res) => {
   res.render('blog/focus-tips', {

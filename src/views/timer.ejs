@@ -54,11 +54,19 @@
 #pomoTimerCard:fullscreen .pomo-ring {
   width: min(85vw, 85vh);
   height: min(85vw, 85vh);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
   box-shadow: 0 0 100px rgba(99,102,241,0.5);
 }
 #pomoTimerCard:fullscreen .pomo-ring-inner {
-  width: calc(min(85vw, 85vh) - 50px);
-  height: calc(min(85vw, 85vh) - 50px);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 #pomoTimerCard:fullscreen .pomo-time {
   font-size: min(18vw, 18vh);
@@ -66,6 +74,75 @@
 #pomoTimerCard:fullscreen .pomo-mode-badge {
   font-size: min(3vw, 3vh);
 }
+
+/* ── Fullscreen Refinements for Layouts ── */
+#pomoTimerCard:fullscreen.layout-rectangular .pomo-ring,
+#pomoTimerCard:fullscreen.layout-minimal .pomo-ring {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100vw;
+  height: 100vh;
+}
+#pomoTimerCard:fullscreen.layout-rectangular .pomo-time {
+  font-size: 15vw;
+}
+#pomoTimerCard:fullscreen.layout-minimal .pomo-time {
+  font-size: 20vw;
+}
+
+/* ── Layout Styles ── */
+.layout-rectangular .pomo-ring {
+  width: 100%; height: auto; border-radius: 1.5rem;
+  background: rgba(25, 33, 49, 0.6) !important;
+  backdrop-filter: blur(10px);
+  padding: 3.5rem 2rem; display: block;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+.layout-rectangular .pomo-ring-inner {
+  width: 100%; height: auto; background: transparent; display: block;
+}
+.layout-rectangular .pomo-time { 
+  font-size: 6rem; line-height: 1; font-weight: 800;
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+.layout-rectangular .progress-bar-container {
+  height: 12px; background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px; margin-top: 2.5rem; overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.layout-rectangular .progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, #6366f1, #818cf8); 
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+.layout-minimal .pomo-ring {
+  background: transparent !important; box-shadow: none !important;
+  height: auto; width: auto;
+}
+.layout-minimal .pomo-ring-inner { background: transparent !important; height: auto; width: auto; }
+.layout-minimal .pomo-time { 
+  font-size: 8rem; font-weight: 200; letter-spacing: -0.05em; 
+  color: #f8fafc;
+}
+.layout-minimal .pomo-mode-badge { 
+  font-size: 1.15rem; opacity: 0.5; letter-spacing: 0.2rem;
+  margin-top: -10px;
+}
+.layout-minimal .minimal-progress-line {
+  height: 2px; width: 220px; background: rgba(255, 255, 255, 0.05);
+  margin: 2.5rem auto; position: relative; overflow: hidden;
+}
+.layout-minimal .minimal-progress-fill {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: #6366f1; transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.8);
+}
+
+/* Base Ring override for Circular */
+.layout-circular .pomo-ring { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 </style>
 
 <div class="pomo-page py-5" id="pomoPage">
@@ -80,13 +157,35 @@
     <!-- Session status banner -->
     <div id="pomoBanner" class="alert text-center fw-semibold mb-4 d-none" role="alert"></div>
 
+    <!-- ── Layout Switcher ── -->
+    <div class="d-flex justify-content-center gap-2 mb-4 no-print">
+      <button class="btn btn-dark btn-sm rounded-pill px-3" onclick="setTimerLayout('circular')">⭕ Circular</button>
+      <button class="btn btn-dark btn-sm rounded-pill px-3" onclick="setTimerLayout('rectangular')">▭ Rectangular</button>
+      <button class="btn btn-dark btn-sm rounded-pill px-3" onclick="setTimerLayout('minimal')">✨ Minimal</button>
+    </div>
+
     <!-- ── Main Timer Ring ── -->
-    <div id="pomoTimerCard" class="text-center mb-4">
+    <div id="pomoTimerCard" class="text-center mb-4 layout-circular">
       <div class="pomo-ring" id="pomoRing">
         <div class="pomo-ring-inner">
-          <div>
+          <div class="timer-content-wrapper">
             <div class="pomo-time"><span id="pomoMin">25</span>:<span id="pomoSec">00</span></div>
-            <div class="pomo-mode-badge" id="pomoModeBadge" style="color:#818cf8;">STUDY</div>
+            <div class="pomo-mode-badge-container d-flex flex-column align-items-center gap-2">
+              <div class="pomo-mode-badge" id="pomoModeBadge" style="color:#818cf8;">STUDY</div>
+              <div id="wakeLockBadge" class="badge rounded-pill bg-success bg-opacity-20 text-success border border-success border-opacity-30 d-none" style="font-size: 0.65rem; padding: 0.25rem 0.6rem;">
+                <i class="fa-solid fa-sun me-1"></i>Screen Stay Awake Active
+              </div>
+            </div>
+            
+            <!-- Rectangular Progress -->
+            <div class="progress-bar-container d-none" id="rectProgress">
+              <div class="progress-bar-fill" id="rectFill" style="width: 0%"></div>
+            </div>
+            
+            <!-- Minimal Progress -->
+            <div class="minimal-progress-line d-none" id="minProgress">
+              <div class="minimal-progress-fill" id="minFill" style="width: 0%"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -98,10 +197,10 @@
         <div class="col-6">
           <label class="form-label text-light fw-semibold small">Study (min)</label>
           <div class="input-group input-group-sm">
-            <input id="studyDurInput" type="number" min="1" max="120" value="25" class="form-control bg-dark text-white border-secondary">
+            <input id="studyDurInput" type="number" min="1" max="180" value="25" class="form-control bg-dark text-white border-secondary">
             <span class="input-group-text bg-dark text-secondary border-secondary">min</span>
           </div>
-          <input id="studyDurRange" type="range" min="1" max="120" value="25" class="form-range mt-1">
+          <input id="studyDurRange" type="range" min="1" max="180" value="25" class="form-range mt-1">
         </div>
         <div class="col-6">
           <label class="form-label text-light fw-semibold small">Break (min)</label>
@@ -196,6 +295,7 @@
         <div class="stat-card text-center">
           <div class="stat-val text-purple" id="statGoal" style="color:#a78bfa;">0%</div>
           <div class="stat-label">Daily Goal</div>
+          <button onclick="setDailyGoal()" class="btn btn-sm btn-link text-decoration-none p-0 text-purple opacity-75 mt-1 no-print" style="font-size: 0.7rem; color: #a78bfa;">Change Goal</button>
         </div>
       </div>
     </div>
@@ -234,6 +334,55 @@
   let isMuted      = false;
   let alertNode    = null;      // oscillator keeping sound alive
   let alertCtx     = null;
+  let currentLayout = localStorage.getItem('pomoTimerLayout') || 'circular';
+  let wakeLock      = null;
+
+  // ── Screen Wake Lock ──
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        document.getElementById('wakeLockBadge')?.classList.remove('d-none');
+        console.log('Wake Lock acquired');
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    }
+  }
+
+  function releaseWakeLock() {
+    if (wakeLock !== null) {
+      wakeLock.release()
+        .then(() => {
+          wakeLock = null;
+          document.getElementById('wakeLockBadge')?.classList.add('d-none');
+          console.log('Wake Lock released');
+        });
+    }
+  }
+
+  document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible' && isRunning) {
+      await requestWakeLock();
+    }
+  });
+
+  // ── Layout Switcher ──
+  window.setTimerLayout = function (layout) {
+    currentLayout = layout;
+    localStorage.setItem('pomoTimerLayout', layout);
+    const card = document.getElementById('pomoTimerCard');
+    if (!card) return;
+    
+    card.classList.remove('layout-circular', 'layout-rectangular', 'layout-minimal');
+    card.classList.add(`layout-${layout}`);
+    
+    // Toggle visibility of specific progress elements
+    document.getElementById('rectProgress')?.classList.toggle('d-none', layout !== 'rectangular');
+    document.getElementById('minProgress')?.classList.toggle('d-none', layout !== 'minimal');
+    
+    updateDisplay();
+  };
 
   // Tracked totals (seconds)
   let totalStudySec  = parseInt(localStorage.getItem('PomTotalStudy')  || '0', 10);
@@ -368,6 +517,13 @@
     const color = mode === 'study' ? '#6366f1' : '#f59e0b';
     document.getElementById('pomoRing').style.background =
       `conic-gradient(${color} ${deg}deg, #1e293b ${deg}deg)`;
+
+    // Update alternative progress bars
+    const pct = total > 0 ? (elapsed / total) * 100 : 0;
+    const rectFill = document.getElementById('rectFill');
+    const minFill = document.getElementById('minFill');
+    if (rectFill) rectFill.style.width = pct + '%';
+    if (minFill) minFill.style.width = pct + '%';
   }
 
   function setBanner(msg, type) {
@@ -400,6 +556,7 @@
 
     isRunning = true;
     sessionStartTs = Date.now();
+    requestWakeLock();
     document.getElementById('btnStart').disabled = true;
     document.getElementById('btnPause').disabled = false;
     setBanner(`${mode === 'study' ? '📚 Study' : '☕ Break'} session started — stay focused!`, mode === 'study' ? 'primary' : 'warning');
@@ -419,6 +576,7 @@
     if (!isRunning) return;
     clearInterval(interval); interval = null;
     isRunning = false;
+    releaseWakeLock();
     document.getElementById('btnStart').disabled = false;
     document.getElementById('btnPause').disabled = true;
     saveElapsed();
@@ -428,7 +586,10 @@
   window.stopPomo = function () {
     stopAlert();
     if (interval) { clearInterval(interval); interval = null; }
-    if (isRunning) saveElapsed();
+    if (isRunning) {
+      saveElapsed();
+      releaseWakeLock();
+    }
     isRunning = false;
     remaining = mode === 'study' ? studySec : breakSec;
     document.getElementById('btnStart').disabled = false;
@@ -441,6 +602,7 @@
   function onSessionComplete() {
     clearInterval(interval); interval = null;
     isRunning = false;
+    releaseWakeLock();
     document.getElementById('btnStart').disabled = false;
     document.getElementById('btnPause').disabled = true;
 
@@ -568,6 +730,7 @@
   updateStats();
   renderLog();
   setPomoMode('study');
+  setTimerLayout(currentLayout);
 })();
 </script>
 

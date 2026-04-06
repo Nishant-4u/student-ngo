@@ -1,16 +1,622 @@
 <%- include('partials/header') %>
-<section class="container-fluid py-5 bg-light">
-  <div class="container">
-    <div class="bg-white shadow-lg rounded p-4">
-      <h1>Digital Clock</h1>
-      <p class="mb-4">View the current local time with a live digital clock updated every second.</p>
-      <div class="tool-panel p-4 text-center">
-        <div class="digital-clock py-4 fs-1" id="digital-clock">00:00:00</div>
-        <div id="clock-date" class="clock-date text-muted fs-5">Loading date...</div>
-        <p class="tool-note">This clock runs in real time and keeps you anchored during study sessions.</p>
+
+  <style>
+    .clock-hub-page {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      min-height: 100vh;
+      padding-top: 100px;
+      color: #f8fafc;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      height: 100%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(255, 255, 255, 0.07);
+      transform: translateY(-5px);
+    }
+
+    .text-muted {
+      color: #94a3b8 !important;
+    }
+
+    /* Brighter slate for dark backgrounds */
+
+    /* ── Digital Clock ── */
+    .main-clock-display {
+      font-family: 'Inter', sans-serif;
+      font-size: 5.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .clock-date-display {
+      font-size: 1.25rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    /* ── World Clock ── */
+    .world-clock-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .world-clock-item {
+      background: rgba(255, 255, 255, 0.05);
+      /* Increased slightly */
+      padding: 1.25rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .world-label {
+      color: #f1f5f9;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .world-time {
+      font-weight: 700;
+      color: #818cf8;
+      font-size: 1.2rem;
+    }
+
+    /* ── Stopwatch ── */
+    .stopwatch-display {
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .laps-container {
+      max-height: 150px;
+      overflow-y: auto;
+      margin-top: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 0.75rem;
+      padding: 0.5rem;
+    }
+
+    .lap-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.875rem;
+    }
+
+    /* ── Calendar ── */
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      text-align: center;
+    }
+
+    .calendar-day-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #6366f1;
+      padding-bottom: 5px;
+    }
+
+    transition: background 0.2s,
+    transform 0.2s;
+    position: relative;
+    }
+
+    .calendar-day:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: scale(1.1);
+    }
+
+    .calendar-day.today {
+      background: #6366f1;
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+    }
+
+    .calendar-day.special-event {
+      background: linear-gradient(135deg, #f43f5e, #fb923c);
+      color: white;
+      font-weight: 800;
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.6);
+    }
+
+    .event-dot {
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #f43f5e;
+    }
+
+    .calendar-day.other-month {
+      opacity: 0.2;
+    }
+
+    /* ── Today's Focus ── */
+    .focus-widget-container {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 0.5rem 0.5rem 0.5rem 2rem;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    }
+    .focus-widget-container:focus-within {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
+      transform: scale(1.02);
+    }
+    .focus-input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 500;
+      width: 100%;
+      outline: none;
+      padding: 0.5rem 0;
+      text-align: left;
+    }
+    .focus-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+    
+    .focus-complete-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      color: #94a3b8;
+      display: flex; align-items: center; justify-content: center;
+      margin-left: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .focus-complete-btn:hover {
+      background: #10b981;
+      color: white;
+      transform: rotate(360deg);
+    }
+    
+    .focus-widget-container.completed {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.05);
+    }
+    .focus-widget-container.completed .focus-input {
+      text-decoration: line-through;
+      color: #10b981;
+      opacity: 0.7;
+    }
+    .focus-widget-container.completed .focus-complete-btn {
+      background: #10b981;
+      color: white;
+    }
+  </style>
+
+  <div class="clock-hub-page pb-5">
+    <div class="container">
+
+      <!-- Hero Clock Section -->
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3">Digital Clock Hub</h1>
+        <p class="text-muted small mb-4">Integrated: Calendar • Stopwatch • World Clock • Event Countdown • Digital Clock</p>
+        
+        <!-- Today's Focus Widget -->
+        <div class="d-flex justify-content-center mb-5">
+          <div class="focus-widget-container" id="focus-widget">
+            <input type="text" id="today-focus" class="focus-input" placeholder="🎯 What is your main focus for today?" autocomplete="off">
+            <button class="focus-complete-btn" id="focus-complete" onclick="toggleFocusComplete()" title="Mark as Complete">
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="hub-main-clock" class="main-clock-display">00:00:00</div>
+        <div id="hub-main-date" class="clock-date-display font-monospace">Loading...</div>
+        <div class="mt-4 d-flex justify-content-center gap-3">
+          <div class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20 px-3 py-2">
+            <i class="fa-solid fa-earth-americas me-2"></i>Live Local Time
+          </div>
+          <button class="btn btn-sm btn-outline-info rounded-pill" onclick="toggleTimeFormat()">
+            <i class="fa-solid fa-clock me-1"></i> <span id="format-label">24H Mode</span>
+          </button>
+        </div>
       </div>
-      <a href="/" class="btn btn-link mt-4">← Back to Home</a>
+
+      <div class="row g-4">
+        <!-- Calendar Section -->
+        <div class="col-lg-4">
+          <div class="glass-card">
+            <div class="calendar-header">
+              <h5 class="mb-0 fw-bold" id="cal-month-year">March 2026</h5>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonth(-1)"><i
+                    class="fa-solid fa-chevron-left"></i></button>
+                <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonth(1)"><i
+                    class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="calendar-grid" id="calendar-grid">
+              <!-- Labels generated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Stopwatch Section -->
+        <div class="col-lg-4">
+          <div class="glass-card text-center">
+            <h5 class="fw-bold mb-4 text-start"><i class="fa-solid fa-stopwatch me-2 text-warning"></i>Stopwatch</h5>
+            <div class="stopwatch-display mb-4" id="sw-display">00:00.00</div>
+            <div class="d-flex justify-content-center gap-2 mb-3">
+              <button class="btn btn-success rounded-pill px-4" id="sw-start-btn"
+                onclick="toggleStopwatch()">Start</button>
+              <button class="btn btn-outline-light rounded-pill px-4" onclick="lapStopwatch()">Lap</button>
+              <button class="btn btn-danger rounded-pill px-4" onclick="resetStopwatch()">Reset</button>
+            </div>
+            <div class="laps-container" id="sw-laps">
+              <div class="text-muted small mt-2">No laps recorded yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- World Clock Section -->
+        <div class="col-lg-4">
+          <div class="glass-card">
+            <h5 class="fw-bold mb-4"><i class="fa-solid fa-globe me-2 text-info"></i>World Clock</h5>
+            <div class="world-clock-grid">
+              <div class="world-clock-item">
+                <div class="world-label">New York (EST)</div>
+                <div class="world-time" id="world-est">00:00</div>
+              </div>
+              <div class="world-clock-item">
+                <div class="world-label">London (GMT)</div>
+                <div class="world-time" id="world-gmt">00:00</div>
+              </div>
+              <div class="world-clock-item">
+                <div class="world-label">Tokyo (JST)</div>
+                <div class="world-time" id="world-jst">00:00</div>
+              </div>
+              <div class="world-clock-item">
+                <div class="world-label">Sydney (AEST)</div>
+                <div class="world-time" id="world-syd">00:00</div>
+              </div>
+            </div>
+            <hr class="my-4 opacity-10">
+            <p class="small text-muted mb-0">Stay globally synced with study partners and exam schedules across
+              timezones.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Countdown Section -->
+      <div class="col-lg-12 pt-4">
+        <div class="glass-card shadow-lg mt-3" style="border-top: 2px solid rgba(244, 63, 94, 0.3);">
+          <div class="row g-4 align-items-center">
+            <div class="col-md-4 border-end border-white border-opacity-10">
+              <h5 class="fw-bold mb-3"><i class="fa-solid fa-hourglass-start me-2 text-danger"></i>Event Countdown</h5>
+              <p class="small text-muted mb-4">Set a target date for your next big exam or life event.</p>
+              <div class="input-group mb-3">
+                <input type="datetime-local" id="countdown-date"
+                  class="form-control bg-dark text-white border-secondary">
+                <button class="btn btn-danger" onclick="setCountdown()">Set</button>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="d-flex justify-content-around text-center" id="countdown-display">
+                <div>
+                  <div class="h2 fw-bold mb-0" id="cd-days">00</div>
+                  <div class="small text-muted text-uppercase">Days</div>
+                </div>
+                <div>
+                  <div class="h2 fw-bold mb-0" id="cd-hours">00</div>
+                  <div class="small text-muted text-uppercase">Hours</div>
+                </div>
+                <div>
+                  <div class="h2 fw-bold mb-0" id="cd-mins">00</div>
+                  <div class="small text-muted text-uppercase">Mins</div>
+                </div>
+                <div>
+                  <div class="h2 fw-bold mb-0 text-danger" id="cd-secs">00</div>
+                  <div class="small text-muted text-uppercase">Secs</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hub Quick Access -->
+      <div class="row g-3 mt-5 justify-content-center">
+        <div class="col-md-2 col-6">
+          <a href="/timer" class="glass-card py-3 text-center text-decoration-none d-block">
+            <i class="fa-solid fa-stopwatch h4 mb-2 text-primary"></i>
+            <div class="small fw-bold">Timer</div>
+          </a>
+        </div>
+        <div class="col-md-2 col-6">
+          <a href="/music" class="glass-card py-3 text-center text-decoration-none d-block">
+            <i class="fa-solid fa-music h4 mb-2 text-success"></i>
+            <div class="small fw-bold">Music</div>
+          </a>
+        </div>
+        <div class="col-md-2 col-6">
+          <a href="/notes" class="glass-card py-3 text-center text-decoration-none d-block">
+            <i class="fa-solid fa-pen-nib h4 mb-2 text-warning"></i>
+            <div class="small fw-bold">Notes</div>
+          </a>
+        </div>
+        <div class="col-md-2 col-6">
+          <a href="/tasks" class="glass-card py-3 text-center text-decoration-none d-block">
+            <i class="fa-solid fa-list-check h4 mb-2 text-info"></i>
+            <div class="small fw-bold">Tasks</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="text-center mt-5">
+        <a href="/" class="btn btn-outline-light rounded-pill px-4">← Return to Dashboard</a>
+      </div>
+
     </div>
   </div>
-</section>
-<%- include('partials/footer') %>
+
+  <script>
+    (function () {
+      // ── Main Clock ──
+      let use24Hour = localStorage.getItem('hubTimeFormat') !== '12h';
+
+      window.toggleTimeFormat = () => {
+        use24Hour = !use24Hour;
+        localStorage.setItem('hubTimeFormat', use24Hour ? '24h' : '12h');
+        document.getElementById('format-label').textContent = use24Hour ? '24H Mode' : '12H Mode';
+        updateHubClock();
+      };
+
+      function updateHubClock() {
+        const now = new Date();
+        const opts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: !use24Hour };
+        document.getElementById('hub-main-clock').textContent = now.toLocaleTimeString('en-GB', opts);
+
+        document.getElementById('hub-main-date').textContent = now.toLocaleDateString(undefined, {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        // World Times
+        const timezones = {
+          'world-est': 'America/New_York',
+          'world-gmt': 'Europe/London',
+          'world-jst': 'Asia/Tokyo',
+          'world-syd': 'Australia/Sydney'
+        };
+        for (const [id, tz] of Object.entries(timezones)) {
+          document.getElementById(id).textContent = now.toLocaleTimeString('en-US', {
+            timeZone: tz, hour12: !use24Hour, hour: '2-digit', minute: '2-digit'
+          });
+        }
+      }
+      setInterval(updateHubClock, 1000);
+      updateHubClock();
+      document.getElementById('format-label').textContent = use24Hour ? '24H Mode' : '12H Mode';
+
+      // ── Calendar ──
+      let calDate = new Date();
+      function renderCalendar() {
+        const grid = document.getElementById('calendar-grid');
+        const display = document.getElementById('cal-month-year');
+        grid.innerHTML = '';
+
+        display.textContent = calDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+        // Day labels
+        ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
+          const el = document.createElement('div');
+          el.className = 'calendar-day-label'; el.textContent = d;
+          grid.appendChild(el);
+        });
+
+        const firstDay = new Date(calDate.getFullYear(), calDate.getMonth(), 1).getDay();
+        const daysInMonth = new Date(calDate.getFullYear(), calDate.getMonth() + 1, 0).getDate();
+        const today = new Date();
+
+        // Padding
+        for (let i = 0; i < firstDay; i++) {
+          const el = document.createElement('div');
+          el.className = 'calendar-day other-month';
+          grid.appendChild(el);
+        }
+
+        // Days
+        for (let day = 1; day <= daysInMonth; day++) {
+          const el = document.createElement('div');
+          el.className = 'calendar-day';
+          el.textContent = day;
+          if (day === today.getDate() && calDate.getMonth() === today.getMonth() && calDate.getFullYear() === today.getFullYear()) {
+            el.classList.add('today');
+          }
+
+          // Nishant’s birthday 🎂 - May 10th
+          if (day === 10 && calDate.getMonth() === 4) { // 4 is May
+            el.classList.add('special-event');
+            el.title = "🎂 2AM Celebration Mode (Nishant Birthday)";
+            const dot = document.createElement('div');
+            dot.className = 'event-dot';
+            el.appendChild(dot);
+          }
+          grid.appendChild(el);
+        }
+      }
+      window.changeMonth = (delta) => {
+        calDate.setMonth(calDate.getMonth() + delta);
+        renderCalendar();
+      };
+      renderCalendar();
+
+      // ── Stopwatch ──
+      let swInterval = null;
+      let swStartTime = 0;
+      let swElapsedTime = 0;
+      let laps = [];
+
+      window.toggleStopwatch = () => {
+        const btn = document.getElementById('sw-start-btn');
+        if (swInterval) {
+          clearInterval(swInterval);
+          swInterval = null;
+          btn.textContent = 'Resume';
+          btn.classList.replace('btn-secondary', 'btn-success');
+        } else {
+          swStartTime = Date.now() - swElapsedTime;
+          swInterval = setInterval(updateSWDisp, 10);
+          btn.textContent = 'Pause';
+          btn.classList.replace('btn-success', 'btn-secondary');
+        }
+      };
+
+      window.resetStopwatch = () => {
+        clearInterval(swInterval);
+        swInterval = null;
+        swElapsedTime = 0;
+        laps = [];
+        document.getElementById('sw-display').textContent = '00:00.00';
+        document.getElementById('sw-start-btn').textContent = 'Start';
+        document.getElementById('sw-start-btn').classList.replace('btn-secondary', 'btn-success');
+        document.getElementById('sw-laps').innerHTML = '<div class="text-muted small mt-2">No laps recorded yet.</div>';
+      };
+
+      window.lapStopwatch = () => {
+        if (!swElapsedTime) return;
+        laps.unshift(formatSWTime(swElapsedTime));
+        const container = document.getElementById('sw-laps');
+        container.innerHTML = laps.map((lap, i) => `
+      <div class="lap-item"><span>Lap ${laps.length - i}</span><span class="fw-bold font-monospace">${lap}</span></div>
+    `).join('');
+      };
+
+      function updateSWDisp() {
+        swElapsedTime = Date.now() - swStartTime;
+        document.getElementById('sw-display').textContent = formatSWTime(swElapsedTime);
+      }
+
+      function formatSWTime(ms) {
+        const minutes = Math.floor(ms / 60000);
+        const seconds = Math.floor((ms % 60000) / 1000);
+        const millis = Math.floor((ms % 1000) / 10);
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(millis).padStart(2, '0')}`;
+      }
+      // ── Countdown Log ──
+      let countdownTarget = localStorage.getItem('hubCountdownTarget');
+      if (countdownTarget) {
+        document.getElementById('countdown-date').value = countdownTarget;
+      }
+
+      window.setCountdown = () => {
+        const val = document.getElementById('countdown-date').value;
+        if (!val) return;
+        countdownTarget = val;
+        localStorage.setItem('hubCountdownTarget', val);
+        showWindow({ title: 'Countdown Set', message: 'Your event countdown has been updated.', type: 'success' });
+      };
+
+      function updateCountdown() {
+        if (!countdownTarget) return;
+        const target = new Date(countdownTarget).getTime();
+        const now = new Date().getTime();
+        const diff = target - now;
+
+        if (diff <= 0) {
+          document.getElementById('cd-days').textContent = '00';
+          document.getElementById('cd-hours').textContent = '00';
+          document.getElementById('cd-mins').textContent = '00';
+          document.getElementById('cd-secs').textContent = '00';
+          return;
+        }
+
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('cd-days').textContent = String(d).padStart(2, '0');
+        document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
+        document.getElementById('cd-mins').textContent = String(m).padStart(2, '0');
+        document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
+      }
+      setInterval(updateCountdown, 1000);
+      updateCountdown();
+  // ── Today's Focus ──
+  const focusInput = document.getElementById('today-focus');
+  const focusWidget = document.getElementById('focus-widget');
+  
+  if (focusInput) {
+    focusInput.value = localStorage.getItem('hubTodayFocus') || '';
+    if (localStorage.getItem('hubFocusCompleted') === 'true') {
+      focusWidget.classList.add('completed');
+    }
+
+    focusInput.addEventListener('change', () => {
+      localStorage.setItem('hubTodayFocus', focusInput.value);
+      if (focusInput.value === '') {
+        focusWidget.classList.remove('completed');
+        localStorage.setItem('hubFocusCompleted', 'false');
+      }
+    });
+
+    window.toggleFocusComplete = () => {
+      if (!focusInput.value) return;
+      const isDone = focusWidget.classList.toggle('completed');
+      localStorage.setItem('hubFocusCompleted', isDone ? 'true' : 'false');
+      
+      if (isDone) {
+        // Subtle haptic or visual alert
+        showWindow({ title: 'Goal Completed!', message: 'Great job staying focused today.', type: 'success' });
+      }
+    };
+  }
+
+  // ── Screen Wake Lock (Hub) ──
+  let hubWakeLock = null;
+  async function requestHubWakeLock() {
+    if ('wakeLock' in navigator) {
+      try {
+        hubWakeLock = await navigator.wakeLock.request('screen');
+        console.log('Hub Wake Lock Active');
+      } catch (err) {}
+    }
+  }
+  requestHubWakeLock();
+  document.addEventListener('visibilitychange', () => {
+    if (hubWakeLock !== null && document.visibilityState === 'visible') requestHubWakeLock();
+  });
+})();
+  </script>
+
+  <%- include('partials/footer') %>

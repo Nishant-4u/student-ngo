@@ -1,3 +1,56 @@
+<style>
+  /* ── Custom Window UI ── */
+  .custom-window-overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    z-index: 9999; display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 0.3s ease; padding: 20px;
+  }
+  .custom-window {
+    background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem; max-width: 440px; width: 100%; overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .window-header {
+    background: rgba(255, 255, 255, 0.03); padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .window-title { color: #f8fafc; font-weight: 800; font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
+  .window-body { padding: 2rem 1.5rem; color: #cbd5e1; font-size: 1.05rem; line-height: 1.6; }
+  .window-footer {
+    padding: 1.25rem 1.5rem; background: rgba(255, 255, 255, 0.02);
+    display: flex; justify-content: flex-end; gap: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .window-btn {
+    padding: 0.6rem 1.4rem; border-radius: 0.75rem; font-weight: 700;
+    transition: all 0.2s; border: none; cursor: pointer;
+  }
+  .btn-confirm { background: #6366f1; color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+  .btn-confirm:hover { background: #4f46e5; transform: translateY(-1px); }
+  .btn-cancel { background: rgba(255, 255, 255, 0.08); color: #94a3b8; }
+  .btn-cancel:hover { background: rgba(255, 255, 255, 0.12); color: #f1f5f9; }
+
+  /* Window Types */
+  .window-type-success .window-title { color: #10b981; }
+  .window-type-warning .window-title { color: #f59e0b; }
+  .window-type-alert .window-title { color: #f43f5e; }
+
+  /* Focus Lost Overlay */
+  .focus-lost-overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(20px); z-index: 10000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: white; text-align: center; padding: 2rem;
+  }
+  .focus-lost-icon { font-size: 5rem; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px rgba(244, 63, 94, 0.5)); }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+
 <div class="container py-2">
   <%- include('ad-unit', { adSlot: 'YOUR_AD_SLOT_ID' }) %>
 </div>
@@ -21,6 +74,7 @@
             <li><a href="/blog/study-at-night"><i class="fa-solid fa-moon"></i> Study at Night</a></li>
             <li><a href="/timer"><i class="fa-solid fa-clock"></i> Timer</a></li>
             <li><a href="/tasks"><i class="fa-solid fa-calendar-check"></i> Academic Planner Hub</a></li>
+            <li><a href="/clock"><i class="fa-solid fa-clock"></i> Digital Clock Hub</a></li>
             <li><a href="/notes"><i class="fa-solid fa-file-pdf"></i> Notes</a></li>
             <li><a href="/chat"><i class="fa-solid fa-comments"></i> Chat</a></li>
           </ul>
@@ -123,9 +177,100 @@
     </div>
   </div>
 
+  <div id="custom-window-overlay" class="custom-window-overlay d-none">
+    <div class="custom-window">
+      <div class="window-header">
+        <h3 class="window-title" id="window-title">Notification</h3>
+        <button type="button" class="btn-close btn-close-white" onclick="closeWindow()" aria-label="Close"></button>
+      </div>
+      <div class="window-body">
+        <p id="window-message"></p>
+        <div id="window-input-container" class="mt-3 d-none">
+          <input type="text" id="window-input" class="form-control bg-dark text-white border-secondary rounded-3 p-3">
+        </div>
+      </div>
+      <div class="window-footer">
+        <button type="button" id="window-cancel-btn" class="window-btn btn-cancel">Cancel</button>
+        <button type="button" id="window-confirm-btn" class="window-btn btn-confirm">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="focus-lost-overlay" class="focus-lost-overlay d-none">
+    <div class="focus-lost-icon">🚫</div>
+    <h2 class="display-4 fw-bold mb-3">Focus Interrupted!</h2>
+    <p class="lead mb-4 text-slate-400" style="max-width: 500px;">Leaving the study tab breaks your deep focus state. We're here to help you stay on track! Ready to get back to it?</p>
+    <button class="btn btn-primary btn-lg rounded-pill px-5 fw-bold" onclick="document.getElementById('focus-lost-overlay').classList.add('d-none')">I'm Back & Focused</button>
+  </div>
+
   <script>
     const loginProtectedMessage = 'Please register first. We’ll connect you soon after registration.';
     const isLoggedIn = () => localStorage.getItem('isLoggedIn') === 'true' || localStorage.getItem('studentRegistered') === 'true';
+
+    /* ── Custom Window UI Logic ── */
+    const windowOverlay = document.getElementById('custom-window-overlay');
+    const windowTitle = document.getElementById('window-title');
+    const windowMessage = document.getElementById('window-message');
+    const windowInputContainer = document.getElementById('window-input-container');
+    const windowInput = document.getElementById('window-input');
+    const windowConfirmBtn = document.getElementById('window-confirm-btn');
+    const windowCancelBtn = document.getElementById('window-cancel-btn');
+    let windowResolve = null;
+
+    function showWindow(options = {}) {
+      const { title = 'Notification', message = '', type = 'alert', defaultValue = '', placeholder = '' } = options;
+      return new Promise(resolve => {
+        windowResolve = resolve;
+        windowTitle.textContent = title;
+        windowMessage.textContent = message;
+        windowOverlay.className = `custom-window-overlay window-type-${type}`;
+        
+        if (type === 'prompt') {
+          windowInputContainer.classList.remove('d-none');
+          windowInput.value = defaultValue;
+          windowInput.placeholder = placeholder;
+          windowCancelBtn.classList.remove('d-none');
+        } else if (type === 'confirm') {
+          windowInputContainer.classList.add('d-none');
+          windowCancelBtn.classList.remove('d-none');
+        } else {
+          windowInputContainer.classList.add('d-none');
+          windowCancelBtn.classList.add('d-none');
+        }
+
+        windowOverlay.classList.remove('d-none');
+        if (type === 'prompt') windowInput.focus();
+      });
+    }
+
+    function closeWindow(result) {
+      windowOverlay.classList.add('d-none');
+      if (windowResolve) {
+        if (typeof result === 'undefined' && windowInputContainer.classList.contains('d-none' === false)) {
+           windowResolve(windowInput.value);
+        } else {
+           windowResolve(result);
+        }
+      }
+    }
+
+    windowConfirmBtn?.addEventListener('click', () => {
+      const isPrompt = !windowInputContainer.classList.contains('d-none');
+      closeWindow(isPrompt ? windowInput.value : true);
+    });
+    windowCancelBtn?.addEventListener('click', () => closeWindow(null));
+    
+    /* ── Focus Guard Logic ── */
+    let lastFocusTime = Date.now();
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        const focusLostOverlay = document.getElementById('focus-lost-overlay');
+        if (pomodoroInterval && focusModeSetting) {
+          focusLostOverlay?.classList.remove('d-none');
+        }
+      }
+    });
+
     const chatContent = document.getElementById('chat-content');
     const notesContent = document.getElementById('notes-content');
     const registerButton = document.getElementById('register-button');
@@ -161,7 +306,29 @@
     const streakDateKey = 'studyStreakDate';
     const studyTimeLogKey = 'studyTimeLog';
     const leaderboardDataKey = 'studyLeaderboardData';
-    const dailyGoalMinutes = 180;
+    const dailyGoalKey = 'customDailyStudyGoal';
+    let dailyGoalMinutes = Number(localStorage.getItem(dailyGoalKey)) || 180;
+    
+    function setDailyGoal() {
+      showWindow({
+        title: 'Set Daily Goal',
+        message: 'How many minutes do you want to study every day?',
+        type: 'prompt',
+        defaultValue: dailyGoalMinutes,
+        placeholder: 'e.g. 60, 120, 180'
+      }).then(val => {
+        const mins = Number(val);
+        if (mins && mins >= 30 && mins <= 720) {
+          dailyGoalMinutes = mins;
+          localStorage.setItem(dailyGoalKey, mins);
+          updateStreakPage();
+          showWindow({ title: 'Goal Updated', message: `Your new daily goal is ${mins} minutes. Let's crush it!`, type: 'success' });
+        } else if (val !== null) {
+          showWindow({ title: 'Invalid Goal', message: 'Please enter a value between 30 and 720 minutes.', type: 'warning' });
+        }
+      });
+    }
+
     const gameUnlockKey = 'studyGameUnlocked';
     const quizQuestions = [
       {
@@ -385,7 +552,11 @@
           if (typeof window.timerAlertSound === 'function') {
             try { window.timerAlertSound(); } catch(e) {}
           }
-          alert('Session complete! Time to switch your focus. Your study game is now unlocked.');
+          showWindow({
+            title: '🎉 Session Complete!',
+            message: 'Amazing work! You finished your session. Time to switch your focus. Your study game is now unlocked.',
+            type: 'success'
+          });
         }
       }, 1000);
       updateBlockerState();
@@ -636,7 +807,11 @@
       const weeklyStudyLog = document.getElementById('weekly-study-log');
       const motivationText = document.getElementById('motivation-text');
       const streakWarning = document.getElementById('streak-warning');
+      const goalTargetDisplay = document.getElementById('goal-target-display');
 
+      if (goalTargetDisplay) {
+        goalTargetDisplay.textContent = dailyGoalMinutes >= 60 ? `${(dailyGoalMinutes / 60).toFixed(1)} hrs` : `${dailyGoalMinutes} min`;
+      }
       if (streakCountElement) streakCountElement.textContent = storedCount;
       if (streakMessageElement) streakMessageElement.textContent = storedCount > 0 ? `${storedCount} Day Streak — ${motivation}` : 'Your streak starts today!';
       if (streakLevel) streakLevel.textContent = levelText;
@@ -1010,7 +1185,11 @@
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('studentRegistered', 'true');
             setupAuthPanels();
-            alert('Registration holds for this session. Chat and notes are now available.');
+            showWindow({
+              title: 'Registration Success',
+              message: 'Your registration is active for this session. Chat and notes are now available.',
+              type: 'success'
+            });
           }, { once: true });
         }
       }
@@ -1097,7 +1276,7 @@
     }
 
     function isDistractingLink(url) {
-      const distractingSites = ['youtube.com', 'youtu.be', 'instagram.com', 'facebook.com'];
+      const distractingSites = ['youtube.com', 'youtu.be', 'instagram.com', 'facebook.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com', 'twitch.tv', 'netflix.com'];
       return distractingSites.some(site => url.hostname.toLowerCase().includes(site));
     }
 
@@ -1155,10 +1334,10 @@
 
       focusModeToggle?.addEventListener('click', () => setFocusModeSetting(!focusModeSetting));
 
-      reminderSet?.addEventListener('click', () => {
+      reminderSet?.addEventListener('click', async () => {
         const timeInput = document.getElementById('reminder-time');
         if (!timeInput || !timeInput.value) {
-          alert('Please choose a time for your reminder.');
+          showWindow({ title: 'Pick a Time', message: 'Please choose a time for your study reminder.', type: 'warning' });
           return;
         }
         const [hours, minutes] = timeInput.value.split(':').map(Number);
@@ -1168,8 +1347,14 @@
           target.setDate(target.getDate() + 1);
         }
         const delay = target.getTime() - Date.now();
-        alert(`Reminder set for ${target.toLocaleTimeString()}`);
-        setTimeout(() => alert('⏰ Reminder: Time to study!'), delay);
+        showWindow({
+          title: '⏰ Reminder Set',
+          message: `Your study reminder is set for ${target.toLocaleTimeString()}. We'll notify you!`,
+          type: 'success'
+        });
+        setTimeout(() => {
+          showWindow({ title: '⏰ Study Time!', message: 'It\'s time to start your scheduled study session. Let\'s go!', type: 'alert' });
+        }, delay);
       });
 
       taskAdd?.addEventListener('click', () => {
@@ -1270,17 +1455,23 @@
 
       streakActivityButton?.addEventListener('click', () => {
         recordActivity();
-        alert('Study activity recorded. Keep your streak going!');
+        showWindow({ title: 'Activity Recorded', message: 'Study activity recorded. Keep your streak going!', type: 'success' });
       });
 
       const logMinutesButton = document.getElementById('log-minutes-btn');
-      logMinutesButton?.addEventListener('click', () => {
-        const input = prompt('Enter minutes of study to log for today:', '30');
+      logMinutesButton?.addEventListener('click', async () => {
+        const input = await showWindow({
+          title: 'Log Minutes',
+          message: 'Enter minutes of study to log for today:',
+          type: 'prompt',
+          defaultValue: '30',
+          placeholder: 'e.g. 30, 60'
+        });
         const minutes = Number(input);
         if (!minutes || minutes <= 0) return;
         addStudyMinutes(minutes);
         updateStreakPage();
-        alert(`Logged ${minutes} minutes for today. Keep the streak alive!`);
+        showWindow({ title: 'Minutes Logged', message: `Logged ${minutes} minutes for today. Keep the streak alive!`, type: 'success' });
       });
 
       featureCards.forEach(card => card.addEventListener('click', recordActivity));
@@ -1293,7 +1484,7 @@
 
         if (link.dataset.loginProtected && !isLoggedIn()) {
           event.preventDefault();
-          alert(loginProtectedMessage);
+          showWindow({ title: 'Restricted Content', message: loginProtectedMessage, type: 'warning' });
           return;
         }
 
