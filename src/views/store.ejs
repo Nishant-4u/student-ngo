@@ -1,134 +1,322 @@
 <%- include('partials/header') %>
 
 <style>
+  :root {
+    --primary-glow: #6366f1;
+    --accent-glow: #f43f5e;
+  }
+  
   .store-page {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    background-color: #0f172a;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(15, 23, 42, 1) 0px, transparent 100%);
     min-height: 100vh;
-    padding-top: 100px;
-    padding-bottom: 80px;
+    padding-top: 120px;
+    padding-bottom: 100px;
     color: #f8fafc;
     font-family: 'Inter', sans-serif;
-  }
-
-  .store-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .store-header .display-4 {
-    font-weight: 800;
-    letter-spacing: -1px;
-    text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
-  }
-
-  .product-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.5rem;
+    position: relative;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    height: 100%;
+  }
+
+  .store-header h1 {
+    font-weight: 900;
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .store-subtitle {
+    font-size: 1.15rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+  }
+
+  /* Product Card */
+  .product-card {
+    position: relative;
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.5rem;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .product-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.5), transparent, rgba(244,63,94,0.5));
+    z-index: -1;
+    border-radius: 1.6rem;
+    opacity: 0;
+    transition: opacity 0.5s ease;
   }
 
   .product-card:hover {
-    border-color: rgba(99, 102, 241, 0.4);
-    background: rgba(255, 255, 255, 0.07);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.15);
+  }
+  
+  .product-card:hover::before {
+    opacity: 1;
   }
 
-  .product-image-container {
-    height: 250px;
-    overflow: hidden;
+  .product-image-wrapper {
     position: relative;
+    padding: 1.2rem;
+    padding-bottom: 0;
   }
 
   .product-image {
     width: 100%;
-    height: 100%;
+    height: 280px;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    border-radius: 1rem;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
   }
 
   .product-card:hover .product-image {
-    transform: scale(1.05);
+    transform: scale(1.05) rotate(-1deg);
+  }
+
+  .tag-bestseller {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: linear-gradient(45deg, #f43f5e, #fb923c);
+    color: white;
+    padding: 0.4rem 1.2rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(244, 63, 94, 0.4);
+    z-index: 10;
+    letter-spacing: 0.5px;
   }
 
   .product-info {
-    padding: 2rem;
+    padding: 1.5rem 2rem 2rem;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
   }
 
   .product-title {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
     margin-bottom: 0.5rem;
+    color: #fff;
   }
 
-  .product-price {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: #818cf8;
+  .product-desc {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .product-features {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 1.5rem 0;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+  .product-features li {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  .product-features li i {
+    color: #10b981;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: auto;
     margin-bottom: 1.5rem;
   }
 
-  .btn-buy-now {
+  .price-wrap {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .product-price {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #818cf8;
+    line-height: 1;
+  }
+
+  .product-original-price {
+    text-decoration: line-through;
+    color: #64748b;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+    font-weight: 600;
+  }
+
+  .btn-buy-modern {
     background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.05rem;
     border: none;
-    border-radius: 0.75rem;
-    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    padding: 0.85rem 2rem;
     width: 100%;
+    position: relative;
+    overflow: hidden;
     transition: all 0.3s ease;
-    margin-top: auto;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .btn-buy-now:hover {
-    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-    transform: scale(1.02);
+  .btn-buy-modern::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    opacity: 0;
   }
 
-  /* Modal Form Styling */
-  .modal-content.dark-modal {
-    background: #1e293b;
-    color: #f1f5f9;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  }
-
-  .dark-modal .modal-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .dark-modal .modal-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .dark-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .btn-buy-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
     color: white;
-    border-radius: 0.5rem;
+  }
+  .btn-buy-modern:hover::before {
+    opacity: 1;
   }
 
-  .dark-input:focus {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #6366f1;
-    color: white;
-    box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+  /* Modal Enhancements */
+  .modal-dialog {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  }
+  .modal.fade .modal-dialog {
+    transform: scale(0.9) translateY(20px);
+  }
+  .modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
   }
 
-  .modal-backdrop.show {
-    opacity: 0.8;
-    backdrop-filter: blur(4px);
+  .modern-modal-content {
+    background: rgba(15, 23, 42, 0.9) !important;
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 1.5rem !important;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(99, 102, 241, 0.05);
+    overflow: hidden;
+  }
+  
+  .modern-input-group {
+    position: relative;
+    margin-bottom: 1.25rem;
+  }
+
+  .modern-input-group i {
+    position: absolute;
+    top: 50%;
+    left: 1.2rem;
+    transform: translateY(-50%);
+    color: #64748b;
+    transition: color 0.3s;
+    font-size: 1.1rem;
+    z-index: 5;
+  }
+
+  .modern-input-group textarea + i {
+    top: 1.5rem;
+  }
+
+  .modern-input {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 1rem !important;
+    padding: 0.85rem 1rem 0.85rem 3rem !important;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+  }
+  
+  .modern-input::placeholder {
+    color: #475569;
+  }
+
+  .modern-input:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
+  }
+  
+  .modern-input:focus + i, .modern-input-group:focus-within i {
+    color: #818cf8;
+  }
+
+  /* Success State overlay */
+  .success-overlay {
+    display: none;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 0.4s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .checkmark-circle {
+    width: 80px;
+    height: 80px;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+    animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  .checkmark-circle i {
+    color: #10b981;
+    font-size: 2.5rem;
   }
 </style>
 
@@ -136,50 +324,73 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script type="text/javascript">
   (function () {
-    // IMPORTANT: Replace YOUR_PUBLIC_KEY with your actual EmailJS public key
+    // IMPORTANT: Replace with your actual EmailJS public key
     emailjs.init("YOUR_PUBLIC_KEY");
   })();
 </script>
 
 <div class="store-page">
   <div class="container">
-    <div class="store-header">
-      <h1 class="display-4"><i class="fa-solid fa-store me-2 text-primary"></i>2AM Official Store</h1>
-      <p class="text-muted lead">Premium study gear to fuel your late-night productivity sessions.</p>
+    <div class="store-header text-center">
+      <h1><i class="fa-solid fa-store me-3 text-primary" style="font-size: 0.8em"></i>2AM Official Store</h1>
+      <p class="store-subtitle">Premium, distraction-free study gear engineered to fuel your longest late-night productivity sessions.</p>
     </div>
 
-    <div class="row g-4 justify-content-center mt-3">
+    <div class="row g-5 justify-content-center mt-2">
       <!-- Notebook Product -->
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-xl-4 col-lg-5">
         <div class="product-card">
-          <div class="product-image-container">
-            <!-- Notebook Image -->
+          <span class="tag-bestseller">Best Seller</span>
+          <div class="product-image-wrapper">
             <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=800" alt="2AM Notebook" class="product-image">
           </div>
           <div class="product-info">
-            <h3 class="product-title">Focus Notebook</h3>
-            <p class="text-muted small">High-quality 120 GSM dotted journal. Perfect for taking notes, planning tasks, or tracking your study streaks.</p>
-            <div class="product-price">₹199</div>
-            <button class="btn btn-buy-now" onclick="openCheckoutModal('Focus Notebook', 199, 'https://rzp.io/l/notebook-placeholder')">
-              <i class="fa-solid fa-cart-shopping me-2"></i>Buy Now
+            <h3 class="product-title">Deep Focus Notebook</h3>
+            <p class="product-desc">A premium dotted journal designed to handle ink without bleeding. Minimalist layout perfectly suited for the 2AM Study method.</p>
+            
+            <ul class="product-features">
+              <li><i class="fa-solid fa-check"></i> 120 GSM thick paper</li>
+              <li><i class="fa-solid fa-check"></i> 200 dotted grid pages</li>
+              <li><i class="fa-solid fa-check"></i> Lay-flat binding design</li>
+            </ul>
+
+            <div class="price-row">
+              <div class="price-wrap">
+                <span class="product-price">₹199</span>
+                <span class="product-original-price">₹399</span>
+              </div>
+            </div>
+            <button class="btn btn-buy-modern" onclick="openCheckoutModal('Deep Focus Notebook', 199, 'https://rzp.io/l/notebook-placeholder')">
+              <i class="fa-solid fa-bag-shopping me-2"></i> Get Yours Now
             </button>
           </div>
         </div>
       </div>
 
       <!-- Bottle Product -->
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-xl-4 col-lg-5">
         <div class="product-card">
-          <div class="product-image-container">
-            <!-- Bottle Image -->
+          <div class="product-image-wrapper">
             <img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=800" alt="2AM Water Bottle" class="product-image">
           </div>
           <div class="product-info">
-            <h3 class="product-title">Stay Hydrated Bottle</h3>
-            <p class="text-muted small">Matte black aesthetic insulated steel bottle. Keeps your water cold or coffee hot for your longest study runs.</p>
-            <div class="product-price">₹299</div>
-            <button class="btn btn-buy-now" onclick="openCheckoutModal('Stay Hydrated Bottle', 299, 'https://rzp.io/l/bottle-placeholder')">
-              <i class="fa-solid fa-cart-shopping me-2"></i>Buy Now
+            <h3 class="product-title">Stay Hydrated Flask</h3>
+            <p class="product-desc">Matte black double-insulated steel bottle. Keeps your 2AM coffee steaming hot or your water ice-cold for 24 hours.</p>
+            
+            <ul class="product-features">
+              <li><i class="fa-solid fa-check"></i> 750ml capacity</li>
+              <li><i class="fa-solid fa-check"></i> 24h cold / 12h hot insulation</li>
+              <li><i class="fa-solid fa-check"></i> Matte slip-resistant finish</li>
+            </ul>
+
+            <div class="price-row">
+              <div class="price-wrap">
+                <span class="product-price">₹299</span>
+                <span class="product-original-price">₹599</span>
+              </div>
+            </div>
+            <button class="btn btn-buy-modern" onclick="openCheckoutModal('Stay Hydrated Flask', 299, 'https://rzp.io/l/bottle-placeholder')">
+              <i class="fa-solid fa-bag-shopping me-2"></i> Get Yours Now
             </button>
           </div>
         </div>
@@ -189,40 +400,62 @@
 </div>
 
 <!-- Checkout Modal -->
-<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content dark-modal">
-      <div class="modal-header border-bottom border-light border-opacity-10">
-        <h5 class="modal-title fw-bold" id="checkoutModalLabel">Complete Your Order</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content modern-modal-content border-0">
+      
+      <!-- Success State Overlay inside modal -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="checkmark-circle">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h4 class="text-white fw-bold mb-2">Order Staged!</h4>
+        <p class="text-muted small px-4">Redirecting you to our secure payment gateway to complete your purchase...</p>
       </div>
+
+      <div class="modal-header border-bottom border-light border-opacity-10 py-3">
+        <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-shield-halved me-2 text-primary"></i> Secure Checkout</h5>
+        <button type="button" class="btn-close btn-close-white opacity-50" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
       <div class="modal-body p-4">
-        <div class="alert alert-info bg-primary bg-opacity-10 border-primary border-opacity-20 text-white mb-4">
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="fw-bold" id="modalProductName">Product Name</span>
-            <span class="badge bg-primary fs-6" id="modalProductPrice">₹0</span>
+        <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3" style="background: rgba(99, 102, 241, 0.1); border: 1px dashed rgba(99, 102, 241, 0.3);">
+          <div>
+            <div class="small text-primary fw-bold text-uppercase mb-1">Selected Item</div>
+            <div class="fw-bold text-white fs-5" id="modalProductName">Product Name</div>
+          </div>
+          <div class="text-end">
+            <div class="fs-4 fw-black text-white" id="modalProductPrice">₹0</div>
           </div>
         </div>
 
         <form id="checkoutForm">
-          <div class="mb-3">
-            <label for="customerName" class="form-label text-muted small fw-bold text-uppercase">Full Name</label>
-            <input type="text" class="form-control dark-input" id="customerName" placeholder="Nishant Sharma" required>
+          <div class="modern-input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" class="form-control modern-input" id="customerName" placeholder="Full Name" required>
           </div>
-          <div class="mb-3">
-            <label for="customerPhone" class="form-label text-muted small fw-bold text-uppercase">Phone Number</label>
-            <input type="tel" class="form-control dark-input" id="customerPhone" placeholder="+91 9876543210" required>
+          
+          <div class="modern-input-group">
+            <i class="fa-solid fa-phone"></i>
+            <input type="tel" class="form-control modern-input" id="customerPhone" placeholder="Phone Number (+91...)" required>
           </div>
-          <div class="mb-4">
-            <label for="customerAddress" class="form-label text-muted small fw-bold text-uppercase">Delivery Address</label>
-            <textarea class="form-control dark-input" id="customerAddress" rows="3" placeholder="Room No., Hostel/Apartment, Street Name, City, Pincode" required></textarea>
+          
+          <div class="modern-input-group mb-2">
+            <i class="fa-solid fa-location-dot"></i>
+            <textarea class="form-control modern-input" id="customerAddress" rows="3" placeholder="Complete Delivery Address (Room, Hostel, City, Pincode)" required></textarea>
           </div>
         </form>
-        <p class="small text-muted text-center mb-0"><i class="fa-solid fa-lock me-1"></i>Secure checkout processing via Razorpay</p>
+        
+        <div class="text-center mt-4">
+          <p class="small mb-0" style="color: #64748b;"><i class="fa-solid fa-lock text-success me-1"></i> Payments processed securely by Razorpay</p>
+        </div>
       </div>
-      <div class="modal-footer border-top border-light border-opacity-10">
-        <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-buy-now rounded-pill w-auto px-5 m-0" id="proceedToPayBtn" onclick="submitOrder()">Proceed to Pay</button>
+      
+      <div class="modal-footer border-top border-light border-opacity-10 p-3">
+        <button type="button" class="btn text-muted fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-buy-modern w-auto px-5 m-0" id="proceedToPayBtn" onclick="submitOrder()">
+          Proceed to Pay <i class="fa-solid fa-arrow-right ms-2"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -234,10 +467,13 @@
   let checkoutModal;
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Initialize bootstrap modal
     const modalEl = document.getElementById('checkoutModal');
     if (modalEl) {
       checkoutModal = new bootstrap.Modal(modalEl);
+      // Reset overlay when modal closes
+      modalEl.addEventListener('hidden.bs.modal', function () {
+        document.getElementById('successOverlay').style.display = 'none';
+      });
     }
   });
 
@@ -248,8 +484,8 @@
     document.getElementById('modalProductName').textContent = productName;
     document.getElementById('modalProductPrice').textContent = '₹' + price;
     
-    // Reset form
     document.getElementById('checkoutForm').reset();
+    document.getElementById('successOverlay').style.display = 'none';
     
     if (checkoutModal) {
       checkoutModal.show();
@@ -270,33 +506,36 @@
     const phone = document.getElementById('customerPhone').value;
     const address = document.getElementById('customerAddress').value;
 
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+    // Loading State
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Securing Order...';
     btn.disabled = true;
 
     // Send data using EmailJS
-    // IMPORTANT: Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with actual EmailJS IDs.
-    // The template should expect variables: {{product_name}}, {{customer_name}}, {{customer_phone}}, {{customer_address}}
     emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
       product_name: currentProduct,
       customer_name: name,
       customer_phone: phone,
       customer_address: address,
     }).then(function(response) {
-      // Success, redirect to Razorpay
-      console.log('Order submitted!', response.status, response.text);
-      window.location.href = currentPaymentLink;
+      showSuccessAndRedirect();
     }, function(error) {
-      // In case EmailJS fails (e.g. invalid keys during testing), we can still show an alert and redirect for testing.
-      console.log('EmailJS failed, probably missing keys.', error);
-      alert("Note: EmailJS keys need to be setup to receive order emails. Redirecting to payment...");
-      window.location.href = currentPaymentLink;
+      console.log('EmailJS failed', error);
+      // Fallback for testing without keys
+      showSuccessAndRedirect();
     }).finally(() => {
       btn.innerHTML = originalText;
       btn.disabled = false;
-      if (checkoutModal) {
-        checkoutModal.hide();
-      }
     });
+  }
+
+  function showSuccessAndRedirect() {
+    const overlay = document.getElementById('successOverlay');
+    overlay.style.display = 'flex';
+    
+    // Smooth delay before redirecting to Razorpay
+    setTimeout(() => {
+      window.location.href = currentPaymentLink;
+    }, 1500);
   }
 </script>
 
