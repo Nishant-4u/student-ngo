@@ -163,6 +163,12 @@ app.get('/about', (req, res) => {
 app.get('/contact', (req, res) => {
   res.render('contact', { pageTitle: 'Contact Us' });
 });
+app.get('/store', (req, res) => {
+  res.render('store', { 
+    pageTitle: 'Official 2AM Study Store - Productivity Gear',
+    metaDescription: 'Get official 2AM Study merchandise including aesthetic notebooks and bottles. Fuel your 2AM study sessions.'
+  });
+});
 
 // --- Blog Section ---
 app.get('/blog', (req, res) => {
