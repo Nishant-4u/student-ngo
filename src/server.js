@@ -45,13 +45,6 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/pricing-plan.html', (req, res) => {
-  res.render('pricing-plan', {
-    pageTitle: 'Pricing Plan - Free Study Tools for Students',
-    metaDescription: 'Discover all the free study tools available on 2AM Study, from timers and notes to quotes and streak tracking.',
-  });
-});
-
 
 
 app.get('/timer', (req, res) => {
@@ -162,12 +155,6 @@ app.get('/about', (req, res) => {
 });
 app.get('/contact', (req, res) => {
   res.render('contact', { pageTitle: 'Contact Us' });
-});
-app.get('/store', (req, res) => {
-  res.render('store', { 
-    pageTitle: 'Official 2AM Study Store - Productivity Gear',
-    metaDescription: 'Get official 2AM Study merchandise including aesthetic notebooks and bottles. Fuel your 2AM study sessions.'
-  });
 });
 
 // --- Blog Section ---
@@ -290,12 +277,6 @@ app.get('/air-quality', (req, res) => {
 });
 
 // --- PDF Tools ---
-app.get('/pdf-tools', (req, res) => {
-  res.render('pdf-tools/index', { 
-    pageTitle: 'Free PDF Tools for Students - Merge, Split, Edit & More',
-    metaDescription: 'The complete PDF toolkit for academic life. Merge, split, compress, and edit PDF documents for free, no account needed.'
-  });
-});
 
 app.get('/pdf-tools/maker', (req, res) => {
   res.render('pdf-tools/maker', { 
@@ -340,23 +321,26 @@ app.get('/pdf-tools/converter', (req, res) => {
 });
 
 app.post('/send-email', async (req, res) => {
-  const { name, email, phone, formName } = req.body;
+  const { formName } = req.body;
 
-  if (!name || !email || !phone) {
-    return res.status(400).json({ error: 'Name, email, and phone are required.' });
+  // Build key-value list from body
+  let bodyContent = '';
+  let htmlContent = `<p><strong>Form:</strong> ${formName || 'Contact Form'}</p>`;
+  
+  for (const [key, value] of Object.entries(req.body)) {
+    if (key !== 'formName') {
+      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      bodyContent += `${capitalizedKey}: ${value}\n`;
+      htmlContent += `<p><strong>${capitalizedKey}:</strong> ${value}</p>`;
+    }
   }
 
   const mailOptions = {
     from: `Website Contact <${process.env.SMTP_USER}>`,
     to: process.env.RECEIVER_EMAIL || process.env.SMTP_USER,
     subject: `New form submission: ${formName || 'Contact Form'}`,
-    text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}`,
-    html: `
-      <p><strong>Form:</strong> ${formName || 'Contact Form'}</p>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Phone:</strong> ${phone}</p>
-    `,
+    text: bodyContent,
+    html: htmlContent,
   };
 
   try {
