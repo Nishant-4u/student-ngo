@@ -1160,3 +1160,83 @@ body.fullscreen-active {
     box-shadow: 0 10px 20px -3px rgba(245, 158, 11, 0.4);
     background: linear-gradient(135deg, #fbbf24, #fcd34d);
 }
+
+/* Student Reviews Section */
+.review-card {
+    transition: all 0.3s ease;
+    border-radius: 1.5rem !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.review-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+.review-text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #475569;
+    font-style: italic;
+}
+
+.reviewer h6 {
+    color: #1e293b;
+    font-size: 1.1rem;
+}
+
+.reviewer small {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.avatar-wrapper img {
+    border: 2px solid #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.quote-icon i {
+    color: #3b82f6;
+    opacity: 0.15;
+}
+
+#reviewCarousel .carousel-indicators button {
+    transition: all 0.3s ease;
+}
+
+#reviewCarousel .carousel-indicators button.active {
+    width: 30px !important;
+    border-radius: 10px !important;
+}
+
+@media (max-width: 768px) {
+    .review-card {
+        padding: 1.5rem !important;
+    }
+    
+    .review-text {
+        font-size: 0.95rem;
+    }
+}
+
+/* Dark themed review cards */
+.review-card-dark {
+    transition: all 0.3s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.review-card-dark:hover {
+    transform: translateY(-8px);
+    background: rgba(30, 41, 59, 0.8) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.review-text-dark {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+

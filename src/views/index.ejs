@@ -27,8 +27,8 @@
               <label class="form-label">Phone</label>
               <div class="input-group ">
                 <span class="input-group-text" id="basic-addon1">+91</span>
-                <input type="text" class="form-control" name="phone" placeholder="Phone" required
-                  pattern="[0-9]{10}" oninvalid="this.setCustomValidity('Oops! Please enter a valid phone number.')"
+                <input type="text" class="form-control" name="phone" placeholder="Phone" required pattern="[0-9]{10}"
+                  oninvalid="this.setCustomValidity('Oops! Please enter a valid phone number.')"
                   oninput="this.setCustomValidity('')" />
               </div>
             </div>
@@ -66,8 +66,8 @@
               <label class="form-label">Phone</label>
               <div class="input-group ">
                 <span class="input-group-text" id="basic-addon1">+91</span>
-                <input type="text" class="form-control" name="phone" placeholder="Phone" required 
-                  pattern="[0-9]{10}" oninvalid="this.setCustomValidity('Oops! Please enter a valid phone number.')"
+                <input type="text" class="form-control" name="phone" placeholder="Phone" required pattern="[0-9]{10}"
+                  oninvalid="this.setCustomValidity('Oops! Please enter a valid phone number.')"
                   oninput="this.setCustomValidity('')" />
               </div>
             </div>
@@ -179,8 +179,8 @@
               <label class="form-label">Phone Number</label>
               <div class="input-group ">
                 <span class="input-group-text" id="basic-addon1">+91</span>
-                <input type="text" class="form-control" name="phone" placeholder="Phone" required
-                  pattern="[0-9]{10}" oninvalid="this.setCustomValidity('Oops! Please enter a valid phone number.')"
+                <input type="text" class="form-control" name="phone" placeholder="Phone" required pattern="[0-9]{10}"
+                  oninvalid="this.setCustomValidity('Oops! Please enter a valid phone number.')"
                   oninput="this.setCustomValidity('')" />
               </div>
             </div>
@@ -678,7 +678,112 @@
       });
     </script>
 
+    <section id="store-reviews" class="container-fluid py-5"
+      style="background-color: #0f172a; border-top: 1px solid rgba(255,255,255,0.05);">
+      <div class="container py-4">
+        <div class="text-center mb-5">
+          <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-2">Verified Purchases</span>
+          <h2 class="fw-bold display-5 mb-3 text-white">What Shoppers Are Saying</h2>
+          <p class="text-light opacity-75 mx-auto" style="max-width: 600px;">Students love our premium study gear. See
+            what they have to say about our exclusive collection.</p>
+        </div>
+
+        <div id="reviewCarouselStore" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <div class="review-card-dark p-4 rounded-4 shadow-sm h-100 position-relative"
+                    style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x text-white"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text-dark mb-4 text-light opacity-75">"The notebook quality is amazing! The 120 GSM
+                      pages are so thick, perfect for my brush pens and journaling without any bleed."</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&q=40&fm=webp"
+                          alt="Aryan K." class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"
+                          loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0 text-white">Aryan K.</h6>
+                        <small class="text-warning">Verified Buyer</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 d-none d-md-block">
+                  <div class="review-card-dark p-4 rounded-4 shadow-sm h-100 position-relative"
+                    style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x text-white"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text-dark mb-4 text-light opacity-75">"I love my Focus Water Bottle. It keeps my
+                      tea hot for hours while I study at night. The temperature display is super useful too!"</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="">
+                        <img src="C:\Users\sunil\Downloads\2ampics\WhatsApp I .jpeg" alt="Meera P."
+                          class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0 text-white">Meera P.</h6>
+                        <small class="text-warning">Verified Buyer</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 d-none d-lg-block">
+                  <div class="review-card-dark p-4 rounded-4 shadow-sm h-100 position-relative"
+                    style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x text-white"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text-dark mb-4 text-light opacity-75">"The Minimalist Study Bag is my daily
+                      companion now. It fits my 15-inch laptop and three heavy textbooks with ease. Very comfy."</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&q=40&fm=webp"
+                          alt="Tanvi R." class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"
+                          loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0 text-white">Tanvi R.</h6>
+                        <small class="text-warning">Verified Buyer</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="pricing" class="container-fluid py-5 pricing-section">
+
       <div class="container">
         <div class="text-center mb-4">
           <h2 class="fw-bold">Pricing Plan</h2>
@@ -960,7 +1065,203 @@
       });
     </script>
 
+    <section id="student-reviews" class="container-fluid py-5"
+      style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+      <div class="container py-4">
+        <div class="text-center mb-5">
+          <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold mb-2">Success
+            Stories</span>
+          <h2 class="fw-bold display-5 mb-3">What Our Students Say</h2>
+          <p class="text-muted mx-auto" style="max-width: 600px;">Join thousands of successful students who have
+            transformed their academic journey with 2AM Study tools and resources.</p>
+        </div>
+
+        <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <div class="review-card p-4 rounded-4 shadow-sm h-100 bg-white border-0 position-relative">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text mb-4">"The UPSC notes are incredibly detailed. They saved me hours of research
+                      and helped me focus on what actually matters for the exam."</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&q=40&fm=webp"
+                          alt="Priyanshu K." class="rounded-circle"
+                          style="width: 50px; height: 50px; object-fit: cover;" loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Priyanshu K.</h6>
+                        <small class="text-muted">UPSC Aspirant</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 d-none d-md-block">
+                  <div class="review-card p-4 rounded-4 shadow-sm h-100 bg-white border-0 position-relative">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text mb-4">"2AM Study is my go-to for late-night productivity. The focus music is a
+                      game changer, especially when I'm pulling an all-nighter."</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&q=40&fm=webp"
+                          alt="Aditi M." class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"
+                          loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Aditi M.</h6>
+                        <small class="text-muted">Engineering Student</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 d-none d-lg-block">
+                  <div class="review-card p-4 rounded-4 shadow-sm h-100 bg-white border-0 position-relative">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star-half-stroke text-warning"></i>
+                    </div>
+                    <p class="review-text mb-4">"The Premium Study Bag is actually water-resistant! Perfect for my
+                      campus commute during the monsoon season. Extremely durable."</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&q=40&fm=webp"
+                          alt="Rohan S." class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"
+                          loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Rohan S.</h6>
+                        <small class="text-muted">Medical Aspirant</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <div class="review-card p-4 rounded-4 shadow-sm h-100 bg-white border-0 position-relative">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text mb-4">"I love the Pomodoro timer. It helps me stay disciplined during long
+                      study blocks without feeling burnt out. The UI is so aesthetic!"</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&q=40&fm=webp"
+                          alt="Sneha J." class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"
+                          loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Sneha J.</h6>
+                        <small class="text-muted">Graduate Student</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Duplicate for carousel balance if needed or add more real ones -->
+                <div class="col-lg-4 col-md-6 mb-4 d-none d-md-block">
+                  <div class="review-card p-4 rounded-4 shadow-sm h-100 bg-white border-0 position-relative">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text mb-4">"The syllabus tracker is a lifesaver. I can finally see my progress
+                      clearly instead of just guessing. Highly recommend for any student."</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&q=40&fm=webp"
+                          alt="Rahul V." class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"
+                          loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Rahul V.</h6>
+                        <small class="text-muted">NEET Aspirant</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 d-none d-lg-block">
+                  <div class="review-card p-4 rounded-4 shadow-sm h-100 bg-white border-0 position-relative">
+                    <div class="quote-icon position-absolute top-0 end-0 p-3 opacity-10">
+                      <i class="fa-solid fa-quote-right fa-3x"></i>
+                    </div>
+                    <div class="rating mb-3">
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                      <i class="fa-solid fa-star text-warning"></i>
+                    </div>
+                    <p class="review-text mb-4">"Finally a place that understands the student struggle. The resources
+                      here are top-notch and the community is so supportive."</p>
+                    <div class="reviewer d-flex align-items-center">
+                      <div class="avatar-wrapper me-3">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&q=40&fm=webp"
+                          alt="Kavya P." class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"
+                          loading="lazy">
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Kavya P.</h6>
+                        <small class="text-muted">Design Student</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-indicators position-relative mt-4">
+            <button type="button" data-bs-target="#reviewCarousel" data-bs-slide-to="0" class="active bg-primary"
+              aria-current="true" aria-label="Slide 1" style="width: 12px; height: 12px; border-radius: 50%;"></button>
+            <button type="button" data-bs-target="#reviewCarousel" data-bs-slide-to="1" class="bg-primary"
+              aria-label="Slide 2" style="width: 12px; height: 12px; border-radius: 50%;"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class=" container-fluid highlights-section py-5">
+
       <div class="container">
         <div class="row mb-4">
           <div class="col-12">
