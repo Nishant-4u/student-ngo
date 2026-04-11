@@ -1,173 +1,554 @@
 <style>
   /* ── Custom Window UI ── */
   .custom-window-overlay {
-    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    z-index: 9999; display: flex; align-items: center; justify-content: center;
-    animation: fadeIn 0.3s ease; padding: 20px;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+    padding: 20px;
   }
+
   .custom-window {
-    background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 1.5rem; max-width: 440px; width: 100%; overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 2rem;
+    max-width: 480px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
   .window-header {
-    background: rgba(255, 255, 255, 0.03); padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .window-title { color: #f8fafc; font-weight: 800; font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
-  .window-body { padding: 2rem 1.5rem; color: #cbd5e1; font-size: 1.05rem; line-height: 1.6; }
+
+  .window-title {
+    color: #f8fafc;
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .window-body {
+    padding: 2rem 1.5rem;
+    color: #cbd5e1;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
   .window-footer {
-    padding: 1.25rem 1.5rem; background: rgba(255, 255, 255, 0.02);
-    display: flex; justify-content: flex-end; gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
+
   .window-btn {
-    padding: 0.6rem 1.4rem; border-radius: 0.75rem; font-weight: 700;
-    transition: all 0.2s; border: none; cursor: pointer;
+    padding: 0.6rem 1.4rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
   }
-  .btn-confirm { background: #6366f1; color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
-  .btn-confirm:hover { background: #4f46e5; transform: translateY(-1px); }
-  .btn-cancel { background: rgba(255, 255, 255, 0.08); color: #94a3b8; }
-  .btn-cancel:hover { background: rgba(255, 255, 255, 0.12); color: #f1f5f9; }
+
+  .btn-confirm {
+    background: #6366f1;
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  .btn-confirm:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+  }
+
+  .btn-cancel {
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+  }
+
+  .btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #f1f5f9;
+  }
 
   /* Window Types */
-  .window-type-success .window-title { color: #10b981; }
-  .window-type-warning .window-title { color: #f59e0b; }
-  .window-type-alert .window-title { color: #f43f5e; }
+  .window-type-success .window-title {
+    color: #10b981;
+  }
+
+  .window-type-warning .window-title {
+    color: #f59e0b;
+  }
+
+  .window-type-alert .window-title {
+    color: #f43f5e;
+  }
 
   /* Focus Lost Overlay */
   .focus-lost-overlay {
-    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(20px); z-index: 10000;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: white; text-align: center; padding: 2rem;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(20px);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 2rem;
   }
-  .focus-lost-icon { font-size: 5rem; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px rgba(244, 63, 94, 0.5)); }
 
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .focus-lost-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 15px rgba(244, 63, 94, 0.5));
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 
   .loader-spinner {
-    width: 60px; height: 60px; border: 5px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #f59e0b; border-radius: 50%;
-    animation: spin 1s linear infinite; margin-bottom: 20px;
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #f59e0b;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   /* ── Help Bot Styles ── */
   .help-bot-container {
-    position: fixed; bottom: 30px; right: 30px; z-index: 10000;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10000;
   }
+
   .help-bot-bubble {
-    width: 65px; height: 65px; background: linear-gradient(135deg, #4f46e5, #6366f1);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 1.8rem; cursor: pointer;
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
     box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
   }
-  .help-bot-bubble:hover { transform: scale(1.1) rotate(5deg); }
+
+  .help-bot-bubble:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.6);
+  }
+
   .help-bot-bubble .pulse {
-    position: absolute; width: 100%; height: 100%;
-    border-radius: 50%; background: #4f46e5; opacity: 0.5;
-    animation: botPulse 2s infinite; z-index: -1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #4f46e5;
+    opacity: 0.5;
+    animation: botPulse 2s infinite;
+    z-index: -1;
   }
+
   @keyframes botPulse {
-    0% { transform: scale(1); opacity: 0.5; }
-    100% { transform: scale(1.6); opacity: 0; }
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+
+    100% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
   }
+
   .help-bot-window {
-    position: absolute; bottom: 85px; right: 0;
-    width: 320px; background: rgba(30, 41, 59, 0.95);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    position: absolute;
+    bottom: 85px;
+    right: 0;
+    width: 320px;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.5rem; overflow: hidden;
+    border-radius: 1.5rem;
+    overflow: hidden;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-    display: none; flex-direction: column;
+    display: none;
+    flex-direction: column;
     animation: botSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
   @keyframes botSlideUp {
-    from { opacity: 0; transform: translateY(20px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
+
   .bot-header {
-    background: linear-gradient(to right, rgba(255,255,255,0.05), transparent);
-    padding: 1.25rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.05), transparent);
+    padding: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .bot-header h5 { color: #f8fafc; font-weight: 800; font-size: 1rem; margin: 0; }
-  .bot-body { padding: 1.25rem; max-height: 400px; overflow-y: auto; }
-  .bot-msg { 
-    background: rgba(255, 255, 255, 0.05); color: #cbd5e1; 
-    padding: 0.85rem 1rem; border-radius: 1rem 1rem 1rem 0;
-    font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;
-    border: 1px solid rgba(255,255,255,0.05);
+
+  .bot-header h5 {
+    color: #f8fafc;
+    font-weight: 800;
+    font-size: 1rem;
+    margin: 0;
   }
-  .bot-options { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .bot-body {
+    padding: 1.25rem;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .bot-msg {
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    padding: 0.85rem 1rem;
+    border-radius: 1rem 1rem 1rem 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .bot-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .bot-opt-btn {
-    background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #f8fafc; padding: 0.6rem 1rem; border-radius: 0.75rem;
-    font-size: 0.9rem; text-align: left; transition: all 0.2s;
-    cursor: pointer; font-weight: 600;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    text-align: left;
+    transition: all 0.2s;
+    cursor: pointer;
+    font-weight: 600;
   }
-  .bot-opt-btn:hover { background: #4f46e5; border-color: #6366f1; transform: translateX(5px); }
+
+  .bot-opt-btn:hover {
+    background: #4f46e5;
+    border-color: #6366f1;
+    transform: translateX(5px);
+  }
 
   @media (max-width: 576px) {
-    .help-bot-window { width: calc(100vw - 40px); right: -10px; }
-    .help-bot-container { right: 20px; bottom: 20px; }
+    .help-bot-window {
+      width: calc(100vw - 40px);
+      right: -10px;
+    }
+
+    .help-bot-container {
+      right: 20px;
+      bottom: 20px;
+    }
+  }
+
+  /* ── Enhanced Professional Footer ── */
+  .site-footer {
+    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    color: #cbd5e1;
+    margin-top: 6rem !important;
+    /* Increased margin for professional spacing */
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+  }
+
+  .footer-title {
+    color: #f8fafc;
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin-bottom: 1.75rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+
+  .footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #4f46e5;
+    border-radius: 2px;
+  }
+
+  .footer-card {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 1.5rem !important;
+    padding: 2rem !important;
+    transition: all 0.3s ease !important;
+    height: 100%;
+  }
+
+  .footer-card:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(99, 102, 241, 0.2) !important;
+    transform: translateY(-5px);
+  }
+
+  .footer-link-item {
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .footer-link-item a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .footer-link-item:hover a {
+    color: #f8fafc;
+    transform: translateX(5px);
+  }
+
+  .footer-link-item i {
+    color: #6366f1;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .social-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .social-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-5px) rotate(8deg);
+    border-color: #6366f1;
+    color: white;
+  }
+
+  .footer-bottom {
+    background: rgba(2, 6, 23, 0.8);
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .footer-legal a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-left: 1.5rem;
+    transition: color 0.2s;
+  }
+
+  .footer-legal a:hover {
+    color: #f8fafc;
+  }
+
+  .whatsapp-badge-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 1.25rem;
+    box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .whatsapp-badge-btn:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(34, 197, 94, 0.5);
+    color: white;
   }
 </style>
 
-<div class="container py-2">
-  <%- include('ad-unit', { adSlot: 'YOUR_AD_SLOT_ID' }) %>
+<div class="container-fluid py-4" style="background: rgba(15, 23, 42, 0.03); border-top: 1px solid rgba(0,0,0,0.05);">
+  <div class="container text-center">
+    <%- include('ad-unit', { adSlot: 'YOUR_AD_SLOT_ID' }) %>
+  </div>
 </div>
 
-<footer class="site-footer mt-5">
+<footer class="site-footer">
   <div class="container py-5">
-    <div class="row gy-4">
-      <div class="col-md-4">
-        <div class="footer-card">
-          <h5>About</h5>
-          <p>Helping students stay focused, motivated, and consistent in their study journey.</p>
+    <div class="row gy-5">
+      <!-- Brand Section -->
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-brand-section">
+          <img src="/assets/images/logo.jpg" alt="2AM Study Logo"
+            style="height: 60px; border-radius: 12px; margin-bottom: 1.5rem; filter: drop-shadow(0 0 10px rgba(79, 70, 229, 0.2));">
+          <h5 class="footer-title">2AM Study Hub</h5>
+          <p class="mb-4" style="max-width: 320px;">We bridge the gap from college life to a successful future.
+            Empowering students with the tools, knowledge, and community to excel.</p>
+          <div class="social-icons">
+            <a href="https://youtube.com/@2amstudywithme?si=h713dPkWFMRQg9zj" target="_blank" class="social-btn"
+              title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" target="_blank" class="social-btn"
+              title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="#" class="social-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/in/hiinishant/" class="social-btn" title="LinkedIn"><i
+                class="fa-brands fa-linkedin-in"></i></a>
+          </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="footer-card">
-          <h5>Quick Links</h5>
-          <ul class="footer-links list-unstyled mt-3">
-            <li><a href="/"><i class="fa-solid fa-house"></i> Home</a></li>
-            <li><a href="/blog/focus-tips"><i class="fa-solid fa-lightbulb"></i> Focus Tips</a></li>
-            <li><a href="/blog/study-routine-guide"><i class="fa-solid fa-clock"></i> Study Routine</a></li>
-            <li><a href="/blog/study-at-night"><i class="fa-solid fa-moon"></i> Study at Night</a></li>
-            <li><a href="/timer"><i class="fa-solid fa-clock"></i> Timer</a></li>
-            <li><a href="/tasks"><i class="fa-solid fa-calendar-check"></i> Academic Planner Hub</a></li>
-            <li><a href="/clock"><i class="fa-solid fa-clock"></i> Digital Clock Hub</a></li>
-            <li><a href="/notes"><i class="fa-solid fa-file-pdf"></i> Notes</a></li>
-            <li><a href="/chat"><i class="fa-solid fa-comments"></i> Chat</a></li>
-          </ul>
-        </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-2 col-md-6">
+        <h5 class="footer-title">Navigation</h5>
+        <ul class="list-unstyled">
+          <li class="footer-link-item"><i class="fa-solid fa-chevron-right"></i><a href="/">Home</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-chevron-right"></i><a href="/about">About Us</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-chevron-right"></i><a href="/blog">Our Blog</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-chevron-right"></i><a href="/contact">Contact</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-chevron-right"></i><a href="/privacy-policy">Privacy
+              Policy</a></li>
+        </ul>
       </div>
-      <div class="col-md-4">
-        <div class="footer-card">
-          <h5>Connect</h5>
-          <ul class="footer-links list-unstyled mt-3">
-            <li><a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" target="_blank" rel="noopener noreferrer" data-login-protected="whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp group</a></li>
-            <li><a href="https://youtube.com/@2amstudywithme?si=h713dPkWFMRQg9zj" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i> YouTube channel</a></li>
-            <li><a href="/college-student"><i class="fa-solid fa-heart"></i> Student Support</a></li>
-            <li><a href="/streak"><i class="fa-solid fa-trophy"></i> Goals / Streak</a></li>
-          </ul>
+
+      <!-- Study Tools -->
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-title">Success Tools</h5>
+        <ul class="list-unstyled">
+          <li class="footer-link-item"><i class="fa-solid fa-clock"></i><a href="/timer">Focus Timer</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-calendar-check"></i><a href="/tasks">Academic Planner</a>
+          </li>
+          <li class="footer-link-item"><i class="fa-solid fa-brain"></i><a href="/study-tools">Flashcard Hub</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-clock"></i><a href="/clock">Digital Clock</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-graduation-cap"></i><a href="/college-student">Student
+              Support</a></li>
+        </ul>
+      </div>
+
+      <!-- Community/Connect -->
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-title">Join Us</h5>
+        <p class="small mb-3">Join our thriving community of motivated students across the globe.</p>
+        <a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" target="_blank" class="whatsapp-badge-btn">
+          <i class="fa-brands fa-whatsapp fa-xl"></i>
+          <span>Join Community</span>
+        </a>
+        <div class="mt-4">
+          <p class="small text-muted mb-2">Need Help?</p>
+          <a href="mailto:support@2amstudy.online"
+            class="text-white text-decoration-none fw-semibold">support@2amstudy.online</a>
         </div>
       </div>
     </div>
   </div>
-  <div class="footer-bottom py-3">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-      <p class="mb-0">© 2026 Transformation-bridge| Made for Students 💛</p>
-      <div class="footer-mini-links">
-        <a href="/music">Music</a>
-        <a href="/quotes">Quotes</a>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <p class="mb-0 small opacity-75">© 2026 Transformation Bridge | Built for Excellence 🎓</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end footer-legal">
+          <a href="/music">Study Music</a>
+          <a href="/quotes">Daily Quotes</a>
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/terms">Terms</a>
+        </div>
       </div>
     </div>
   </div>
@@ -189,8 +570,10 @@
   });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+  integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+  integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script>
 
 <script>
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -236,449 +619,451 @@
     });
   });
 </script>
-  <div id="distraction-confirm-overlay" class="distraction-confirm-overlay d-none">
-    <div class="distraction-confirm-modal">
-      <p>This may distract you. Stay focused or continue?</p>
-      <div class="d-flex justify-content-end gap-2">
-        <button id="stay-focused-btn" class="btn btn-secondary btn-sm">Stay Focused</button>
-        <button id="continue-redirect-btn" class="btn btn-primary btn-sm">Continue</button>
-      </div>
+<div id="distraction-confirm-overlay" class="distraction-confirm-overlay d-none">
+  <div class="distraction-confirm-modal">
+    <p>This may distract you. Stay focused or continue?</p>
+    <div class="d-flex justify-content-end gap-2">
+      <button id="stay-focused-btn" class="btn btn-secondary btn-sm">Stay Focused</button>
+      <button id="continue-redirect-btn" class="btn btn-primary btn-sm">Continue</button>
     </div>
   </div>
+</div>
 
-  <div id="custom-window-overlay" class="custom-window-overlay d-none">
-    <div class="custom-window">
-      <div class="window-header">
-        <h3 class="window-title" id="window-title">Notification</h3>
-        <button type="button" class="btn-close btn-close-white" onclick="closeWindow()" aria-label="Close"></button>
-      </div>
-      <div class="window-body">
-        <p id="window-message"></p>
-        <div id="window-input-container" class="mt-3 d-none">
-          <input type="text" id="window-input" class="form-control bg-dark text-white border-secondary rounded-3 p-3">
-        </div>
-      </div>
-      <div class="window-footer">
-        <button type="button" id="window-cancel-btn" class="window-btn btn-cancel">Cancel</button>
-        <button type="button" id="window-confirm-btn" class="window-btn btn-confirm">OK</button>
+<div id="custom-window-overlay" class="custom-window-overlay d-none">
+  <div class="custom-window">
+    <div class="window-header">
+      <h3 class="window-title" id="window-title">Notification</h3>
+      <button type="button" class="btn-close btn-close-white" onclick="closeWindow()" aria-label="Close"></button>
+    </div>
+    <div class="window-body">
+      <p id="window-message"></p>
+      <div id="window-input-container" class="mt-3 d-none">
+        <input type="text" id="window-input" class="form-control bg-dark text-white border-secondary rounded-3 p-3">
       </div>
     </div>
+    <div class="window-footer">
+      <button type="button" id="window-cancel-btn" class="window-btn btn-cancel">Cancel</button>
+      <button type="button" id="window-confirm-btn" class="window-btn btn-confirm">OK</button>
+    </div>
   </div>
+</div>
 
-  <div id="focus-lost-overlay" class="focus-lost-overlay d-none">
-    <div class="focus-lost-icon">🚫</div>
-    <h2 class="display-4 fw-bold mb-3">Focus Interrupted!</h2>
-    <p class="lead mb-4 text-slate-400" style="max-width: 500px;">Leaving the study tab breaks your deep focus state. We're here to help you stay on track! Ready to get back to it?</p>
-    <button class="btn btn-primary btn-lg rounded-pill px-5 fw-bold" onclick="document.getElementById('focus-lost-overlay').classList.add('d-none')">I'm Back & Focused</button>
-  </div>
+<div id="focus-lost-overlay" class="focus-lost-overlay d-none">
+  <div class="focus-lost-icon">🚫</div>
+  <h2 class="display-4 fw-bold mb-3">Focus Interrupted!</h2>
+  <p class="lead mb-4 text-slate-400" style="max-width: 500px;">Leaving the study tab breaks your deep focus state.
+    We're here to help you stay on track! Ready to get back to it?</p>
+  <button class="btn btn-primary btn-lg rounded-pill px-5 fw-bold"
+    onclick="document.getElementById('focus-lost-overlay').classList.add('d-none')">I'm Back & Focused</button>
+</div>
 
-  <script>
-    const loginProtectedMessage = 'Please register first. We’ll connect you soon after registration.';
-    const isLoggedIn = () => localStorage.getItem('isLoggedIn') === 'true' || localStorage.getItem('studentRegistered') === 'true';
+<script>
+  const loginProtectedMessage = 'Please register first. We’ll connect you soon after registration.';
+  const isLoggedIn = () => localStorage.getItem('isLoggedIn') === 'true' || localStorage.getItem('studentRegistered') === 'true';
 
-    /* ── Custom Window UI Logic ── */
-    const windowOverlay = document.getElementById('custom-window-overlay');
-    const windowTitle = document.getElementById('window-title');
-    const windowMessage = document.getElementById('window-message');
-    const windowInputContainer = document.getElementById('window-input-container');
-    const windowInput = document.getElementById('window-input');
-    const windowConfirmBtn = document.getElementById('window-confirm-btn');
-    const windowCancelBtn = document.getElementById('window-cancel-btn');
-    let windowResolve = null;
+  /* ── Custom Window UI Logic ── */
+  const windowOverlay = document.getElementById('custom-window-overlay');
+  const windowTitle = document.getElementById('window-title');
+  const windowMessage = document.getElementById('window-message');
+  const windowInputContainer = document.getElementById('window-input-container');
+  const windowInput = document.getElementById('window-input');
+  const windowConfirmBtn = document.getElementById('window-confirm-btn');
+  const windowCancelBtn = document.getElementById('window-cancel-btn');
+  let windowResolve = null;
 
-    function showWindow(options = {}) {
-      const { title = 'Notification', message = '', type = 'alert', defaultValue = '', placeholder = '' } = options;
-      return new Promise(resolve => {
-        windowResolve = resolve;
-        windowTitle.textContent = title;
-        windowMessage.textContent = message;
-        windowOverlay.className = `custom-window-overlay window-type-${type}`;
-        
-        if (type === 'prompt') {
-          windowInputContainer.classList.remove('d-none');
-          windowInput.value = defaultValue;
-          windowInput.placeholder = placeholder;
-          windowCancelBtn.classList.remove('d-none');
-        } else if (type === 'confirm') {
-          windowInputContainer.classList.add('d-none');
-          windowCancelBtn.classList.remove('d-none');
-        } else {
-          windowInputContainer.classList.add('d-none');
-          windowCancelBtn.classList.add('d-none');
-        }
+  function showWindow(options = {}) {
+    const { title = 'Notification', message = '', type = 'alert', defaultValue = '', placeholder = '' } = options;
+    return new Promise(resolve => {
+      windowResolve = resolve;
+      windowTitle.textContent = title;
+      windowMessage.textContent = message;
+      windowOverlay.className = `custom-window-overlay window-type-${type}`;
 
-        windowOverlay.classList.remove('d-none');
-        if (type === 'prompt') windowInput.focus();
-      });
-    }
-
-    function closeWindow(result) {
-      windowOverlay.classList.add('d-none');
-      if (windowResolve) {
-        if (typeof result === 'undefined' && windowInputContainer.classList.contains('d-none' === false)) {
-           windowResolve(windowInput.value);
-        } else {
-           windowResolve(result);
-        }
-      }
-    }
-
-    windowConfirmBtn?.addEventListener('click', () => {
-      const isPrompt = !windowInputContainer.classList.contains('d-none');
-      closeWindow(isPrompt ? windowInput.value : true);
-    });
-    windowCancelBtn?.addEventListener('click', () => closeWindow(null));
-    
-    /* ── Focus Guard Logic ── */
-    let lastFocusTime = Date.now();
-    window.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        const focusLostOverlay = document.getElementById('focus-lost-overlay');
-        if (pomodoroInterval && focusModeSetting) {
-          focusLostOverlay?.classList.remove('d-none');
-        }
-      }
-    });
-
-    const chatContent = document.getElementById('chat-content');
-    const notesContent = document.getElementById('notes-content');
-    const registerButton = document.getElementById('register-button');
-    const streakCount = document.getElementById('streak-count');
-    const streakMessage = document.getElementById('streak-message');
-    const streakActivityButton = document.getElementById('streak-activity-button');
-    const featureCards = document.querySelectorAll('.feature-card');
-    const focusModeToggle = document.getElementById('focus-mode-toggle');
-    const focusModeStatus = document.getElementById('focus-mode-status');
-    const distractionOverlay = document.getElementById('distraction-confirm-overlay');
-    const distractionContinue = document.getElementById('continue-redirect-btn');
-    const distractionStay = document.getElementById('stay-focused-btn');
-
-    const quotes = [
-      { text: 'Small steps every day create big progress over time.', author: 'Study Smart' },
-      { text: 'The best way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
-      { text: 'Focus on being productive instead of busy.', author: 'Tim Ferriss' },
-      { text: 'Success is the sum of small efforts repeated day in and day out.', author: 'Robert Collier' },
-      { text: 'Don’t watch the clock; do what it does. Keep going.', author: 'Sam Levenson' }
-    ];
-
-    const musicTracks = [
-      { label: 'Focus Beats', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', category: 'focus', description: 'Energy for deep focus', video: 'https://www.youtube.com/embed/5qap5aO4i9A' },
-      { label: 'Calm Study', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', category: 'focus', description: 'Calm concentration music', video: 'https://www.youtube.com/embed/2Vv-BfVoq4g' },
-      { label: 'Motivation Boost', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', category: 'motivational', description: 'Motivation for study persistence', video: 'https://www.youtube.com/embed/kXYiU_JCYtU' },
-      { label: 'Dreamy Romance', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', category: 'romantic', description: 'Soft romantic vibes for peaceful study', video: 'https://www.youtube.com/embed/JGwWNGJdvx8' },
-      { label: 'Night Reflection', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', category: 'sad', description: 'Mellow sad study melody', video: 'https://www.youtube.com/embed/JkK8g6FMEXE' }
-    ];
-
-    const tasksKey = 'studyTasks';
-    const flashcardsKey = 'studyFlashcards';
-    const streakKey = 'studyStreakCount';
-    const streakDateKey = 'studyStreakDate';
-    const studyTimeLogKey = 'studyTimeLog';
-    const leaderboardDataKey = 'studyLeaderboardData';
-    const dailyGoalKey = 'customDailyStudyGoal';
-    let dailyGoalMinutes = Number(localStorage.getItem(dailyGoalKey)) || 180;
-    
-    function setDailyGoal() {
-      showWindow({
-        title: 'Set Daily Goal',
-        message: 'How many minutes do you want to study every day?',
-        type: 'prompt',
-        defaultValue: dailyGoalMinutes,
-        placeholder: 'e.g. 60, 120, 180'
-      }).then(val => {
-        const mins = Number(val);
-        if (mins && mins >= 30 && mins <= 720) {
-          dailyGoalMinutes = mins;
-          localStorage.setItem(dailyGoalKey, mins);
-          updateStreakPage();
-          showWindow({ title: 'Goal Updated', message: `Your new daily goal is ${mins} minutes. Let's crush it!`, type: 'success' });
-        } else if (val !== null) {
-          showWindow({ title: 'Invalid Goal', message: 'Please enter a value between 30 and 720 minutes.', type: 'warning' });
-        }
-      });
-    }
-
-    const gameUnlockKey = 'studyGameUnlocked';
-    const quizQuestions = [
-      {
-        question: 'What is the best way to stay focused during study?',
-        options: ['Multitasking', 'Short focused sessions with breaks', 'Studying for hours without pause', 'Only using your phone'],
-        answer: 1
-      },
-      {
-        question: 'Which habit helps build a strong study streak?',
-        options: ['Skipping study sometimes', 'Studying at the same time each day', 'Changing routine every hour', 'Studying only before exams'],
-        answer: 1
-      },
-      {
-        question: 'When your mind wanders, what should you do?',
-        options: ['Keep pushing through', 'Take a short break and return', 'Scroll social media', 'Stop studying forever'],
-        answer: 1
-      },
-      {
-        question: 'A healthy focus routine includes:',
-        options: ['Continuous work with no rest', 'Balanced study and breaks', 'No planning at all', 'Studying only when bored'],
-        answer: 1
-      }
-    ];
-    let currentGameMode = 'memory';
-    let currentQuizIndex = 0;
-    let quizScore = 0;
-    let reactionTimeout = null;
-    let reactionStart = null;
-    let focusTimer = null;
-    let focusRemaining = 0;
-    let focusActive = false;
-
-    let pomodoroMode = 'study';
-    let studyDurationSeconds = 25 * 60;
-    let breakDurationSeconds = 5 * 60;
-    let pomodoroSeconds = studyDurationSeconds;
-    let pomodoroInterval = null;
-    let focusModeSetting = localStorage.getItem('focusModeSetting') === 'true';
-    let focusModeActive = false;
-    let pendingRedirect = null;
-    let tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
-    let flashcards = JSON.parse(localStorage.getItem(flashcardsKey) || '[]');
-    let studySessionStart = null;
-    let lastPendingMinuteCount = 0;
-
-    const timerMinutes = document.getElementById('timer-minutes');
-    const timerSeconds = document.getElementById('timer-seconds');
-    const timerModeLabel = document.getElementById('timer-mode-label');
-    const timerCurrentMode = document.getElementById('timer-current-mode');
-    const timerProgressRing = document.getElementById('timer-progress-ring');
-    const timerSessionMessage = document.getElementById('timer-session-message');
-    const timerFullscreenButton = document.getElementById('timer-fullscreen');
-    const timerCard = document.querySelector('.timer-card');
-    const timerStart = document.getElementById('timer-start');
-    const timerPause = document.getElementById('timer-pause');
-    const timerReset = document.getElementById('timer-reset');
-    const studyDurationInput = document.getElementById('study-duration-input');
-    const breakDurationInput = document.getElementById('break-duration-input');
-    const studyDurationRange = document.getElementById('study-duration-range');
-    const breakDurationRange = document.getElementById('break-duration-range');
-    let isTimerFullscreen = false;
-
-    function formatTwoDigits(value) {
-      return String(value).padStart(2, '0');
-    }
-
-    function updateTimerDisplay() {
-      const minutes = Math.floor(pomodoroSeconds / 60);
-      const seconds = pomodoroSeconds % 60;
-      if (timerMinutes) timerMinutes.textContent = formatTwoDigits(minutes);
-      if (timerSeconds) timerSeconds.textContent = formatTwoDigits(seconds);
-      updateProgressRing();
-    }
-
-    function updateProgressRing() {
-      if (!timerProgressRing) return;
-      const total = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
-      const elapsed = Math.max(0, total - pomodoroSeconds);
-      const progressAngle = total > 0 ? Math.min(360, (elapsed / total) * 360) : 0;
-      timerProgressRing.style.background = `conic-gradient(#4f46e5 ${progressAngle}deg, #e9ecef ${progressAngle}deg)`;
-    }
-
-    function updateTimerSessionMessage() {
-      if (!timerSessionMessage) return;
-      if (pomodoroInterval) {
-        timerSessionMessage.textContent = `Focus session in progress — ${timerModeLabel.textContent}`;
-      } else if (pomodoroMode === 'break') {
-        timerSessionMessage.textContent = 'Paused: break time ready when you are.';
+      if (type === 'prompt') {
+        windowInputContainer.classList.remove('d-none');
+        windowInput.value = defaultValue;
+        windowInput.placeholder = placeholder;
+        windowCancelBtn.classList.remove('d-none');
+      } else if (type === 'confirm') {
+        windowInputContainer.classList.add('d-none');
+        windowCancelBtn.classList.remove('d-none');
       } else {
-        timerSessionMessage.textContent = 'Ready to start your study session.';
+        windowInputContainer.classList.add('d-none');
+        windowCancelBtn.classList.add('d-none');
       }
-    }
 
-    function updateTimerControls() {
-      const isRunning = !!pomodoroInterval;
-      if (timerStart) timerStart.disabled = isRunning;
-      if (timerPause) timerPause.disabled = !isRunning;
-      if (timerReset) timerReset.disabled = false;
-      if (timerFullscreenButton) timerFullscreenButton.disabled = false;
-      updateTimerSessionMessage();
-    }
-
-    function toggleTimerFullscreen() {
-      if (!timerCard || !timerFullscreenButton) return;
-      if (!document.fullscreenElement) {
-        timerCard.requestFullscreen?.().catch(() => {});
-      } else {
-        document.exitFullscreen?.().catch(() => {});
-      }
-    }
-
-    document.addEventListener('fullscreenchange', () => {
-      isTimerFullscreen = !!document.fullscreenElement;
-      if (timerFullscreenButton) {
-        timerFullscreenButton.textContent = isTimerFullscreen ? 'Exit Full Screen' : 'Full Screen';
-      }
-      if (timerCard) timerCard.classList.toggle('fullscreen-card', isTimerFullscreen);
-      document.body.classList.toggle('fullscreen-active', isTimerFullscreen);
+      windowOverlay.classList.remove('d-none');
+      if (type === 'prompt') windowInput.focus();
     });
+  }
 
-    function updateTimerSettings() {
-      const studyMinutes = Number(studyDurationInput?.value) || 25;
-      const breakMinutes = Number(breakDurationInput?.value) || 5;
-      studyDurationSeconds = Math.max(60, Math.min(7200, studyMinutes * 60));
-      breakDurationSeconds = Math.max(60, Math.min(3600, breakMinutes * 60));
-      if (studyDurationInput) studyDurationInput.value = Math.round(studyDurationSeconds / 60);
-      if (breakDurationInput) breakDurationInput.value = Math.round(breakDurationSeconds / 60);
-      if (studyDurationRange) studyDurationRange.value = Math.round(studyDurationSeconds / 60);
-      if (breakDurationRange) breakDurationRange.value = Math.round(breakDurationSeconds / 60);
-      if (!pomodoroInterval) {
-        pomodoroSeconds = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
-        updateTimerDisplay();
-      }
-    }
-
-    function updateDigitalClock() {
-      const clockElement = document.getElementById('digital-clock');
-      const dateElement = document.getElementById('clock-date');
-      if (!clockElement) return;
-      const now = new Date();
-      const hours = formatTwoDigits(now.getHours());
-      const minutes = formatTwoDigits(now.getMinutes());
-      const seconds = formatTwoDigits(now.getSeconds());
-      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
-      if (dateElement) {
-        dateElement.textContent = now.toLocaleDateString(undefined, {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-      }
-    }
-
-    function initDigitalClock() {
-      const clockElement = document.getElementById('digital-clock');
-      if (!clockElement) return;
-      updateDigitalClock();
-      setInterval(updateDigitalClock, 1000);
-    }
-
-    function updateFocusModeUI() {
-      if (focusModeToggle) {
-        focusModeToggle.textContent = focusModeSetting ? 'Focus Mode ON' : 'Focus Mode OFF';
-        focusModeToggle.className = focusModeSetting ? 'btn btn-sm btn-success' : 'btn btn-sm btn-outline-info';
-      }
-      if (focusModeStatus) {
-        focusModeStatus.textContent = focusModeActive ? 'Focus Mode active' : focusModeSetting ? 'Focus Mode ready' : 'Focus Mode OFF';
-        focusModeStatus.className = focusModeActive ? 'badge bg-success' : focusModeSetting ? 'badge bg-warning' : 'badge bg-secondary';
-      }
-    }
-
-    function setFocusModeSetting(enabled) {
-      focusModeSetting = enabled;
-      localStorage.setItem('focusModeSetting', String(enabled));
-      updateBlockerState();
-    }
-
-    function updateBlockerState() {
-      focusModeActive = focusModeSetting && !!pomodoroInterval;
-      updateFocusModeUI();
-    }
-
-    function setPomodoroMode(mode) {
-      pomodoroMode = mode;
-      pomodoroSeconds = mode === 'break' ? breakDurationSeconds : studyDurationSeconds;
-      timerModeLabel.textContent = mode === 'break' ? 'Break' : 'Study';
-      timerModeLabel.className = mode === 'break' ? 'badge bg-warning' : 'badge bg-primary';
-      if (timerCurrentMode) {
-        timerCurrentMode.textContent = mode === 'break' ? 'Break period' : 'Study period';
-      }
-      updateTimerDisplay();
-      updateTimerControls();
-      updateBlockerState();
-    }
-
-    function startPomodoro() {
-      if (pomodoroInterval) return;
-      if (pomodoroMode === 'study') {
-        studySessionStart = Date.now();
+  function closeWindow(result) {
+    windowOverlay.classList.add('d-none');
+    if (windowResolve) {
+      if (typeof result === 'undefined' && windowInputContainer.classList.contains('d-none' === false)) {
+        windowResolve(windowInput.value);
       } else {
-        studySessionStart = null;
+        windowResolve(result);
       }
-      pomodoroInterval = setInterval(() => {
-        if (pomodoroSeconds > 0) {
-          pomodoroSeconds -= 1;
-          updateTimerDisplay();
-          const pendingMinutes = getPendingStudyMinutes();
-          if (pendingMinutes !== lastPendingMinuteCount) {
-            lastPendingMinuteCount = pendingMinutes;
-            updateStreakPage();
-          }
-        } else {
-          saveStudySessionTime(true);
-          clearInterval(pomodoroInterval);
-          pomodoroInterval = null;
-          lastPendingMinuteCount = 0;
-          updateBlockerState();
-          updateTimerControls();
-          // Play sound alert if enabled
-          if (typeof window.timerAlertSound === 'function') {
-            try { window.timerAlertSound(); } catch(e) {}
-          }
-          showWindow({
-            title: '🎉 Session Complete!',
-            message: 'Amazing work! You finished your session. Time to switch your focus. Your study game is now unlocked.',
-            type: 'success'
-          });
-        }
-      }, 1000);
-      updateBlockerState();
-      updateTimerControls();
     }
+  }
 
-    function pausePomodoro() {
-      if (pomodoroInterval) {
-        saveStudySessionTime();
-        clearInterval(pomodoroInterval);
-        pomodoroInterval = null;
+  windowConfirmBtn?.addEventListener('click', () => {
+    const isPrompt = !windowInputContainer.classList.contains('d-none');
+    closeWindow(isPrompt ? windowInput.value : true);
+  });
+  windowCancelBtn?.addEventListener('click', () => closeWindow(null));
+
+  /* ── Focus Guard Logic ── */
+  let lastFocusTime = Date.now();
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      const focusLostOverlay = document.getElementById('focus-lost-overlay');
+      if (pomodoroInterval && focusModeSetting) {
+        focusLostOverlay?.classList.remove('d-none');
       }
-      updateBlockerState();
-      updateTimerControls();
     }
+  });
 
-    function resetPomodoro() {
-      pausePomodoro();
+  const chatContent = document.getElementById('chat-content');
+  const notesContent = document.getElementById('notes-content');
+  const registerButton = document.getElementById('register-button');
+  const streakCount = document.getElementById('streak-count');
+  const streakMessage = document.getElementById('streak-message');
+  const streakActivityButton = document.getElementById('streak-activity-button');
+  const featureCards = document.querySelectorAll('.feature-card');
+  const focusModeToggle = document.getElementById('focus-mode-toggle');
+  const focusModeStatus = document.getElementById('focus-mode-status');
+  const distractionOverlay = document.getElementById('distraction-confirm-overlay');
+  const distractionContinue = document.getElementById('continue-redirect-btn');
+  const distractionStay = document.getElementById('stay-focused-btn');
+
+  const quotes = [
+    { text: 'Small steps every day create big progress over time.', author: 'Study Smart' },
+    { text: 'The best way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
+    { text: 'Focus on being productive instead of busy.', author: 'Tim Ferriss' },
+    { text: 'Success is the sum of small efforts repeated day in and day out.', author: 'Robert Collier' },
+    { text: 'Don’t watch the clock; do what it does. Keep going.', author: 'Sam Levenson' }
+  ];
+
+  const musicTracks = [
+    { label: 'Focus Beats', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', category: 'focus', description: 'Energy for deep focus', video: 'https://www.youtube.com/embed/5qap5aO4i9A' },
+    { label: 'Calm Study', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', category: 'focus', description: 'Calm concentration music', video: 'https://www.youtube.com/embed/2Vv-BfVoq4g' },
+    { label: 'Motivation Boost', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', category: 'motivational', description: 'Motivation for study persistence', video: 'https://www.youtube.com/embed/kXYiU_JCYtU' },
+    { label: 'Dreamy Romance', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', category: 'romantic', description: 'Soft romantic vibes for peaceful study', video: 'https://www.youtube.com/embed/JGwWNGJdvx8' },
+    { label: 'Night Reflection', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', category: 'sad', description: 'Mellow sad study melody', video: 'https://www.youtube.com/embed/JkK8g6FMEXE' }
+  ];
+
+  const tasksKey = 'studyTasks';
+  const flashcardsKey = 'studyFlashcards';
+  const streakKey = 'studyStreakCount';
+  const streakDateKey = 'studyStreakDate';
+  const studyTimeLogKey = 'studyTimeLog';
+  const leaderboardDataKey = 'studyLeaderboardData';
+  const dailyGoalKey = 'customDailyStudyGoal';
+  let dailyGoalMinutes = Number(localStorage.getItem(dailyGoalKey)) || 180;
+
+  function setDailyGoal() {
+    showWindow({
+      title: 'Set Daily Goal',
+      message: 'How many minutes do you want to study every day?',
+      type: 'prompt',
+      defaultValue: dailyGoalMinutes,
+      placeholder: 'e.g. 60, 120, 180'
+    }).then(val => {
+      const mins = Number(val);
+      if (mins && mins >= 30 && mins <= 720) {
+        dailyGoalMinutes = mins;
+        localStorage.setItem(dailyGoalKey, mins);
+        updateStreakPage();
+        showWindow({ title: 'Goal Updated', message: `Your new daily goal is ${mins} minutes. Let's crush it!`, type: 'success' });
+      } else if (val !== null) {
+        showWindow({ title: 'Invalid Goal', message: 'Please enter a value between 30 and 720 minutes.', type: 'warning' });
+      }
+    });
+  }
+
+  const gameUnlockKey = 'studyGameUnlocked';
+  const quizQuestions = [
+    {
+      question: 'What is the best way to stay focused during study?',
+      options: ['Multitasking', 'Short focused sessions with breaks', 'Studying for hours without pause', 'Only using your phone'],
+      answer: 1
+    },
+    {
+      question: 'Which habit helps build a strong study streak?',
+      options: ['Skipping study sometimes', 'Studying at the same time each day', 'Changing routine every hour', 'Studying only before exams'],
+      answer: 1
+    },
+    {
+      question: 'When your mind wanders, what should you do?',
+      options: ['Keep pushing through', 'Take a short break and return', 'Scroll social media', 'Stop studying forever'],
+      answer: 1
+    },
+    {
+      question: 'A healthy focus routine includes:',
+      options: ['Continuous work with no rest', 'Balanced study and breaks', 'No planning at all', 'Studying only when bored'],
+      answer: 1
+    }
+  ];
+  let currentGameMode = 'memory';
+  let currentQuizIndex = 0;
+  let quizScore = 0;
+  let reactionTimeout = null;
+  let reactionStart = null;
+  let focusTimer = null;
+  let focusRemaining = 0;
+  let focusActive = false;
+
+  let pomodoroMode = 'study';
+  let studyDurationSeconds = 25 * 60;
+  let breakDurationSeconds = 5 * 60;
+  let pomodoroSeconds = studyDurationSeconds;
+  let pomodoroInterval = null;
+  let focusModeSetting = localStorage.getItem('focusModeSetting') === 'true';
+  let focusModeActive = false;
+  let pendingRedirect = null;
+  let tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+  let flashcards = JSON.parse(localStorage.getItem(flashcardsKey) || '[]');
+  let studySessionStart = null;
+  let lastPendingMinuteCount = 0;
+
+  const timerMinutes = document.getElementById('timer-minutes');
+  const timerSeconds = document.getElementById('timer-seconds');
+  const timerModeLabel = document.getElementById('timer-mode-label');
+  const timerCurrentMode = document.getElementById('timer-current-mode');
+  const timerProgressRing = document.getElementById('timer-progress-ring');
+  const timerSessionMessage = document.getElementById('timer-session-message');
+  const timerFullscreenButton = document.getElementById('timer-fullscreen');
+  const timerCard = document.querySelector('.timer-card');
+  const timerStart = document.getElementById('timer-start');
+  const timerPause = document.getElementById('timer-pause');
+  const timerReset = document.getElementById('timer-reset');
+  const studyDurationInput = document.getElementById('study-duration-input');
+  const breakDurationInput = document.getElementById('break-duration-input');
+  const studyDurationRange = document.getElementById('study-duration-range');
+  const breakDurationRange = document.getElementById('break-duration-range');
+  let isTimerFullscreen = false;
+
+  function formatTwoDigits(value) {
+    return String(value).padStart(2, '0');
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(pomodoroSeconds / 60);
+    const seconds = pomodoroSeconds % 60;
+    if (timerMinutes) timerMinutes.textContent = formatTwoDigits(minutes);
+    if (timerSeconds) timerSeconds.textContent = formatTwoDigits(seconds);
+    updateProgressRing();
+  }
+
+  function updateProgressRing() {
+    if (!timerProgressRing) return;
+    const total = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
+    const elapsed = Math.max(0, total - pomodoroSeconds);
+    const progressAngle = total > 0 ? Math.min(360, (elapsed / total) * 360) : 0;
+    timerProgressRing.style.background = `conic-gradient(#4f46e5 ${progressAngle}deg, #e9ecef ${progressAngle}deg)`;
+  }
+
+  function updateTimerSessionMessage() {
+    if (!timerSessionMessage) return;
+    if (pomodoroInterval) {
+      timerSessionMessage.textContent = `Focus session in progress — ${timerModeLabel.textContent}`;
+    } else if (pomodoroMode === 'break') {
+      timerSessionMessage.textContent = 'Paused: break time ready when you are.';
+    } else {
+      timerSessionMessage.textContent = 'Ready to start your study session.';
+    }
+  }
+
+  function updateTimerControls() {
+    const isRunning = !!pomodoroInterval;
+    if (timerStart) timerStart.disabled = isRunning;
+    if (timerPause) timerPause.disabled = !isRunning;
+    if (timerReset) timerReset.disabled = false;
+    if (timerFullscreenButton) timerFullscreenButton.disabled = false;
+    updateTimerSessionMessage();
+  }
+
+  function toggleTimerFullscreen() {
+    if (!timerCard || !timerFullscreenButton) return;
+    if (!document.fullscreenElement) {
+      timerCard.requestFullscreen?.().catch(() => { });
+    } else {
+      document.exitFullscreen?.().catch(() => { });
+    }
+  }
+
+  document.addEventListener('fullscreenchange', () => {
+    isTimerFullscreen = !!document.fullscreenElement;
+    if (timerFullscreenButton) {
+      timerFullscreenButton.textContent = isTimerFullscreen ? 'Exit Full Screen' : 'Full Screen';
+    }
+    if (timerCard) timerCard.classList.toggle('fullscreen-card', isTimerFullscreen);
+    document.body.classList.toggle('fullscreen-active', isTimerFullscreen);
+  });
+
+  function updateTimerSettings() {
+    const studyMinutes = Number(studyDurationInput?.value) || 25;
+    const breakMinutes = Number(breakDurationInput?.value) || 5;
+    studyDurationSeconds = Math.max(60, Math.min(7200, studyMinutes * 60));
+    breakDurationSeconds = Math.max(60, Math.min(3600, breakMinutes * 60));
+    if (studyDurationInput) studyDurationInput.value = Math.round(studyDurationSeconds / 60);
+    if (breakDurationInput) breakDurationInput.value = Math.round(breakDurationSeconds / 60);
+    if (studyDurationRange) studyDurationRange.value = Math.round(studyDurationSeconds / 60);
+    if (breakDurationRange) breakDurationRange.value = Math.round(breakDurationSeconds / 60);
+    if (!pomodoroInterval) {
       pomodoroSeconds = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
       updateTimerDisplay();
-      updateBlockerState();
     }
+  }
 
-    function showQuote() {
-      const quote = quotes[Math.floor(Math.random() * quotes.length)];
-      const quoteText = document.getElementById('quote-text');
-      const quoteAuthor = document.getElementById('quote-author');
-      if (quoteText) quoteText.textContent = quote.text;
-      if (quoteAuthor) quoteAuthor.textContent = quote.author;
+  function updateDigitalClock() {
+    const clockElement = document.getElementById('digital-clock');
+    const dateElement = document.getElementById('clock-date');
+    if (!clockElement) return;
+    const now = new Date();
+    const hours = formatTwoDigits(now.getHours());
+    const minutes = formatTwoDigits(now.getMinutes());
+    const seconds = formatTwoDigits(now.getSeconds());
+    clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    if (dateElement) {
+      dateElement.textContent = now.toLocaleDateString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
     }
+  }
 
-    function loadTasks() {
-      tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
-      renderTasks();
+  function initDigitalClock() {
+    const clockElement = document.getElementById('digital-clock');
+    if (!clockElement) return;
+    updateDigitalClock();
+    setInterval(updateDigitalClock, 1000);
+  }
+
+  function updateFocusModeUI() {
+    if (focusModeToggle) {
+      focusModeToggle.textContent = focusModeSetting ? 'Focus Mode ON' : 'Focus Mode OFF';
+      focusModeToggle.className = focusModeSetting ? 'btn btn-sm btn-success' : 'btn btn-sm btn-outline-info';
     }
-
-    function saveTasks() {
-      localStorage.setItem(tasksKey, JSON.stringify(tasks));
+    if (focusModeStatus) {
+      focusModeStatus.textContent = focusModeActive ? 'Focus Mode active' : focusModeSetting ? 'Focus Mode ready' : 'Focus Mode OFF';
+      focusModeStatus.className = focusModeActive ? 'badge bg-success' : focusModeSetting ? 'badge bg-warning' : 'badge bg-secondary';
     }
+  }
 
-    function renderTasks() {
-      const taskList = document.getElementById('task-list');
-      if (!taskList) return;
+  function setFocusModeSetting(enabled) {
+    focusModeSetting = enabled;
+    localStorage.setItem('focusModeSetting', String(enabled));
+    updateBlockerState();
+  }
 
-      const countBadge = document.getElementById('task-count');
-      if (countBadge) countBadge.textContent = tasks.filter(t => !t.completed).length;
+  function updateBlockerState() {
+    focusModeActive = focusModeSetting && !!pomodoroInterval;
+    updateFocusModeUI();
+  }
 
-      if (tasks.length === 0) {
-        taskList.innerHTML = '<li class="list-group-item text-center py-4 text-muted fst-italic border-0">No active tasks. Time to relax!</li>';
-        return;
+  function setPomodoroMode(mode) {
+    pomodoroMode = mode;
+    pomodoroSeconds = mode === 'break' ? breakDurationSeconds : studyDurationSeconds;
+    timerModeLabel.textContent = mode === 'break' ? 'Break' : 'Study';
+    timerModeLabel.className = mode === 'break' ? 'badge bg-warning' : 'badge bg-primary';
+    if (timerCurrentMode) {
+      timerCurrentMode.textContent = mode === 'break' ? 'Break period' : 'Study period';
+    }
+    updateTimerDisplay();
+    updateTimerControls();
+    updateBlockerState();
+  }
+
+  function startPomodoro() {
+    if (pomodoroInterval) return;
+    if (pomodoroMode === 'study') {
+      studySessionStart = Date.now();
+    } else {
+      studySessionStart = null;
+    }
+    pomodoroInterval = setInterval(() => {
+      if (pomodoroSeconds > 0) {
+        pomodoroSeconds -= 1;
+        updateTimerDisplay();
+        const pendingMinutes = getPendingStudyMinutes();
+        if (pendingMinutes !== lastPendingMinuteCount) {
+          lastPendingMinuteCount = pendingMinutes;
+          updateStreakPage();
+        }
+      } else {
+        saveStudySessionTime(true);
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        lastPendingMinuteCount = 0;
+        updateBlockerState();
+        updateTimerControls();
+        // Play sound alert if enabled
+        if (typeof window.timerAlertSound === 'function') {
+          try { window.timerAlertSound(); } catch (e) { }
+        }
+        showWindow({
+          title: '🎉 Session Complete!',
+          message: 'Amazing work! You finished your session. Time to switch your focus. Your study game is now unlocked.',
+          type: 'success'
+        });
       }
+    }, 1000);
+    updateBlockerState();
+    updateTimerControls();
+  }
 
-      taskList.innerHTML = tasks.map((task, index) => `
+  function pausePomodoro() {
+    if (pomodoroInterval) {
+      saveStudySessionTime();
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+    }
+    updateBlockerState();
+    updateTimerControls();
+  }
+
+  function resetPomodoro() {
+    pausePomodoro();
+    pomodoroSeconds = pomodoroMode === 'break' ? breakDurationSeconds : studyDurationSeconds;
+    updateTimerDisplay();
+    updateBlockerState();
+  }
+
+  function showQuote() {
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    const quoteText = document.getElementById('quote-text');
+    const quoteAuthor = document.getElementById('quote-author');
+    if (quoteText) quoteText.textContent = quote.text;
+    if (quoteAuthor) quoteAuthor.textContent = quote.author;
+  }
+
+  function loadTasks() {
+    tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+    renderTasks();
+  }
+
+  function saveTasks() {
+    localStorage.setItem(tasksKey, JSON.stringify(tasks));
+  }
+
+  function renderTasks() {
+    const taskList = document.getElementById('task-list');
+    if (!taskList) return;
+
+    const countBadge = document.getElementById('task-count');
+    if (countBadge) countBadge.textContent = tasks.filter(t => !t.completed).length;
+
+    if (tasks.length === 0) {
+      taskList.innerHTML = '<li class="list-group-item text-center py-4 text-muted fst-italic border-0">No active tasks. Time to relax!</li>';
+      return;
+    }
+
+    taskList.innerHTML = tasks.map((task, index) => `
         <li class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 rounded-3 mb-2 task-item ${task.completed ? 'completed bg-light' : ''}">
           <div class="d-flex align-items-center gap-3">
             <span class="task-text fw-semibold ${task.completed ? 'text-decoration-line-through text-muted' : 'text-dark'}">${task.title}</span>
@@ -693,21 +1078,21 @@
           </div>
         </li>
       `).join('');
-    }
+  }
 
-    function loadFlashcards() {
-      flashcards = JSON.parse(localStorage.getItem(flashcardsKey) || '[]');
-      renderFlashcards();
-    }
+  function loadFlashcards() {
+    flashcards = JSON.parse(localStorage.getItem(flashcardsKey) || '[]');
+    renderFlashcards();
+  }
 
-    function saveFlashcards() {
-      localStorage.setItem(flashcardsKey, JSON.stringify(flashcards));
-    }
+  function saveFlashcards() {
+    localStorage.setItem(flashcardsKey, JSON.stringify(flashcards));
+  }
 
-    function renderFlashcards() {
-      const cardsContainer = document.getElementById('flashcards-container');
-      if (!cardsContainer) return;
-      cardsContainer.innerHTML = flashcards.map((card, index) => `
+  function renderFlashcards() {
+    const cardsContainer = document.getElementById('flashcards-container');
+    if (!cardsContainer) return;
+    cardsContainer.innerHTML = flashcards.map((card, index) => `
         <div class="flashcard-item" data-index="${index}">
           <div class="flashcard-side flex-grow-1">
             <div class="fw-semibold">${card.front}</div>
@@ -719,107 +1104,107 @@
           </div>
         </div>
       `).join('');
+  }
+
+  function getISODate(date = new Date()) {
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return localDate.toISOString().slice(0, 10);
+  }
+
+  function getStudyTimeLog() {
+    return JSON.parse(localStorage.getItem(studyTimeLogKey) || '{}');
+  }
+
+  function saveStudyTimeLog(log) {
+    localStorage.setItem(studyTimeLogKey, JSON.stringify(log));
+  }
+
+  function getStudyMinutes(date = new Date()) {
+    const log = getStudyTimeLog();
+    return Number(log[getISODate(date)] || 0);
+  }
+
+  function addStudyMinutes(minutes) {
+    if (!minutes || minutes < 1) return 0;
+    const dateKey = getISODate();
+    const log = getStudyTimeLog();
+    log[dateKey] = (Number(log[dateKey] || 0) + Math.round(minutes));
+    saveStudyTimeLog(log);
+    return log[dateKey];
+  }
+
+  function getWeeklyStudyMinutes() {
+    let total = 0;
+    for (let i = 0; i < 7; i += 1) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      total += getStudyMinutes(date);
     }
+    return total;
+  }
 
-    function getISODate(date = new Date()) {
-      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-      return localDate.toISOString().slice(0, 10);
-    }
+  function getPendingStudyMinutes() {
+    if (!studySessionStart || pomodoroMode !== 'study') return 0;
+    return Math.max(0, Math.floor((Date.now() - studySessionStart) / 60000));
+  }
 
-    function getStudyTimeLog() {
-      return JSON.parse(localStorage.getItem(studyTimeLogKey) || '{}');
-    }
+  function getLevelText(streak) {
+    if (streak >= 10) return 'Focus Master';
+    if (streak >= 4) return 'Consistent';
+    if (streak >= 1) return 'Beginner';
+    return 'New Challenger';
+  }
 
-    function saveStudyTimeLog(log) {
-      localStorage.setItem(studyTimeLogKey, JSON.stringify(log));
-    }
+  function getMotivationText(streak) {
+    if (streak >= 7) return 'You’re ahead of most people 💯';
+    if (streak >= 3) return 'You’re building a habit 🔥';
+    if (streak === 2) return 'Keep the momentum going!';
+    if (streak === 1) return 'Great start!';
+    return 'Every day is a new chance to grow.';
+  }
 
-    function getStudyMinutes(date = new Date()) {
-      const log = getStudyTimeLog();
-      return Number(log[getISODate(date)] || 0);
-    }
+  function getSampleLeaderboard() {
+    return [
+      { name: 'Priya', streak: 8, minutes: 320 },
+      { name: 'Arjun', streak: 6, minutes: 280 },
+      { name: 'Sneha', streak: 5, minutes: 240 },
+      { name: 'Rohan', streak: 4, minutes: 190 },
+      { name: 'Ayesha', streak: 2, minutes: 130 }
+    ];
+  }
 
-    function addStudyMinutes(minutes) {
-      if (!minutes || minutes < 1) return 0;
-      const dateKey = getISODate();
-      const log = getStudyTimeLog();
-      log[dateKey] = (Number(log[dateKey] || 0) + Math.round(minutes));
-      saveStudyTimeLog(log);
-      return log[dateKey];
-    }
+  function getLeaderboardData() {
+    const stored = JSON.parse(localStorage.getItem(leaderboardDataKey) || 'null');
+    return Array.isArray(stored) && stored.length ? stored : getSampleLeaderboard();
+  }
 
-    function getWeeklyStudyMinutes() {
-      let total = 0;
-      for (let i = 0; i < 7; i += 1) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        total += getStudyMinutes(date);
-      }
-      return total;
-    }
+  function saveLeaderboardData(entries) {
+    localStorage.setItem(leaderboardDataKey, JSON.stringify(entries));
+  }
 
-    function getPendingStudyMinutes() {
-      if (!studySessionStart || pomodoroMode !== 'study') return 0;
-      return Math.max(0, Math.floor((Date.now() - studySessionStart) / 60000));
-    }
+  function buildLeaderboard(userStats) {
+    const entries = getLeaderboardData().filter(entry => entry.name !== 'You');
+    const combined = [...entries, { name: 'You', streak: userStats.streak, minutes: userStats.minutes, isYou: true }];
+    combined.sort((a, b) => {
+      if (b.streak !== a.streak) return b.streak - a.streak;
+      return b.minutes - a.minutes;
+    });
+    return combined.map((entry, index) => ({
+      rank: index + 1,
+      name: entry.name,
+      streak: entry.streak,
+      minutes: entry.minutes,
+      isYou: !!entry.isYou
+    }));
+  }
 
-    function getLevelText(streak) {
-      if (streak >= 10) return 'Focus Master';
-      if (streak >= 4) return 'Consistent';
-      if (streak >= 1) return 'Beginner';
-      return 'New Challenger';
-    }
+  function renderLeaderboard(userStats) {
+    const leaderboardList = document.getElementById('leaderboard-list');
+    const leaderRank = document.getElementById('leader-rank');
+    if (!leaderboardList || !leaderRank) return;
 
-    function getMotivationText(streak) {
-      if (streak >= 7) return 'You’re ahead of most people 💯';
-      if (streak >= 3) return 'You’re building a habit 🔥';
-      if (streak === 2) return 'Keep the momentum going!';
-      if (streak === 1) return 'Great start!';
-      return 'Every day is a new chance to grow.';
-    }
-
-    function getSampleLeaderboard() {
-      return [
-        { name: 'Priya', streak: 8, minutes: 320 },
-        { name: 'Arjun', streak: 6, minutes: 280 },
-        { name: 'Sneha', streak: 5, minutes: 240 },
-        { name: 'Rohan', streak: 4, minutes: 190 },
-        { name: 'Ayesha', streak: 2, minutes: 130 }
-      ];
-    }
-
-    function getLeaderboardData() {
-      const stored = JSON.parse(localStorage.getItem(leaderboardDataKey) || 'null');
-      return Array.isArray(stored) && stored.length ? stored : getSampleLeaderboard();
-    }
-
-    function saveLeaderboardData(entries) {
-      localStorage.setItem(leaderboardDataKey, JSON.stringify(entries));
-    }
-
-    function buildLeaderboard(userStats) {
-      const entries = getLeaderboardData().filter(entry => entry.name !== 'You');
-      const combined = [...entries, { name: 'You', streak: userStats.streak, minutes: userStats.minutes, isYou: true }];
-      combined.sort((a, b) => {
-        if (b.streak !== a.streak) return b.streak - a.streak;
-        return b.minutes - a.minutes;
-      });
-      return combined.map((entry, index) => ({
-        rank: index + 1,
-        name: entry.name,
-        streak: entry.streak,
-        minutes: entry.minutes,
-        isYou: !!entry.isYou
-      }));
-    }
-
-    function renderLeaderboard(userStats) {
-      const leaderboardList = document.getElementById('leaderboard-list');
-      const leaderRank = document.getElementById('leader-rank');
-      if (!leaderboardList || !leaderRank) return;
-
-      const entries = buildLeaderboard(userStats);
-      leaderboardList.innerHTML = entries.slice(0, 5).map(entry => `
+    const entries = buildLeaderboard(userStats);
+    leaderboardList.innerHTML = entries.slice(0, 5).map(entry => `
         <li class="leaderboard-list-item ${entry.isYou ? 'leaderboard-you' : ''}">
           <div class="d-flex align-items-center justify-content-between gap-3">
             <div class="d-flex align-items-center gap-3">
@@ -834,85 +1219,85 @@
         </li>
       `).join('');
 
-      const userRank = entries.find(entry => entry.isYou)?.rank || entries.length;
-      leaderRank.textContent = `#${userRank}`;
+    const userRank = entries.find(entry => entry.isYou)?.rank || entries.length;
+    leaderRank.textContent = `#${userRank}`;
+  }
+
+  function getStreakWarningText(lastDate) {
+    const today = getISODate();
+    const yesterday = getISODate(new Date(Date.now() - 86400000));
+    if (!lastDate) return 'Start today to build your streak.';
+    if (lastDate === today) return 'You’re on track today!';
+    if (lastDate === yesterday) return 'Don’t break your streak! Come back today 😢';
+    return 'A fresh streak begins now. Let’s get back on track.';
+  }
+
+  function updateStreakPage() {
+    const streakPage = document.getElementById('streak-page');
+    if (!streakPage) return;
+
+    const storedCount = Number(localStorage.getItem(streakKey) || 0);
+    const lastDate = localStorage.getItem(streakDateKey);
+    const todayMinutes = getStudyMinutes();
+    const weeklyMinutes = getWeeklyStudyMinutes();
+    const pendingMinutes = getPendingStudyMinutes();
+    const displayTodayMinutes = todayMinutes + pendingMinutes;
+    const displayWeeklyMinutes = weeklyMinutes + pendingMinutes;
+    const levelText = getLevelText(storedCount);
+    const motivation = getMotivationText(storedCount);
+    const warningText = getStreakWarningText(lastDate);
+    const goalCompletion = Math.min(100, Math.round((displayTodayMinutes / dailyGoalMinutes) * 100));
+
+    const streakCountElement = document.getElementById('streak-count');
+    const streakMessageElement = document.getElementById('streak-message');
+    const streakLevel = document.getElementById('streak-level');
+    const todayStudyTime = document.getElementById('today-study-time');
+    const weeklyStudyTime = document.getElementById('weekly-study-time');
+    const goalCompleted = document.getElementById('goal-completed');
+    const goalProgressFill = document.getElementById('goal-progress-fill');
+    const weeklyProgressFill = document.getElementById('weekly-progress-fill');
+    const leaderStreak = document.getElementById('leader-streak');
+    const leaderTodayMinutes = document.getElementById('leader-today-minutes');
+    const weeklyStudyLog = document.getElementById('weekly-study-log');
+    const motivationText = document.getElementById('motivation-text');
+    const streakWarning = document.getElementById('streak-warning');
+    const goalTargetDisplay = document.getElementById('goal-target-display');
+
+    if (goalTargetDisplay) {
+      goalTargetDisplay.textContent = dailyGoalMinutes >= 60 ? `${(dailyGoalMinutes / 60).toFixed(1)} hrs` : `${dailyGoalMinutes} min`;
     }
-
-    function getStreakWarningText(lastDate) {
-      const today = getISODate();
-      const yesterday = getISODate(new Date(Date.now() - 86400000));
-      if (!lastDate) return 'Start today to build your streak.';
-      if (lastDate === today) return 'You’re on track today!';
-      if (lastDate === yesterday) return 'Don’t break your streak! Come back today 😢';
-      return 'A fresh streak begins now. Let’s get back on track.';
+    if (streakCountElement) streakCountElement.textContent = storedCount;
+    if (streakMessageElement) streakMessageElement.textContent = storedCount > 0 ? `${storedCount} Day Streak — ${motivation}` : 'Your streak starts today!';
+    if (streakLevel) streakLevel.textContent = levelText;
+    if (todayStudyTime) todayStudyTime.textContent = `${displayTodayMinutes} min${pendingMinutes ? ` (+${pendingMinutes} live)` : ''}`;
+    if (weeklyStudyTime) weeklyStudyTime.textContent = `${displayWeeklyMinutes} min`;
+    if (goalCompleted) goalCompleted.textContent = `${(displayTodayMinutes / 60).toFixed(1)} hrs`;
+    if (goalProgressFill) {
+      goalProgressFill.style.width = `${goalCompletion}%`;
+      goalProgressFill.textContent = `${goalCompletion}%`;
     }
-
-    function updateStreakPage() {
-      const streakPage = document.getElementById('streak-page');
-      if (!streakPage) return;
-
-      const storedCount = Number(localStorage.getItem(streakKey) || 0);
-      const lastDate = localStorage.getItem(streakDateKey);
-      const todayMinutes = getStudyMinutes();
-      const weeklyMinutes = getWeeklyStudyMinutes();
-      const pendingMinutes = getPendingStudyMinutes();
-      const displayTodayMinutes = todayMinutes + pendingMinutes;
-      const displayWeeklyMinutes = weeklyMinutes + pendingMinutes;
-      const levelText = getLevelText(storedCount);
-      const motivation = getMotivationText(storedCount);
-      const warningText = getStreakWarningText(lastDate);
-      const goalCompletion = Math.min(100, Math.round((displayTodayMinutes / dailyGoalMinutes) * 100));
-
-      const streakCountElement = document.getElementById('streak-count');
-      const streakMessageElement = document.getElementById('streak-message');
-      const streakLevel = document.getElementById('streak-level');
-      const todayStudyTime = document.getElementById('today-study-time');
-      const weeklyStudyTime = document.getElementById('weekly-study-time');
-      const goalCompleted = document.getElementById('goal-completed');
-      const goalProgressFill = document.getElementById('goal-progress-fill');
-      const weeklyProgressFill = document.getElementById('weekly-progress-fill');
-      const leaderStreak = document.getElementById('leader-streak');
-      const leaderTodayMinutes = document.getElementById('leader-today-minutes');
-      const weeklyStudyLog = document.getElementById('weekly-study-log');
-      const motivationText = document.getElementById('motivation-text');
-      const streakWarning = document.getElementById('streak-warning');
-      const goalTargetDisplay = document.getElementById('goal-target-display');
-
-      if (goalTargetDisplay) {
-        goalTargetDisplay.textContent = dailyGoalMinutes >= 60 ? `${(dailyGoalMinutes / 60).toFixed(1)} hrs` : `${dailyGoalMinutes} min`;
-      }
-      if (streakCountElement) streakCountElement.textContent = storedCount;
-      if (streakMessageElement) streakMessageElement.textContent = storedCount > 0 ? `${storedCount} Day Streak — ${motivation}` : 'Your streak starts today!';
-      if (streakLevel) streakLevel.textContent = levelText;
-      if (todayStudyTime) todayStudyTime.textContent = `${displayTodayMinutes} min${pendingMinutes ? ` (+${pendingMinutes} live)` : ''}`;
-      if (weeklyStudyTime) weeklyStudyTime.textContent = `${displayWeeklyMinutes} min`;
-      if (goalCompleted) goalCompleted.textContent = `${(displayTodayMinutes / 60).toFixed(1)} hrs`;
-      if (goalProgressFill) {
-        goalProgressFill.style.width = `${goalCompletion}%`;
-        goalProgressFill.textContent = `${goalCompletion}%`;
-      }
-      if (weeklyProgressFill) {
-        weeklyProgressFill.style.width = `${Math.min(100, Math.round((displayWeeklyMinutes / (dailyGoalMinutes * 7)) * 100))}%`;
-      }
-      if (leaderStreak) leaderStreak.textContent = storedCount;
-      if (leaderTodayMinutes) leaderTodayMinutes.textContent = `${displayTodayMinutes} min`;
-      if (motivationText) motivationText.textContent = motivation;
-      if (streakWarning) streakWarning.textContent = warningText;
-      renderWeeklyStudyLog(pendingMinutes);
-      renderLeaderboard({ streak: storedCount, minutes: displayTodayMinutes });
+    if (weeklyProgressFill) {
+      weeklyProgressFill.style.width = `${Math.min(100, Math.round((displayWeeklyMinutes / (dailyGoalMinutes * 7)) * 100))}%`;
     }
+    if (leaderStreak) leaderStreak.textContent = storedCount;
+    if (leaderTodayMinutes) leaderTodayMinutes.textContent = `${displayTodayMinutes} min`;
+    if (motivationText) motivationText.textContent = motivation;
+    if (streakWarning) streakWarning.textContent = warningText;
+    renderWeeklyStudyLog(pendingMinutes);
+    renderLeaderboard({ streak: storedCount, minutes: displayTodayMinutes });
+  }
 
-    function renderWeeklyStudyLog(pendingMinutes = 0) {
-      const weeklyStudyLog = document.getElementById('weekly-study-log');
-      if (!weeklyStudyLog) return;
-      const entries = [];
-      const today = new Date();
-      for (let i = 6; i >= 0; i -= 1) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        const label = i === 0 ? 'Today' : date.toLocaleDateString(undefined, { weekday: 'short' });
-        const minutes = getStudyMinutes(date) + (i === 0 ? pendingMinutes : 0);
-        entries.push(`
+  function renderWeeklyStudyLog(pendingMinutes = 0) {
+    const weeklyStudyLog = document.getElementById('weekly-study-log');
+    if (!weeklyStudyLog) return;
+    const entries = [];
+    const today = new Date();
+    for (let i = 6; i >= 0; i -= 1) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const label = i === 0 ? 'Today' : date.toLocaleDateString(undefined, { weekday: 'short' });
+      const minutes = getStudyMinutes(date) + (i === 0 ? pendingMinutes : 0);
+      entries.push(`
           <li class="weekly-log-item d-flex align-items-center justify-content-between mb-3">
             <div>
               <div class="fw-semibold">${label}</div>
@@ -921,304 +1306,304 @@
             <span class="badge ${minutes >= 60 ? 'bg-warning text-dark' : 'bg-secondary text-white'}">${minutes} min</span>
           </li>
         `);
-      }
-      weeklyStudyLog.innerHTML = entries.join('');
     }
+    weeklyStudyLog.innerHTML = entries.join('');
+  }
 
-    function saveStudySessionTime(completed = false) {
-      if (!studySessionStart || pomodoroMode !== 'study') {
-        studySessionStart = null;
-        return;
-      }
-      const elapsedSeconds = Math.floor((Date.now() - studySessionStart) / 1000);
-      const minutes = Math.max(1, Math.round(elapsedSeconds / 60));
-      addStudyMinutes(minutes);
+  function saveStudySessionTime(completed = false) {
+    if (!studySessionStart || pomodoroMode !== 'study') {
       studySessionStart = null;
-      updateStreakPage();
-      if (completed) {
-        localStorage.setItem(gameUnlockKey, 'true');
-        if (document.getElementById('game-lock-message')) {
-          setupGamePage();
-        }
+      return;
+    }
+    const elapsedSeconds = Math.floor((Date.now() - studySessionStart) / 1000);
+    const minutes = Math.max(1, Math.round(elapsedSeconds / 60));
+    addStudyMinutes(minutes);
+    studySessionStart = null;
+    updateStreakPage();
+    if (completed) {
+      localStorage.setItem(gameUnlockKey, 'true');
+      if (document.getElementById('game-lock-message')) {
+        setupGamePage();
       }
     }
+  }
 
-    function isGameUnlocked() {
-      return localStorage.getItem(gameUnlockKey) === 'true';
-    }
+  function isGameUnlocked() {
+    return localStorage.getItem(gameUnlockKey) === 'true';
+  }
 
-    function switchGameMode(mode) {
-      resetReactionGame();
-      resetFocusChallenge();
-      currentGameMode = mode;
-      document.querySelectorAll('.game-mode-btn').forEach(button => {
-        button.classList.toggle('active', button.id === `game-mode-${mode}`);
-      });
-      document.querySelectorAll('.game-content').forEach(section => {
-        section.classList.toggle('d-none', section.id !== `game-${mode}`);
-      });
-      if (mode === 'memory') initGameBoard();
-      if (mode === 'quiz') initQuizGame();
-      if (mode === 'reaction') resetReactionGame();
-      if (mode === 'focus') resetFocusChallenge();
-    }
+  function switchGameMode(mode) {
+    resetReactionGame();
+    resetFocusChallenge();
+    currentGameMode = mode;
+    document.querySelectorAll('.game-mode-btn').forEach(button => {
+      button.classList.toggle('active', button.id === `game-mode-${mode}`);
+    });
+    document.querySelectorAll('.game-content').forEach(section => {
+      section.classList.toggle('d-none', section.id !== `game-${mode}`);
+    });
+    if (mode === 'memory') initGameBoard();
+    if (mode === 'quiz') initQuizGame();
+    if (mode === 'reaction') resetReactionGame();
+    if (mode === 'focus') resetFocusChallenge();
+  }
 
-    function renderQuizQuestion() {
-      const questionEl = document.getElementById('quiz-question');
-      const optionsEl = document.getElementById('quiz-options');
-      const scoreEl = document.getElementById('quiz-score');
-      if (!questionEl || !optionsEl || !scoreEl) return;
+  function renderQuizQuestion() {
+    const questionEl = document.getElementById('quiz-question');
+    const optionsEl = document.getElementById('quiz-options');
+    const scoreEl = document.getElementById('quiz-score');
+    if (!questionEl || !optionsEl || !scoreEl) return;
 
-      const current = quizQuestions[currentQuizIndex];
-      questionEl.textContent = current.question;
-      optionsEl.innerHTML = current.options.map((option, index) => `
+    const current = quizQuestions[currentQuizIndex];
+    questionEl.textContent = current.question;
+    optionsEl.innerHTML = current.options.map((option, index) => `
         <button type="button" class="btn btn-outline-secondary quiz-option-btn" data-option-index="${index}">${option}</button>
       `).join('');
-      scoreEl.textContent = `Score: ${quizScore} / ${quizQuestions.length}`;
-    }
+    scoreEl.textContent = `Score: ${quizScore} / ${quizQuestions.length}`;
+  }
 
-    function initQuizGame() {
-      currentQuizIndex = 0;
-      quizScore = 0;
+  function initQuizGame() {
+    currentQuizIndex = 0;
+    quizScore = 0;
+    renderQuizQuestion();
+    const quizStatus = document.getElementById('game-status');
+    if (quizStatus) quizStatus.textContent = 'Answer each question to earn a fun completion score.';
+  }
+
+  function handleQuizAnswer(selectedIndex) {
+    const quizStatus = document.getElementById('game-status');
+    if (currentQuizIndex >= quizQuestions.length) {
+      if (quizStatus) quizStatus.textContent = `Quiz complete! Your final score is ${quizScore} / ${quizQuestions.length}.`;
+      return;
+    }
+    const question = quizQuestions[currentQuizIndex];
+    if (selectedIndex === question.answer) {
+      quizScore += 1;
+      if (quizStatus) quizStatus.textContent = 'Nice! That one was correct.';
+    } else if (quizStatus) {
+      quizStatus.textContent = 'Good try — keep going and learn from each question.';
+    }
+    currentQuizIndex += 1;
+    if (currentQuizIndex >= quizQuestions.length) {
+      if (quizStatus) quizStatus.textContent = `Quiz complete! Your final score is ${quizScore} / ${quizQuestions.length}.`;
+    } else {
       renderQuizQuestion();
-      const quizStatus = document.getElementById('game-status');
-      if (quizStatus) quizStatus.textContent = 'Answer each question to earn a fun completion score.';
     }
+  }
 
-    function handleQuizAnswer(selectedIndex) {
-      const quizStatus = document.getElementById('game-status');
-      if (currentQuizIndex >= quizQuestions.length) {
-        if (quizStatus) quizStatus.textContent = `Quiz complete! Your final score is ${quizScore} / ${quizQuestions.length}.`;
-        return;
-      }
-      const question = quizQuestions[currentQuizIndex];
-      if (selectedIndex === question.answer) {
-        quizScore += 1;
-        if (quizStatus) quizStatus.textContent = 'Nice! That one was correct.';
-      } else if (quizStatus) {
-        quizStatus.textContent = 'Good try — keep going and learn from each question.';
-      }
-      currentQuizIndex += 1;
-      if (currentQuizIndex >= quizQuestions.length) {
-        if (quizStatus) quizStatus.textContent = `Quiz complete! Your final score is ${quizScore} / ${quizQuestions.length}.`;
-      } else {
-        renderQuizQuestion();
-      }
-    }
+  function initReactionGame() {
+    const reactionStatus = document.getElementById('reaction-status');
+    const reactionResult = document.getElementById('reaction-result');
+    const reactionButton = document.getElementById('reaction-start-btn');
+    if (!reactionStatus || !reactionResult || !reactionButton) return;
+    reactionResult.textContent = '';
+    reactionStatus.textContent = 'Get ready... the button will turn green soon.';
+    reactionButton.textContent = 'Wait for green';
+    if (reactionTimeout) clearTimeout(reactionTimeout);
+    reactionStart = null;
+    const wait = 1500 + Math.random() * 2500;
+    reactionTimeout = setTimeout(() => {
+      if (!reactionStatus || !reactionButton) return;
+      reactionStatus.textContent = 'Click now!';
+      reactionButton.textContent = 'Click!';
+      reactionStart = Date.now();
+    }, wait);
+  }
 
-    function initReactionGame() {
-      const reactionStatus = document.getElementById('reaction-status');
-      const reactionResult = document.getElementById('reaction-result');
-      const reactionButton = document.getElementById('reaction-start-btn');
-      if (!reactionStatus || !reactionResult || !reactionButton) return;
-      reactionResult.textContent = '';
-      reactionStatus.textContent = 'Get ready... the button will turn green soon.';
-      reactionButton.textContent = 'Wait for green';
-      if (reactionTimeout) clearTimeout(reactionTimeout);
-      reactionStart = null;
-      const wait = 1500 + Math.random() * 2500;
-      reactionTimeout = setTimeout(() => {
-        if (!reactionStatus || !reactionButton) return;
-        reactionStatus.textContent = 'Click now!';
-        reactionButton.textContent = 'Click!';
-        reactionStart = Date.now();
-      }, wait);
-    }
+  function resetReactionGame() {
+    const reactionStatus = document.getElementById('reaction-status');
+    const reactionResult = document.getElementById('reaction-result');
+    const reactionButton = document.getElementById('reaction-start-btn');
+    if (reactionTimeout) clearTimeout(reactionTimeout);
+    reactionStart = null;
+    if (reactionButton) reactionButton.textContent = 'Start Reaction Test';
+    if (reactionStatus) reactionStatus.textContent = 'Press start and wait for the green signal.';
+    if (reactionResult) reactionResult.textContent = '';
+  }
 
-    function resetReactionGame() {
-      const reactionStatus = document.getElementById('reaction-status');
-      const reactionResult = document.getElementById('reaction-result');
-      const reactionButton = document.getElementById('reaction-start-btn');
-      if (reactionTimeout) clearTimeout(reactionTimeout);
-      reactionStart = null;
-      if (reactionButton) reactionButton.textContent = 'Start Reaction Test';
-      if (reactionStatus) reactionStatus.textContent = 'Press start and wait for the green signal.';
-      if (reactionResult) reactionResult.textContent = '';
-    }
-
-    function initFocusChallenge() {
-      const focusStatus = document.getElementById('focus-challenge-status');
-      const focusTimerEl = document.getElementById('focus-challenge-timer');
-      const durationSelect = document.getElementById('focus-duration');
-      if (!focusStatus || !focusTimerEl || !durationSelect) return;
-      if (focusTimer) clearInterval(focusTimer);
-      focusActive = true;
-      focusRemaining = Number(durationSelect.value) || 120;
-      const updateTimer = () => {
-        const minutes = Math.floor(focusRemaining / 60);
-        const seconds = focusRemaining % 60;
-        focusTimerEl.textContent = `${formatTwoDigits(minutes)}:${formatTwoDigits(seconds)}`;
-        if (focusRemaining <= 0) {
-          clearInterval(focusTimer);
-          focusActive = false;
-          focusStatus.textContent = 'Great work! You completed the focus challenge.';
-          return;
-        }
-        focusRemaining -= 1;
-      };
-      updateTimer();
-      focusStatus.textContent = 'Stay on this page and keep your attention here.';
-      focusTimer = setInterval(updateTimer, 1000);
-      window.addEventListener('blur', () => {
-        if (!focusActive) return;
+  function initFocusChallenge() {
+    const focusStatus = document.getElementById('focus-challenge-status');
+    const focusTimerEl = document.getElementById('focus-challenge-timer');
+    const durationSelect = document.getElementById('focus-duration');
+    if (!focusStatus || !focusTimerEl || !durationSelect) return;
+    if (focusTimer) clearInterval(focusTimer);
+    focusActive = true;
+    focusRemaining = Number(durationSelect.value) || 120;
+    const updateTimer = () => {
+      const minutes = Math.floor(focusRemaining / 60);
+      const seconds = focusRemaining % 60;
+      focusTimerEl.textContent = `${formatTwoDigits(minutes)}:${formatTwoDigits(seconds)}`;
+      if (focusRemaining <= 0) {
         clearInterval(focusTimer);
         focusActive = false;
-        focusStatus.textContent = 'Focus broken — try again after a full study session.';
-      }, { once: true });
-    }
-
-    function resetFocusChallenge() {
-      const focusStatus = document.getElementById('focus-challenge-status');
-      const focusTimerEl = document.getElementById('focus-challenge-timer');
-      if (focusTimer) clearInterval(focusTimer);
+        focusStatus.textContent = 'Great work! You completed the focus challenge.';
+        return;
+      }
+      focusRemaining -= 1;
+    };
+    updateTimer();
+    focusStatus.textContent = 'Stay on this page and keep your attention here.';
+    focusTimer = setInterval(updateTimer, 1000);
+    window.addEventListener('blur', () => {
+      if (!focusActive) return;
+      clearInterval(focusTimer);
       focusActive = false;
-      focusRemaining = Number(document.getElementById('focus-duration')?.value || 120);
-      if (focusTimerEl) focusTimerEl.textContent = `${formatTwoDigits(Math.floor(focusRemaining / 60))}:${formatTwoDigits(focusRemaining % 60)}`;
-      if (focusStatus) focusStatus.textContent = 'Press start to begin the Focus Trial.';
+      focusStatus.textContent = 'Focus broken — try again after a full study session.';
+    }, { once: true });
+  }
+
+  function resetFocusChallenge() {
+    const focusStatus = document.getElementById('focus-challenge-status');
+    const focusTimerEl = document.getElementById('focus-challenge-timer');
+    if (focusTimer) clearInterval(focusTimer);
+    focusActive = false;
+    focusRemaining = Number(document.getElementById('focus-duration')?.value || 120);
+    if (focusTimerEl) focusTimerEl.textContent = `${formatTwoDigits(Math.floor(focusRemaining / 60))}:${formatTwoDigits(focusRemaining % 60)}`;
+    if (focusStatus) focusStatus.textContent = 'Press start to begin the Focus Trial.';
+  }
+
+  function initGameBoard() {
+    const grid = document.getElementById('memory-grid');
+    const gameStatus = document.getElementById('game-status');
+    if (!grid || !gameStatus) return;
+
+    const icons = ['🧠', '📚', '✨', '🚀'];
+    const deck = [...icons, ...icons].sort(() => Math.random() - 0.5);
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let matches = 0;
+
+    function resetTurn() {
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
     }
 
-    function initGameBoard() {
-      const grid = document.getElementById('memory-grid');
-      const gameStatus = document.getElementById('game-status');
-      if (!grid || !gameStatus) return;
-
-      const icons = ['🧠', '📚', '✨', '🚀'];
-      const deck = [...icons, ...icons].sort(() => Math.random() - 0.5);
-      let firstCard = null;
-      let secondCard = null;
-      let lockBoard = false;
-      let matches = 0;
-
-      function resetTurn() {
-        firstCard = null;
-        secondCard = null;
-        lockBoard = false;
-      }
-
-      function checkForMatch() {
-        if (!firstCard || !secondCard) return;
-        const match = firstCard.dataset.symbol === secondCard.dataset.symbol;
-        if (match) {
-          firstCard.classList.add('matched');
-          secondCard.classList.add('matched');
-          matches += 1;
-          gameStatus.textContent = matches === icons.length
-            ? 'You matched all pairs! Great focus and well done.'
-            : `Nice! ${matches} of ${icons.length} pairs matched.`;
+    function checkForMatch() {
+      if (!firstCard || !secondCard) return;
+      const match = firstCard.dataset.symbol === secondCard.dataset.symbol;
+      if (match) {
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+        matches += 1;
+        gameStatus.textContent = matches === icons.length
+          ? 'You matched all pairs! Great focus and well done.'
+          : `Nice! ${matches} of ${icons.length} pairs matched.`;
+        resetTurn();
+      } else {
+        lockBoard = true;
+        setTimeout(() => {
+          [firstCard, secondCard].forEach(card => {
+            card.classList.remove('flipped');
+            card.querySelector('.card-front')?.classList.remove('d-none');
+            card.querySelector('.card-back')?.classList.add('card-hidden');
+          });
           resetTurn();
-        } else {
-          lockBoard = true;
-          setTimeout(() => {
-            [firstCard, secondCard].forEach(card => {
-              card.classList.remove('flipped');
-              card.querySelector('.card-front')?.classList.remove('d-none');
-              card.querySelector('.card-back')?.classList.add('card-hidden');
-            });
-            resetTurn();
-          }, 900);
-        }
+        }, 900);
       }
+    }
 
-      grid.innerHTML = deck.map(symbol => `
+    grid.innerHTML = deck.map(symbol => `
         <button type="button" class="memory-card" data-symbol="${symbol}">
           <span class="card-front">?</span>
           <span class="card-back card-hidden">${symbol}</span>
         </button>
       `).join('');
 
-      grid.querySelectorAll('.memory-card').forEach(card => {
-        card.addEventListener('click', () => {
-          if (lockBoard || card.classList.contains('flipped') || card.classList.contains('matched')) return;
-          card.classList.add('flipped');
-          card.querySelector('.card-front')?.classList.add('d-none');
-          card.querySelector('.card-back')?.classList.remove('card-hidden');
-          if (!firstCard) {
-            firstCard = card;
-            return;
-          }
-          secondCard = card;
-          checkForMatch();
-        });
+    grid.querySelectorAll('.memory-card').forEach(card => {
+      card.addEventListener('click', () => {
+        if (lockBoard || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        card.classList.add('flipped');
+        card.querySelector('.card-front')?.classList.add('d-none');
+        card.querySelector('.card-back')?.classList.remove('card-hidden');
+        if (!firstCard) {
+          firstCard = card;
+          return;
+        }
+        secondCard = card;
+        checkForMatch();
       });
+    });
 
-      const restartBtn = document.getElementById('restart-game-btn');
-      if (restartBtn && !restartBtn.dataset.gameListener) {
-        restartBtn.dataset.gameListener = 'true';
-        restartBtn.addEventListener('click', initGameBoard);
-      }
-      gameStatus.textContent = 'Tap two cards to reveal a match.';
+    const restartBtn = document.getElementById('restart-game-btn');
+    if (restartBtn && !restartBtn.dataset.gameListener) {
+      restartBtn.dataset.gameListener = 'true';
+      restartBtn.addEventListener('click', initGameBoard);
     }
+    gameStatus.textContent = 'Tap two cards to reveal a match.';
+  }
 
-    function setupGamePage() {
-      const unlocked = isGameUnlocked();
-      const gameLocked = document.getElementById('game-locked');
-      const gameUnlockedPanel = document.getElementById('game-unlocked');
-      const gameUnlockStatus = document.getElementById('game-unlock-status');
-      const gameLockMessage = document.getElementById('game-lock-message');
-      const gameUnlockHint = document.getElementById('game-unlock-hint');
-      if (gameUnlockStatus) {
-        gameUnlockStatus.textContent = unlocked ? 'Game unlocked — choose your reward' : 'Unlock the game with focus';
-        gameUnlockStatus.className = unlocked ? 'badge bg-success py-2 px-3 fs-6' : 'badge bg-warning py-2 px-3 fs-6';
-      }
-      if (gameLockMessage) {
-        gameLockMessage.textContent = unlocked
-          ? 'Study game unlocked! Choose a mini-game and enjoy your reward challenge.'
-          : 'Complete a study session to unlock the game.';
-      }
-      if (gameUnlockHint) {
-        gameUnlockHint.textContent = unlocked
-          ? 'Great job! The Study Game is unlocked — choose a game below.'
-          : 'Complete a study session to unlock the Study Game reward.';
-      }
-      if (gameLocked) {
-        gameLocked.classList.toggle('d-none', unlocked);
-      }
-      if (gameUnlockedPanel) {
-        gameUnlockedPanel.classList.toggle('d-none', !unlocked);
-      }
-      if (unlocked) {
-        switchGameMode(currentGameMode);
-      }
+  function setupGamePage() {
+    const unlocked = isGameUnlocked();
+    const gameLocked = document.getElementById('game-locked');
+    const gameUnlockedPanel = document.getElementById('game-unlocked');
+    const gameUnlockStatus = document.getElementById('game-unlock-status');
+    const gameLockMessage = document.getElementById('game-lock-message');
+    const gameUnlockHint = document.getElementById('game-unlock-hint');
+    if (gameUnlockStatus) {
+      gameUnlockStatus.textContent = unlocked ? 'Game unlocked — choose your reward' : 'Unlock the game with focus';
+      gameUnlockStatus.className = unlocked ? 'badge bg-success py-2 px-3 fs-6' : 'badge bg-warning py-2 px-3 fs-6';
     }
-
-    function refreshStreak() {
-      const storedCount = Number(localStorage.getItem(streakKey) || 0);
-      if (streakCount) streakCount.textContent = storedCount;
-      if (streakMessage) streakMessage.textContent = storedCount > 0 ? getMotivationText(storedCount) : 'Your streak starts today!';
-      updateStreakPage();
+    if (gameLockMessage) {
+      gameLockMessage.textContent = unlocked
+        ? 'Study game unlocked! Choose a mini-game and enjoy your reward challenge.'
+        : 'Complete a study session to unlock the game.';
     }
-
-    function recordActivity() {
-      const today = getISODate();
-      const yesterday = getISODate(new Date(Date.now() - 86400000));
-      const lastDate = localStorage.getItem(streakDateKey);
-      let count = Number(localStorage.getItem(streakKey) || 0);
-      if (lastDate !== today) {
-        count = lastDate === yesterday ? count + 1 : 1;
-        localStorage.setItem(streakKey, count);
-        localStorage.setItem(streakDateKey, today);
-      }
-      refreshStreak();
+    if (gameUnlockHint) {
+      gameUnlockHint.textContent = unlocked
+        ? 'Great job! The Study Game is unlocked — choose a game below.'
+        : 'Complete a study session to unlock the Study Game reward.';
     }
+    if (gameLocked) {
+      gameLocked.classList.toggle('d-none', unlocked);
+    }
+    if (gameUnlockedPanel) {
+      gameUnlockedPanel.classList.toggle('d-none', !unlocked);
+    }
+    if (unlocked) {
+      switchGameMode(currentGameMode);
+    }
+  }
 
-    function setupAuthPanels() {
-      const registered = isLoggedIn();
+  function refreshStreak() {
+    const storedCount = Number(localStorage.getItem(streakKey) || 0);
+    if (streakCount) streakCount.textContent = storedCount;
+    if (streakMessage) streakMessage.textContent = storedCount > 0 ? getMotivationText(storedCount) : 'Your streak starts today!';
+    updateStreakPage();
+  }
 
-      if (chatContent) {
-        if (registered) {
-          chatContent.innerHTML = `
+  function recordActivity() {
+    const today = getISODate();
+    const yesterday = getISODate(new Date(Date.now() - 86400000));
+    const lastDate = localStorage.getItem(streakDateKey);
+    let count = Number(localStorage.getItem(streakKey) || 0);
+    if (lastDate !== today) {
+      count = lastDate === yesterday ? count + 1 : 1;
+      localStorage.setItem(streakKey, count);
+      localStorage.setItem(streakDateKey, today);
+    }
+    refreshStreak();
+  }
+
+  function setupAuthPanels() {
+    const registered = isLoggedIn();
+
+    if (chatContent) {
+      if (registered) {
+        chatContent.innerHTML = `
             <div class="alert alert-success mb-2">Welcome back! Access the student chat below.</div>
             <a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" target="_blank" rel="noopener noreferrer" data-login-protected="whatsapp" class="btn btn-success">Join the WhatsApp group</a>
             <a class="btn btn-success btn-sm mt-2" target="_blank" rel="noopener noreferrer" href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid?mode=gi_t" data-login-protected="whatsapp">Join Chat</a>
           `;
-        } else {
-          chatContent.innerHTML = `<div class="alert alert-warning">Please register first. We’ll connect you soon after registration.</div>`;
-        }
+      } else {
+        chatContent.innerHTML = `<div class="alert alert-warning">Please register first. We’ll connect you soon after registration.</div>`;
       }
+    }
 
-      if (notesContent) {
-        if (registered) {
-          notesContent.innerHTML = `
+    if (notesContent) {
+      if (registered) {
+        notesContent.innerHTML = `
             <div class="row g-3">
               <div class="col-md-4">
                 <div class="p-3 bg-light rounded">
@@ -1240,450 +1625,451 @@
               </div>
             </div>
           `;
-        } else {
-          notesContent.innerHTML = `<div class="alert alert-warning">Please register first to access notes and PDFs.</div>`;
-        }
-      }
-
-      if (registerButton) {
-        if (registered) {
-          registerButton.classList.add('d-none');
-        } else {
-          registerButton.classList.remove('d-none');
-          registerButton.addEventListener('click', () => {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('studentRegistered', 'true');
-            setupAuthPanels();
-            showWindow({
-              title: 'Registration Success',
-              message: 'Your registration is active for this session. Chat and notes are now available.',
-              type: 'success'
-            });
-          }, { once: true });
-        }
-      }
-    }
-
-    function initMusic() {
-      const musicCategory = document.getElementById('music-category');
-      const musicSelect = document.getElementById('music-select');
-      const musicPlayer = document.getElementById('focus-music-player');
-      const musicIframe = document.getElementById('music-iframe');
-      const categoryDescription = document.getElementById('music-category-description');
-      if (!musicSelect || !musicPlayer || !musicCategory || !categoryDescription) return;
-
-      const populateTracks = () => {
-        const selectedCategory = musicCategory.value;
-        const filtered = musicTracks.filter(track => track.category === selectedCategory);
-        musicSelect.innerHTML = '';
-        filtered.forEach(track => {
-          const option = document.createElement('option');
-          option.value = track.src;
-          option.dataset.video = track.video || '';
-          option.dataset.description = track.description || '';
-          option.textContent = track.label;
-          musicSelect.appendChild(option);
-        });
-        if (filtered.length) {
-          const firstTrack = filtered[0];
-          musicSelect.value = firstTrack.src;
-          musicPlayer.src = firstTrack.src;
-          musicIframe.src = firstTrack.video || musicIframe.src;
-          categoryDescription.textContent = firstTrack.description || 'Pick a mood and play a track to match your study focus.';
-        }
-      };
-
-      musicCategory.addEventListener('change', populateTracks);
-      musicSelect.addEventListener('change', () => {
-        const selectedOption = musicSelect.selectedOptions[0];
-        if (!selectedOption) return;
-        musicPlayer.src = selectedOption.value;
-        musicIframe.src = selectedOption.dataset.video || musicIframe.src;
-        categoryDescription.textContent = selectedOption.dataset.description || categoryDescription.textContent;
-        musicPlayer.play().catch(() => {});
-      });
-
-      populateTracks();
-    }
-
-    function showDistractionConfirmation() {
-      return new Promise(resolve => {
-        if (!distractionOverlay || !distractionContinue || !distractionStay) {
-          resolve(false);
-          return;
-        }
-
-        distractionOverlay.classList.remove('d-none');
-
-        const cleanup = () => {
-          distractionOverlay.classList.add('d-none');
-          distractionContinue.removeEventListener('click', onContinue);
-          distractionStay.removeEventListener('click', onStay);
-        };
-
-        const onContinue = () => {
-          cleanup();
-          resolve(true);
-        };
-
-        const onStay = () => {
-          cleanup();
-          resolve(false);
-        };
-
-        distractionContinue.addEventListener('click', onContinue);
-        distractionStay.addEventListener('click', onStay);
-      });
-    }
-
-    function playRedirect(link, isBlank) {
-      if (isBlank) {
-        window.open(link, '_blank', 'noopener');
       } else {
-        window.location.href = link;
+        notesContent.innerHTML = `<div class="alert alert-warning">Please register first to access notes and PDFs.</div>`;
       }
     }
 
-    function isDistractingLink(url) {
-      const distractingSites = ['youtube.com', 'youtu.be', 'instagram.com', 'facebook.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com', 'twitch.tv', 'netflix.com'];
-      return distractingSites.some(site => url.hostname.toLowerCase().includes(site));
+    if (registerButton) {
+      if (registered) {
+        registerButton.classList.add('d-none');
+      } else {
+        registerButton.classList.remove('d-none');
+        registerButton.addEventListener('click', () => {
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('studentRegistered', 'true');
+          setupAuthPanels();
+          showWindow({
+            title: 'Registration Success',
+            message: 'Your registration is active for this session. Chat and notes are now available.',
+            type: 'success'
+          });
+        }, { once: true });
+      }
     }
+  }
 
-    function bindInteractions() {
-      const timerStart = document.getElementById('timer-start');
-      const timerPause = document.getElementById('timer-pause');
-      const timerReset = document.getElementById('timer-reset');
-      const timerStudyMode = document.getElementById('timer-study-mode');
-      const timerBreakMode = document.getElementById('timer-break-mode');
-      const reminderSet = document.getElementById('reminder-set');
-      const taskAdd = document.getElementById('task-add');
-      const taskTitle = document.getElementById('task-title');
-      const taskList = document.getElementById('task-list');
-      const flashcardAdd = document.getElementById('flashcard-add');
-      const flashcardFront = document.getElementById('flashcard-front');
-      const flashcardBack = document.getElementById('flashcard-back');
-      const cardsContainer = document.getElementById('flashcards-container');
+  function initMusic() {
+    const musicCategory = document.getElementById('music-category');
+    const musicSelect = document.getElementById('music-select');
+    const musicPlayer = document.getElementById('focus-music-player');
+    const musicIframe = document.getElementById('music-iframe');
+    const categoryDescription = document.getElementById('music-category-description');
+    if (!musicSelect || !musicPlayer || !musicCategory || !categoryDescription) return;
 
-      timerStart?.addEventListener('click', () => {
-        startPomodoro();
-        recordActivity();
+    const populateTracks = () => {
+      const selectedCategory = musicCategory.value;
+      const filtered = musicTracks.filter(track => track.category === selectedCategory);
+      musicSelect.innerHTML = '';
+      filtered.forEach(track => {
+        const option = document.createElement('option');
+        option.value = track.src;
+        option.dataset.video = track.video || '';
+        option.dataset.description = track.description || '';
+        option.textContent = track.label;
+        musicSelect.appendChild(option);
       });
-      timerPause?.addEventListener('click', pausePomodoro);
-      timerReset?.addEventListener('click', resetPomodoro);
-      timerStudyMode?.addEventListener('click', () => setPomodoroMode('study'));
-      timerBreakMode?.addEventListener('click', () => setPomodoroMode('break'));
-      timerFullscreenButton?.addEventListener('click', toggleTimerFullscreen);
+      if (filtered.length) {
+        const firstTrack = filtered[0];
+        musicSelect.value = firstTrack.src;
+        musicPlayer.src = firstTrack.src;
+        musicIframe.src = firstTrack.video || musicIframe.src;
+        categoryDescription.textContent = firstTrack.description || 'Pick a mood and play a track to match your study focus.';
+      }
+    };
 
-      const syncStudyDuration = () => {
-        if (!studyDurationInput || !studyDurationRange) return;
-        const value = Math.max(1, Math.min(120, Number(studyDurationInput.value) || 25));
-        studyDurationInput.value = value;
-        studyDurationRange.value = value;
-        updateTimerSettings();
+    musicCategory.addEventListener('change', populateTracks);
+    musicSelect.addEventListener('change', () => {
+      const selectedOption = musicSelect.selectedOptions[0];
+      if (!selectedOption) return;
+      musicPlayer.src = selectedOption.value;
+      musicIframe.src = selectedOption.dataset.video || musicIframe.src;
+      categoryDescription.textContent = selectedOption.dataset.description || categoryDescription.textContent;
+      musicPlayer.play().catch(() => { });
+    });
+
+    populateTracks();
+  }
+
+  function showDistractionConfirmation() {
+    return new Promise(resolve => {
+      if (!distractionOverlay || !distractionContinue || !distractionStay) {
+        resolve(false);
+        return;
+      }
+
+      distractionOverlay.classList.remove('d-none');
+
+      const cleanup = () => {
+        distractionOverlay.classList.add('d-none');
+        distractionContinue.removeEventListener('click', onContinue);
+        distractionStay.removeEventListener('click', onStay);
       };
 
-      const syncBreakDuration = () => {
-        if (!breakDurationInput || !breakDurationRange) return;
-        const value = Math.max(1, Math.min(60, Number(breakDurationInput.value) || 5));
-        breakDurationInput.value = value;
-        breakDurationRange.value = value;
-        updateTimerSettings();
+      const onContinue = () => {
+        cleanup();
+        resolve(true);
       };
 
-      studyDurationInput?.addEventListener('input', syncStudyDuration);
-      studyDurationRange?.addEventListener('input', () => {
-        if (studyDurationInput) studyDurationInput.value = studyDurationRange.value;
-        updateTimerSettings();
-      });
-      breakDurationInput?.addEventListener('input', syncBreakDuration);
-      breakDurationRange?.addEventListener('input', () => {
-        if (breakDurationInput) breakDurationInput.value = breakDurationRange.value;
-        updateTimerSettings();
-      });
+      const onStay = () => {
+        cleanup();
+        resolve(false);
+      };
 
-      focusModeToggle?.addEventListener('click', () => setFocusModeSetting(!focusModeSetting));
+      distractionContinue.addEventListener('click', onContinue);
+      distractionStay.addEventListener('click', onStay);
+    });
+  }
 
-      reminderSet?.addEventListener('click', async () => {
-        const timeInput = document.getElementById('reminder-time');
-        if (!timeInput || !timeInput.value) {
-          showWindow({ title: 'Pick a Time', message: 'Please choose a time for your study reminder.', type: 'warning' });
-          return;
-        }
-        const [hours, minutes] = timeInput.value.split(':').map(Number);
-        const target = new Date();
-        target.setHours(hours, minutes, 0, 0);
-        if (target <= new Date()) {
-          target.setDate(target.getDate() + 1);
-        }
-        const delay = target.getTime() - Date.now();
-        showWindow({
-          title: '⏰ Reminder Set',
-          message: `Your study reminder is set for ${target.toLocaleTimeString()}. We'll notify you!`,
-          type: 'success'
-        });
-        setTimeout(() => {
-          showWindow({ title: '⏰ Study Time!', message: 'It\'s time to start your scheduled study session. Let\'s go!', type: 'alert' });
-        }, delay);
+  function playRedirect(link, isBlank) {
+    if (isBlank) {
+      window.open(link, '_blank', 'noopener');
+    } else {
+      window.location.href = link;
+    }
+  }
+
+  function isDistractingLink(url) {
+    const distractingSites = ['youtube.com', 'youtu.be', 'instagram.com', 'facebook.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com', 'twitch.tv', 'netflix.com'];
+    return distractingSites.some(site => url.hostname.toLowerCase().includes(site));
+  }
+
+  function bindInteractions() {
+    const timerStart = document.getElementById('timer-start');
+    const timerPause = document.getElementById('timer-pause');
+    const timerReset = document.getElementById('timer-reset');
+    const timerStudyMode = document.getElementById('timer-study-mode');
+    const timerBreakMode = document.getElementById('timer-break-mode');
+    const reminderSet = document.getElementById('reminder-set');
+    const taskAdd = document.getElementById('task-add');
+    const taskTitle = document.getElementById('task-title');
+    const taskList = document.getElementById('task-list');
+    const flashcardAdd = document.getElementById('flashcard-add');
+    const flashcardFront = document.getElementById('flashcard-front');
+    const flashcardBack = document.getElementById('flashcard-back');
+    const cardsContainer = document.getElementById('flashcards-container');
+
+    timerStart?.addEventListener('click', () => {
+      startPomodoro();
+      recordActivity();
+    });
+    timerPause?.addEventListener('click', pausePomodoro);
+    timerReset?.addEventListener('click', resetPomodoro);
+    timerStudyMode?.addEventListener('click', () => setPomodoroMode('study'));
+    timerBreakMode?.addEventListener('click', () => setPomodoroMode('break'));
+    timerFullscreenButton?.addEventListener('click', toggleTimerFullscreen);
+
+    const syncStudyDuration = () => {
+      if (!studyDurationInput || !studyDurationRange) return;
+      const value = Math.max(1, Math.min(120, Number(studyDurationInput.value) || 25));
+      studyDurationInput.value = value;
+      studyDurationRange.value = value;
+      updateTimerSettings();
+    };
+
+    const syncBreakDuration = () => {
+      if (!breakDurationInput || !breakDurationRange) return;
+      const value = Math.max(1, Math.min(60, Number(breakDurationInput.value) || 5));
+      breakDurationInput.value = value;
+      breakDurationRange.value = value;
+      updateTimerSettings();
+    };
+
+    studyDurationInput?.addEventListener('input', syncStudyDuration);
+    studyDurationRange?.addEventListener('input', () => {
+      if (studyDurationInput) studyDurationInput.value = studyDurationRange.value;
+      updateTimerSettings();
+    });
+    breakDurationInput?.addEventListener('input', syncBreakDuration);
+    breakDurationRange?.addEventListener('input', () => {
+      if (breakDurationInput) breakDurationInput.value = breakDurationRange.value;
+      updateTimerSettings();
+    });
+
+    focusModeToggle?.addEventListener('click', () => setFocusModeSetting(!focusModeSetting));
+
+    reminderSet?.addEventListener('click', async () => {
+      const timeInput = document.getElementById('reminder-time');
+      if (!timeInput || !timeInput.value) {
+        showWindow({ title: 'Pick a Time', message: 'Please choose a time for your study reminder.', type: 'warning' });
+        return;
+      }
+      const [hours, minutes] = timeInput.value.split(':').map(Number);
+      const target = new Date();
+      target.setHours(hours, minutes, 0, 0);
+      if (target <= new Date()) {
+        target.setDate(target.getDate() + 1);
+      }
+      const delay = target.getTime() - Date.now();
+      showWindow({
+        title: '⏰ Reminder Set',
+        message: `Your study reminder is set for ${target.toLocaleTimeString()}. We'll notify you!`,
+        type: 'success'
       });
+      setTimeout(() => {
+        showWindow({ title: '⏰ Study Time!', message: 'It\'s time to start your scheduled study session. Let\'s go!', type: 'alert' });
+      }, delay);
+    });
 
-      taskAdd?.addEventListener('click', () => {
-        if (!taskTitle || !taskTitle.value.trim()) return;
-        tasks.push({ title: taskTitle.value.trim(), completed: false });
-        taskTitle.value = '';
+    taskAdd?.addEventListener('click', () => {
+      if (!taskTitle || !taskTitle.value.trim()) return;
+      tasks.push({ title: taskTitle.value.trim(), completed: false });
+      taskTitle.value = '';
+      saveTasks();
+      renderTasks();
+      recordActivity();
+    });
+
+    taskList?.addEventListener('click', event => {
+      const target = event.target;
+      const index = target.dataset.index;
+      if (typeof index === 'undefined') return;
+      const idx = Number(index);
+      if (target.classList.contains('task-delete')) {
+        tasks.splice(idx, 1);
+        saveTasks();
+        renderTasks();
+      }
+      if (target.classList.contains('task-toggle')) {
+        tasks[idx].completed = !tasks[idx].completed;
         saveTasks();
         renderTasks();
         recordActivity();
-      });
+      }
+    });
 
-      taskList?.addEventListener('click', event => {
-        const target = event.target;
-        const index = target.dataset.index;
-        if (typeof index === 'undefined') return;
-        const idx = Number(index);
-        if (target.classList.contains('task-delete')) {
-          tasks.splice(idx, 1);
-          saveTasks();
-          renderTasks();
-        }
-        if (target.classList.contains('task-toggle')) {
-          tasks[idx].completed = !tasks[idx].completed;
-          saveTasks();
-          renderTasks();
-          recordActivity();
-        }
-      });
+    flashcardAdd?.addEventListener('click', () => {
+      if (!flashcardFront || !flashcardBack || !flashcardFront.value.trim() || !flashcardBack.value.trim()) return;
+      flashcards.push({ front: flashcardFront.value.trim(), back: flashcardBack.value.trim() });
+      flashcardFront.value = '';
+      flashcardBack.value = '';
+      saveFlashcards();
+      renderFlashcards();
+      recordActivity();
+    });
 
-      flashcardAdd?.addEventListener('click', () => {
-        if (!flashcardFront || !flashcardBack || !flashcardFront.value.trim() || !flashcardBack.value.trim()) return;
-        flashcards.push({ front: flashcardFront.value.trim(), back: flashcardBack.value.trim() });
-        flashcardFront.value = '';
-        flashcardBack.value = '';
+    document.querySelectorAll('.game-mode-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const mode = button.id.replace('game-mode-', '');
+        currentGameMode = mode;
+        switchGameMode(mode);
+      });
+    });
+
+    document.getElementById('quiz-options')?.addEventListener('click', event => {
+      const button = event.target.closest('button[data-option-index]');
+      if (!button) return;
+      handleQuizAnswer(Number(button.dataset.optionIndex));
+    });
+
+    document.getElementById('quiz-restart-btn')?.addEventListener('click', initQuizGame);
+    const reactionBtn = document.getElementById('reaction-start-btn');
+    reactionBtn?.addEventListener('click', () => {
+      if (reactionStart === null && reactionTimeout) {
+        const status = document.getElementById('reaction-status');
+        if (status) status.textContent = 'Too early! Wait for the green signal.';
+        return;
+      }
+      if (!reactionStart) {
+        initReactionGame();
+        return;
+      }
+      const reactionResult = document.getElementById('reaction-result');
+      const reactionStatus = document.getElementById('reaction-status');
+      const elapsed = Date.now() - reactionStart;
+      if (reactionResult) reactionResult.textContent = `Reaction time: ${elapsed} ms`;
+      if (reactionStatus) reactionStatus.textContent = 'Great reflex! Try again to improve.';
+      reactionStart = null;
+      if (reactionTimeout) {
+        clearTimeout(reactionTimeout);
+        reactionTimeout = null;
+      }
+      reactionBtn.textContent = 'Start Reaction Test';
+    });
+    document.getElementById('focus-start-btn')?.addEventListener('click', initFocusChallenge);
+    document.getElementById('focus-duration')?.addEventListener('change', resetFocusChallenge);
+
+    cardsContainer?.addEventListener('click', event => {
+      const target = event.target;
+      const index = target.dataset.index;
+      if (typeof index === 'undefined') return;
+      const idx = Number(index);
+      if (target.classList.contains('flashcard-delete')) {
+        flashcards.splice(idx, 1);
         saveFlashcards();
         renderFlashcards();
+      }
+      if (target.classList.contains('flashcard-flip')) {
+        const cardNode = target.closest('.flashcard-item');
+        const backText = cardNode.querySelector('.flashcard-back');
+        if (backText) backText.classList.toggle('flashcard-hidden');
         recordActivity();
-      });
-
-      document.querySelectorAll('.game-mode-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const mode = button.id.replace('game-mode-', '');
-          currentGameMode = mode;
-          switchGameMode(mode);
-        });
-      });
-
-      document.getElementById('quiz-options')?.addEventListener('click', event => {
-        const button = event.target.closest('button[data-option-index]');
-        if (!button) return;
-        handleQuizAnswer(Number(button.dataset.optionIndex));
-      });
-
-      document.getElementById('quiz-restart-btn')?.addEventListener('click', initQuizGame);
-      const reactionBtn = document.getElementById('reaction-start-btn');
-      reactionBtn?.addEventListener('click', () => {
-        if (reactionStart === null && reactionTimeout) {
-          const status = document.getElementById('reaction-status');
-          if (status) status.textContent = 'Too early! Wait for the green signal.';
-          return;
-        }
-        if (!reactionStart) {
-          initReactionGame();
-          return;
-        }
-        const reactionResult = document.getElementById('reaction-result');
-        const reactionStatus = document.getElementById('reaction-status');
-        const elapsed = Date.now() - reactionStart;
-        if (reactionResult) reactionResult.textContent = `Reaction time: ${elapsed} ms`;
-        if (reactionStatus) reactionStatus.textContent = 'Great reflex! Try again to improve.';
-        reactionStart = null;
-        if (reactionTimeout) {
-          clearTimeout(reactionTimeout);
-          reactionTimeout = null;
-        }
-        reactionBtn.textContent = 'Start Reaction Test';
-      });
-      document.getElementById('focus-start-btn')?.addEventListener('click', initFocusChallenge);
-      document.getElementById('focus-duration')?.addEventListener('change', resetFocusChallenge);
-
-      cardsContainer?.addEventListener('click', event => {
-        const target = event.target;
-        const index = target.dataset.index;
-        if (typeof index === 'undefined') return;
-        const idx = Number(index);
-        if (target.classList.contains('flashcard-delete')) {
-          flashcards.splice(idx, 1);
-          saveFlashcards();
-          renderFlashcards();
-        }
-        if (target.classList.contains('flashcard-flip')) {
-          const cardNode = target.closest('.flashcard-item');
-          const backText = cardNode.querySelector('.flashcard-back');
-          if (backText) backText.classList.toggle('flashcard-hidden');
-          recordActivity();
-        }
-      });
-
-      streakActivityButton?.addEventListener('click', () => {
-        recordActivity();
-        showWindow({ title: 'Activity Recorded', message: 'Study activity recorded. Keep your streak going!', type: 'success' });
-      });
-
-      const logMinutesButton = document.getElementById('log-minutes-btn');
-      logMinutesButton?.addEventListener('click', async () => {
-        const input = await showWindow({
-          title: 'Log Minutes',
-          message: 'Enter minutes of study to log for today:',
-          type: 'prompt',
-          defaultValue: '30',
-          placeholder: 'e.g. 30, 60'
-        });
-        const minutes = Number(input);
-        if (!minutes || minutes <= 0) return;
-        addStudyMinutes(minutes);
-        updateStreakPage();
-        showWindow({ title: 'Minutes Logged', message: `Logged ${minutes} minutes for today. Keep the streak alive!`, type: 'success' });
-      });
-
-      featureCards.forEach(card => card.addEventListener('click', recordActivity));
-
-      document.addEventListener('click', async event => {
-        const link = event.target.closest('a[href]');
-        if (!link) return;
-        const href = link.getAttribute('href');
-        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
-
-        if (link.dataset.loginProtected && !isLoggedIn()) {
-          event.preventDefault();
-          showWindow({ title: 'Restricted Content', message: loginProtectedMessage, type: 'warning' });
-          return;
-        }
-
-        try {
-          const targetUrl = new URL(link.href, window.location.href);
-          if (targetUrl.origin !== window.location.origin && isDistractingLink(targetUrl) && focusModeActive) {
-            event.preventDefault();
-            const proceed = await showDistractionConfirmation();
-            if (proceed) {
-              playRedirect(link.href, link.target === '_blank');
-            }
-            return;
-          }
-          if (targetUrl.origin !== window.location.origin && !focusModeActive && isDistractingLink(targetUrl)) {
-            // allow navigation to distracting sites when focus mode is disabled
-            return;
-          }
-        } catch (err) {
-          // ignore invalid URLs
-        }
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      updateTimerSettings();
-      updateTimerDisplay();
-      initDigitalClock();
-      showQuote();
-      loadTasks();
-      loadFlashcards();
-      refreshStreak();
-      setupAuthPanels();
-      setupGamePage();
-      initMusic();
-      updateFocusModeUI();
-      bindInteractions();
+      }
     });
-  </script>
-  <div id="full-screen-loader" class="full-screen-loader d-none">
-    <div class="loader-spinner"></div>
-    <h3 class="fw-bold text-white mb-2">Processing Payment...</h3>
-    <p class="text-light opacity-75">Please wait, we are securing your transaction.</p>
-  </div>
-  <!-- Motivational Help Bot HTML -->
-  <div class="help-bot-container" id="help-bot">
-    <div class="help-bot-window" id="bot-window">
-      <div class="bot-header">
-        <h5><i class="fa-solid fa-robot me-2 text-primary"></i>Focus Bot</h5>
-        <button type="button" class="btn-close btn-close-white" style="font-size: 0.7rem;" onclick="toggleBot()"></button>
+
+    streakActivityButton?.addEventListener('click', () => {
+      recordActivity();
+      showWindow({ title: 'Activity Recorded', message: 'Study activity recorded. Keep your streak going!', type: 'success' });
+    });
+
+    const logMinutesButton = document.getElementById('log-minutes-btn');
+    logMinutesButton?.addEventListener('click', async () => {
+      const input = await showWindow({
+        title: 'Log Minutes',
+        message: 'Enter minutes of study to log for today:',
+        type: 'prompt',
+        defaultValue: '30',
+        placeholder: 'e.g. 30, 60'
+      });
+      const minutes = Number(input);
+      if (!minutes || minutes <= 0) return;
+      addStudyMinutes(minutes);
+      updateStreakPage();
+      showWindow({ title: 'Minutes Logged', message: `Logged ${minutes} minutes for today. Keep the streak alive!`, type: 'success' });
+    });
+
+    featureCards.forEach(card => card.addEventListener('click', recordActivity));
+
+    document.addEventListener('click', async event => {
+      const link = event.target.closest('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+
+      if (link.dataset.loginProtected && !isLoggedIn()) {
+        event.preventDefault();
+        showWindow({ title: 'Restricted Content', message: loginProtectedMessage, type: 'warning' });
+        return;
+      }
+
+      try {
+        const targetUrl = new URL(link.href, window.location.href);
+        if (targetUrl.origin !== window.location.origin && isDistractingLink(targetUrl) && focusModeActive) {
+          event.preventDefault();
+          const proceed = await showDistractionConfirmation();
+          if (proceed) {
+            playRedirect(link.href, link.target === '_blank');
+          }
+          return;
+        }
+        if (targetUrl.origin !== window.location.origin && !focusModeActive && isDistractingLink(targetUrl)) {
+          // allow navigation to distracting sites when focus mode is disabled
+          return;
+        }
+      } catch (err) {
+        // ignore invalid URLs
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateTimerSettings();
+    updateTimerDisplay();
+    initDigitalClock();
+    showQuote();
+    loadTasks();
+    loadFlashcards();
+    refreshStreak();
+    setupAuthPanels();
+    setupGamePage();
+    initMusic();
+    updateFocusModeUI();
+    bindInteractions();
+  });
+</script>
+<div id="full-screen-loader" class="full-screen-loader d-none">
+  <div class="loader-spinner"></div>
+  <h3 class="fw-bold text-white mb-2">Processing Payment...</h3>
+  <p class="text-light opacity-75">Please wait, we are securing your transaction.</p>
+</div>
+<!-- Motivational Help Bot HTML -->
+<div class="help-bot-container" id="help-bot">
+  <div class="help-bot-window" id="bot-window">
+    <div class="bot-header">
+      <h5><i class="fa-solid fa-robot me-2 text-primary"></i>Focus Bot</h5>
+      <button type="button" class="btn-close btn-close-white" style="font-size: 0.7rem;" onclick="toggleBot()"></button>
+    </div>
+    <div class="bot-body" id="bot-chat-body">
+      <div class="bot-msg">
+        Hey 👋 Studying late? I’m here to help you stay focused. Do you need motivation?
       </div>
-      <div class="bot-body" id="bot-chat-body">
-        <div class="bot-msg">
-          Hey 👋 Studying late? I’m here to help you stay focused. Do you need motivation?
-        </div>
-        <div class="bot-options" id="bot-initial-options">
-          <button class="bot-opt-btn" onclick="handleBotAction('motivate')">🔥 Motivate Me</button>
-          <button class="bot-opt-btn" onclick="handleBotAction('lazy')">⏳ I Feel Lazy</button>
-          <button class="bot-opt-btn" onclick="handleBotAction('stressed')">😔 I’m Stressed</button>
-          <button class="bot-opt-btn" onclick="handleBotAction('focus')">🎯 Help Me Focus</button>
-          <button class="bot-opt-btn" onclick="handleBotAction('music')">🎵 I'm feeling bad, play music</button>
-        </div>
+      <div class="bot-options" id="bot-initial-options">
+        <button class="bot-opt-btn" onclick="handleBotAction('motivate')">🔥 Motivate Me</button>
+        <button class="bot-opt-btn" onclick="handleBotAction('lazy')">⏳ I Feel Lazy</button>
+        <button class="bot-opt-btn" onclick="handleBotAction('stressed')">😔 I’m Stressed</button>
+        <button class="bot-opt-btn" onclick="handleBotAction('focus')">🎯 Help Me Focus</button>
+        <button class="bot-opt-btn" onclick="handleBotAction('music')">🎵 I'm feeling bad, play music</button>
       </div>
     </div>
-    <div class="help-bot-bubble" onclick="toggleBot()">
-      <div class="pulse"></div>
-      <i class="fa-solid fa-comment-dots"></i>
-    </div>
   </div>
+  <div class="help-bot-bubble" onclick="toggleBot()">
+    <div class="pulse"></div>
+    <i class="fa-solid fa-comment-dots"></i>
+  </div>
+</div>
 
-  <script>
-    const botWindow = document.getElementById('bot-window');
-    const botChatBody = document.getElementById('bot-chat-body');
-    const botInitialOptions = document.getElementById('bot-initial-options');
+<script>
+  const botWindow = document.getElementById('bot-window');
+  const botChatBody = document.getElementById('bot-chat-body');
+  const botInitialOptions = document.getElementById('bot-initial-options');
 
-    const botResponses = {
-      motivate: [
-        "You're closer than you think! Consistency is the bridge between goals and accomplishment. Keep pushing! 🚀",
-        "Don't stop when you're tired. Stop when you're done. Your future self will thank you! 💪",
-        "The expert in anything was once a beginner. Keep practicing, keep studying! 📚",
-        "Success is sum of small efforts, repeated day in and day out. You've got this! ✨",
-        "Your only limit is you. Break through those barriers and shine! 🌟"
-      ],
-      lazy: "Motivation is what gets you started. Habit is what keeps you going. Just start with 5 minutes of study, you can do it! ⏱️",
-      stressed: "Deep breaths. Take it one task at a time. You've handled tough days before, and you'll handle this too. You're stronger than you feel! 🧘‍♂️",
-      focus: "Clear your desk, put your phone away, and start the timer. Deep focus mode activated! You've got this! 🧠",
-      music: "Music is the best therapy! Redirecting you to our Focus Music Studio to lift your spirits... 🎶"
-    };
+  const botResponses = {
+    motivate: [
+      "You're closer than you think! Consistency is the bridge between goals and accomplishment. Keep pushing! 🚀",
+      "Don't stop when you're tired. Stop when you're done. Your future self will thank you! 💪",
+      "The expert in anything was once a beginner. Keep practicing, keep studying! 📚",
+      "Success is sum of small efforts, repeated day in and day out. You've got this! ✨",
+      "Your only limit is you. Break through those barriers and shine! 🌟"
+    ],
+    lazy: "Motivation is what gets you started. Habit is what keeps you going. Just start with 5 minutes of study, you can do it! ⏱️",
+    stressed: "Deep breaths. Take it one task at a time. You've handled tough days before, and you'll handle this too. You're stronger than you feel! 🧘‍♂️",
+    focus: "Clear your desk, put your phone away, and start the timer. Deep focus mode activated! You've got this! 🧠",
+    music: "Music is the best therapy! Redirecting you to our Focus Music Studio to lift your spirits... 🎶"
+  };
 
-    function toggleBot() {
-      const isOpen = botWindow.style.display === 'flex';
-      botWindow.style.display = isOpen ? 'none' : 'flex';
-    }
+  function toggleBot() {
+    const isOpen = botWindow.style.display === 'flex';
+    botWindow.style.display = isOpen ? 'none' : 'flex';
+  }
 
-    function handleBotAction(type) {
-      // Clear previous response if any (keep initial msg)
-      const existingRes = document.getElementById('bot-response-msg');
-      if (existingRes) existingRes.remove();
+  function handleBotAction(type) {
+    // Clear previous response if any (keep initial msg)
+    const existingRes = document.getElementById('bot-response-msg');
+    if (existingRes) existingRes.remove();
 
-      // Show typing simulation briefly
-      const typing = document.createElement('div');
-      typing.className = 'bot-msg';
-      typing.id = 'bot-response-msg';
-      typing.innerHTML = '<span class="opacity-50">...</span>';
-      botChatBody.appendChild(typing);
+    // Show typing simulation briefly
+    const typing = document.createElement('div');
+    typing.className = 'bot-msg';
+    typing.id = 'bot-response-msg';
+    typing.innerHTML = '<span class="opacity-50">...</span>';
+    botChatBody.appendChild(typing);
+    botChatBody.scrollTop = botChatBody.scrollHeight;
+
+    setTimeout(() => {
+      let response = botResponses[type];
+      if (Array.isArray(response)) {
+        response = response[Math.floor(Math.random() * response.length)];
+      }
+      typing.textContent = response;
       botChatBody.scrollTop = botChatBody.scrollHeight;
 
-      setTimeout(() => {
-        let response = botResponses[type];
-        if (Array.isArray(response)) {
-          response = response[Math.floor(Math.random() * response.length)];
-        }
-        typing.textContent = response;
-        botChatBody.scrollTop = botChatBody.scrollHeight;
+      if (type === 'music') {
+        setTimeout(() => {
+          window.location.href = '/music';
+        }, 1500);
+      }
+    }, 600);
+  }
 
-        if (type === 'music') {
-          setTimeout(() => {
-            window.location.href = '/music';
-          }, 1500);
-        }
-      }, 600);
-    }
-
-    // Auto-open after 2 seconds
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        if (botWindow.style.display !== 'flex') {
-          toggleBot();
-        }
-      }, 2000);
-    });
-  </script>
+  // Auto-open after 2 seconds
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (botWindow.style.display !== 'flex') {
+        toggleBot();
+      }
+    }, 2000);
+  });
+</script>
 </body>
+
 </html>
