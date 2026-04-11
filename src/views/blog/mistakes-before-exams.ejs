@@ -1,0 +1,290 @@
+<%- include('../partials/header') %>
+
+  <style>
+    .blog-post-page {
+      background: #f8fafc;
+      min-height: 100vh;
+      padding-top: 100px;
+    }
+
+    .blog-card {
+      background: #ffffff;
+      border-radius: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 0;
+      overflow: hidden;
+    }
+
+    .blog-header-img {
+      height: 400px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 1.5rem;
+      margin-bottom: 3rem;
+      background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop');
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.05) 0%, rgba(251, 146, 60, 0.05) 100%);
+      border-left: 5px solid #f43f5e;
+      border-radius: 1rem;
+      padding: 2rem;
+      margin: 2.5rem 0;
+    }
+
+    .step-roadmap {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .step-roadmap::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(244, 63, 94, 0.1);
+    }
+
+    .step-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .step-number {
+      position: absolute;
+      left: -48px;
+      width: 32px;
+      height: 32px;
+      background: #f43f5e;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.3);
+    }
+
+    .blog-content p {
+      color: #4b5563;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .blog-content h2 {
+      color: #111827;
+      font-weight: 800;
+      margin-top: 3.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Reading Progress Bar ── */
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      z-index: 9999;
+      background: transparent;
+    }
+
+    .progress-bar-top {
+      height: 5px;
+      background: linear-gradient(to right, #f43f5e, #fb923c);
+      width: 0%;
+    }
+
+    .checklist-item {
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: flex-start;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .checklist-item:hover {
+      border-color: #f43f5e;
+      transform: translateX(5px);
+    }
+
+    .checklist-icon {
+      width: 24px;
+      height: 24px;
+      color: #f43f5e;
+      margin-right: 1rem;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+  </style>
+
+  <div class="progress-container">
+    <div class="progress-bar-top" id="topProgress"></div>
+  </div>
+
+  <div class="blog-post-page pb-5">
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+
+          <!-- Breadcrumbs -->
+          <nav aria-label="breadcrumb" class="mb-5">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/" class="text-secondary text-decoration-none small">Home</a></li>
+              <li class="breadcrumb-item"><a href="/blog" class="text-secondary text-decoration-none small">Blog</a></li>
+              <li class="breadcrumb-item active small" aria-current="page">Mistakes Before Exams</li>
+            </ol>
+          </nav>
+
+          <article class="blog-card p-4 p-md-5">
+            <!-- Article Header -->
+            <header class="mb-5 text-center">
+              <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill mb-4 fw-bold">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>Critical Exam Preparation Tips
+              </span>
+              <h1 class="display-4 fw-bold mb-4" style="letter-spacing: -1px;">20 Common Mistakes Students Make 7 Days Before Exams</h1>
+              <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                The final week before your exams is a psychological battle. Avoid these common traps to ensure your last-minute preparation translates into top grades.
+              </p>
+            </header>
+
+            <!-- Optimized Header Image with Alt text -->
+            <div class="blog-header-img shadow-sm" role="img" aria-label="A student feeling stressed while preparing for exams, representing common exam mistakes."></div>
+
+            <div class="blog-content fs-5">
+              <p class="lead mb-5">
+                The final 7 days before exams often define your success. However, many students unknowingly fall into specific traps that derail their focus and memory. By identifying these <strong>exam mistakes</strong> early, you can adjust your <strong>study habits</strong> and prepare for academic success. Let's look at the 20 biggest errors to avoid during your last-minute preparation.
+              </p>
+
+              <h2 id="mistakes-list" class="mb-4 fw-bold"><i class="fa-solid fa-list-ul text-danger me-3"></i>The 20 Biggest Exam Preparation Mistakes</h2>
+              <p class="text-muted mb-4 small">Discover why these errors are critical to avoid for better concentration and grades.</p>
+              
+              <ul class="list-group list-group-flush mb-5 shadow-sm rounded-4 overflow-hidden border">
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Revising without a clear plan</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Doing passive revision instead of active revision</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Ignoring important topics</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Focusing only on favorite subjects instead of balancing all subjects</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Revising without understanding concepts or using techniques like mind mapping</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Underestimating the importance of sleep and rest</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Avoiding doubts instead of clearing them on time</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Neglecting revision through short notes</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Poor time management</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Ignoring physical and mental health</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Creating panic and engaging in negative self-talk</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Spending less time on weak subjects instead of distributing time properly</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Trying to learn completely new topics just before exams</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Ignoring high-scoring and important subjects</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Not maintaining a proper sleep schedule during exam days</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Comparing yourself with others and getting distracted</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Depending too much on multiple sources for revision</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Ignoring revision through writing practice</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Not analyzing mistakes, weak areas, or time-consuming topics</li>
+                <li class="list-group-item bg-white py-3"><i class="fa-solid fa-xmark text-danger me-2"></i> Ignoring a proper exam day strategy</li>
+              </ul>
+
+              <div class="highlight-box mt-5 mb-4" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%); border-left-color: #6366f1;">
+                <h2 id="how-we-help" class="mb-3 fw-bold" style="margin-top: 0;"><i class="fa-solid fa-moon text-primary me-3"></i>How 2 AM Study Helps Students Prepare Smarter</h2>
+                <p class="text-dark mb-0">Our platform is designed to help you avoid these mistakes by providing tools that improve focus and organization:</p>
+              </div>
+              
+              <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                  <div class="checklist-item h-100 border-0 shadow-sm" style="background: #e0e7ff; border-left: 4px solid #6366f1 !important;">
+                    <i class="fa-solid fa-stopwatch text-primary me-3 mt-1 fa-lg"></i>
+                    <span><strong><a href="/timer" class="text-decoration-none text-primary">Productivity Study Timer</a>:</strong> Master your time management and focus intervals.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100 border-0 shadow-sm" style="background: #fce7f3; border-left: 4px solid #ec4899 !important;">
+                    <i class="fa-solid fa-headphones text-pink-500 me-3 mt-1 fa-lg" style="color: #ec4899;"></i>
+                    <span><strong>Focus Music:</strong> Curated soundtracks for better concentration and stress relief.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100 border-0 shadow-sm" style="background: #dcfce7; border-left: 4px solid #22c55e !important;">
+                    <i class="fa-solid fa-calendar-check text-success me-3 mt-1 fa-lg"></i>
+                    <span><strong>Exam Countdown:</strong> Keep your long-term academic goals visible.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100 border-0 shadow-sm" style="background: #fef3c7; border-left: 4px solid #eab308 !important;">
+                    <i class="fa-solid fa-fire text-warning me-3 mt-1 fa-lg"></i>
+                    <span><strong>Daily Motivation:</strong> Psychological fuel to prevent exam day burnouts.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100 border-0 shadow-sm" style="background: #fee2e2; border-left: 4px solid #ef4444 !important;">
+                    <i class="fa-solid fa-book-open-reader text-danger me-3 mt-1 fa-lg"></i>
+                    <span><strong>"Study With Me":</strong> Join digital communities to build a consistent study schedule.</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="checklist-item h-100 border-0 shadow-sm" style="background: #f3e8ff; border-left: 4px solid #a855f7 !important;">
+                    <i class="fa-solid fa-users text-purple-500 me-3 mt-1 fa-lg" style="color: #a855f7;"></i>
+                    <span><strong><a href="/chat" class="text-decoration-none" style="color: #a855f7;">Student Chat</a>:</strong> Connect with peers and clear doubts instantly.</span>
+                  </div>
+                </div>
+              </div>
+
+              <h2 id="conclusion" class="fw-bold mt-5"><i class="fa-solid fa-flag-checkered text-success me-3"></i>Conclusion: Start Your Smart Preparation Today</h2>
+              <p>
+                Avoiding these common exam mistakes is your first step toward scoring higher. The last 7 days are about refinement and mindset. Don't let poor time management or panic dictate your results. Use the <strong>study techniques</strong> mentioned above and let the tools at 2 AM Study support your journey.
+              </p>
+              
+              <!-- Call to Action -->
+              <div class="text-center mt-5 mb-5">
+                <p class="lead text-muted mb-4">Ready to boost your concentration and prep smarter?</p>
+                <a href="/timer" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold shadow-lg py-3">
+                  Quick Start My Timer <i class="fa-solid fa-bolt ms-2"></i>
+                </a>
+              </div>
+            </div>
+
+            </div>
+
+            <hr class="my-5 opacity-5">
+            <footer class="d-flex align-items-center bg-light p-4 rounded-4 border-0">
+              <div class="flex-shrink-0">
+                <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center shadow" style="width: 64px; height: 64px;">
+                  <i class="fa-solid fa-feather-pointed fa-lg"></i>
+                </div>
+              </div>
+              <div class="ms-4">
+                <h6 class="fw-bold mb-1 text-dark">The 2AM Editorial Team</h6>
+                <p class="text-muted small mb-0">Empowering students with science-backed study strategies for academic excellence.</p>
+              </div>
+            </footer>
+
+            <div class="mt-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+              <a href="/blog" class="btn btn-link text-decoration-none text-secondary fw-bold p-0">
+                <i class="fa-solid fa-arrow-left-long me-2"></i> Back to Blog
+              </a>
+              <div class="d-flex align-items-center gap-3">
+                <span class="text-muted small fw-bold">SHARE THIS GUIDE:</span>
+                <a href="#" class="text-secondary"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="text-secondary"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="text-secondary"><i class="fa-brands fa-linkedin-in"></i></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onscroll = function () {
+      var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      document.getElementById("topProgress").style.width = scrolled + "%";
+    };
+  </script>
+<%- include('../partials/footer') %>

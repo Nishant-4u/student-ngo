@@ -183,6 +183,15 @@ app.get('/blog/no-motivation-2am-study', (req, res) => {
   });
 });
 
+app.get('/blog/mistakes-before-exams', (req, res) => {
+  res.render('blog/mistakes-before-exams', { 
+    pageTitle: '20 Common Mistakes Students Make 7 Days Before Exams | 2AM Study',
+    metaDescription: 'Avoid these 20 common exam mistakes and last-minute preparation errors. Get the best study tips for 7 days before exams to improve your academic performance with 2AM Study.'
+  });
+});
+
+
+
 app.get('/blog/focus-tips', (req, res) => {
   res.render('blog/focus-tips', {
     pageTitle: 'Focus Tips - How to Stay Focused While Studying',
