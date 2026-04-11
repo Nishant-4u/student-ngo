@@ -158,10 +158,18 @@
     <div id="pomoBanner" class="alert text-center fw-semibold mb-4 d-none" role="alert"></div>
 
     <!-- ── Layout Switcher ── -->
-    <div class="d-flex justify-content-center gap-2 mb-4 no-print">
+    <div class="d-flex justify-content-center gap-2 mb-3 no-print">
       <button class="btn btn-dark btn-sm rounded-pill px-3" onclick="setTimerLayout('circular')">⭕ Circular</button>
       <button class="btn btn-dark btn-sm rounded-pill px-3" onclick="setTimerLayout('rectangular')">▭ Rectangular</button>
       <button class="btn btn-dark btn-sm rounded-pill px-3" onclick="setTimerLayout('minimal')">✨ Minimal</button>
+    </div>
+
+    <!-- ── Display Toggles ── -->
+    <div class="d-flex justify-content-center mb-4 no-print text-light small">
+       <div class="form-check form-switch" style="cursor: pointer;">
+         <input class="form-check-input" type="checkbox" role="switch" id="showSessionToggle" style="cursor: pointer;">
+         <label class="form-check-label text-slate-300" for="showSessionToggle" style="cursor: pointer;">Show Session Number on Timer</label>
+       </div>
     </div>
 
     <!-- ── Main Timer Ring ── -->
@@ -172,6 +180,7 @@
             <div class="pomo-time"><span id="pomoMin">25</span>:<span id="pomoSec">00</span></div>
             <div class="pomo-mode-badge-container d-flex flex-column align-items-center gap-2">
               <div class="pomo-mode-badge" id="pomoModeBadge" style="color:#818cf8;">STUDY</div>
+              <div id="pomoSessionBadge" class="pomo-mode-badge d-none" style="color:#38bdf8; font-weight:700;">SESSION #1</div>
               <div id="wakeLockBadge" class="badge rounded-pill bg-success bg-opacity-20 text-success border border-success border-opacity-30 d-none" style="font-size: 0.65rem; padding: 0.25rem 0.6rem;">
                 <i class="fa-solid fa-sun me-1"></i>Screen Stay Awake Active
               </div>
@@ -248,14 +257,24 @@
             <i class="fa-solid fa-volume-high me-1"></i><span id="muteBtnText">Sound ON</span>
           </button>
         </div>
-        <div class="col">
-          <label class="mb-1">Alert Sound</label>
+        <div class="col-6 col-md">
+          <label class="mb-1">Study Alert</label>
           <select id="soundSelect" class="form-select form-select-sm">
             <option value="bell">🔔 Bell</option>
             <option value="chime">🎵 Chime</option>
             <option value="gong">🪘 Gong</option>
             <option value="digital">📟 Digital Beep</option>
             <option value="success">✅ Success Tone</option>
+          </select>
+        </div>
+        <div class="col-6 col-md">
+          <label class="mb-1">Break Alert</label>
+          <select id="breakSoundSelect" class="form-select form-select-sm">
+            <option value="bell">🔔 Bell</option>
+            <option value="chime">🎵 Chime</option>
+            <option value="gong">🪘 Gong</option>
+            <option value="digital">📟 Digital Beep</option>
+            <option value="success" selected>✅ Success Tone</option>
           </select>
         </div>
         <div class="col-auto">
@@ -459,7 +478,8 @@
 
   function playAlert() {
     if (isMuted) return;
-    const choice = document.getElementById('soundSelect').value;
+    const selId = mode === 'study' ? 'soundSelect' : 'breakSoundSelect';
+    const choice = document.getElementById(selId).value;
     const ctx = getCtx();
     if (ctx.state === 'suspended') ctx.resume();
     (sounds[choice] || sounds.bell)(ctx, getVolume());
@@ -478,7 +498,8 @@
   }
 
   window.previewAlert = function () {
-    const choice = document.getElementById('soundSelect').value;
+    const selId = mode === 'study' ? 'soundSelect' : 'breakSoundSelect';
+    const choice = document.getElementById(selId).value;
     const ctx = getCtx();
     if (ctx.state === 'suspended') ctx.resume();
     (sounds[choice] || sounds.bell)(ctx, getVolume());
@@ -533,6 +554,24 @@
     b.classList.remove('d-none');
   }
   function hideBanner() { document.getElementById('pomoBanner').classList.add('d-none'); }
+
+  // ── Session Badge ──
+  function updateSessionBadge() {
+    const showToggle = document.getElementById('showSessionToggle').checked;
+    const badge = document.getElementById('pomoSessionBadge');
+    if (showToggle) {
+      badge.classList.remove('d-none');
+      const currentSessionNum = totalSessions + 1;
+      badge.textContent = `SESSION #${currentSessionNum}`;
+    } else {
+      badge.classList.add('d-none');
+    }
+  }
+
+  document.getElementById('showSessionToggle').addEventListener('change', (e) => {
+    localStorage.setItem('PomShowSession', e.target.checked);
+    updateSessionBadge();
+  });
 
   // ── Mode ──
   window.setPomoMode = function (m) {
@@ -629,9 +668,9 @@
       : `✅ Break done! Ready to study?`;
     setBanner(msg, mode === 'study' ? 'success' : 'info');
 
-    // Auto switch mode
     const next = mode === 'study' ? 'break' : 'study';
     setTimeout(() => setPomoMode(next), 800);
+    updateSessionBadge();
   }
 
   // ── Accumulate live time for stats ──
@@ -726,6 +765,10 @@
   syncInputRange('breakDurInput','breakDurRange', v => { breakSec = v*60; if(mode==='break') remaining=breakSec; });
 
   // ── Init ──
+  if (localStorage.getItem('PomShowSession') === 'true') {
+    document.getElementById('showSessionToggle').checked = true;
+  }
+  updateSessionBadge();
   updateDisplay();
   updateStats();
   renderLog();
