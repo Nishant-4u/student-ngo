@@ -361,6 +361,10 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
+// Help Bot Doubt Solver (AI Proxy)
+const doubtHandler = require('../api/doubt');
+app.post('/api/doubt', doubtHandler);
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

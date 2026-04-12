@@ -529,7 +529,7 @@
           <span>Join Community</span>
         </a>
         <div class="mt-4">
-          <p class="small text-muted mb-2">Need Help?</p>
+          <p class="small mb-2" style="color: #f43f5e; font-weight: 600;">Need Help?</p>
           <a href="mailto:support@2amstudy.online"
             class="text-white text-decoration-none fw-semibold">support@2amstudy.online</a>
         </div>
@@ -1989,16 +1989,33 @@
       <h5><i class="fa-solid fa-robot me-2 text-primary"></i>Focus Bot</h5>
       <button type="button" class="btn-close btn-close-white" style="font-size: 0.7rem;" onclick="toggleBot()"></button>
     </div>
-    <div class="bot-body" id="bot-chat-body">
-      <div class="bot-msg">
-        Hey 👋 Studying late? I’m here to help you stay focused. Do you need motivation?
+    <div class="bot-body" id="bot-chat-body" style="display: flex; flex-direction: column; max-height: 450px;">
+      <div id="bot-chat-messages" style="flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;">
+        <div class="bot-msg">
+          Hey 👋! Main hoon aapka 2AM Study Assistant. Padhai mein koi doubt hai ya phir stress ho raha hai?
+        </div>
       </div>
+      
       <div class="bot-options" id="bot-initial-options">
         <button class="bot-opt-btn" onclick="handleBotAction('motivate')">🔥 Motivate Me</button>
-        <button class="bot-opt-btn" onclick="handleBotAction('lazy')">⏳ I Feel Lazy</button>
-        <button class="bot-opt-btn" onclick="handleBotAction('stressed')">😔 I’m Stressed</button>
-        <button class="bot-opt-btn" onclick="handleBotAction('focus')">🎯 Help Me Focus</button>
+        <button class="bot-opt-btn" onclick="handleBotAction('progress')">📊 Check My Progress</button>
+        <button class="bot-opt-btn" onclick="handleBotAction('doubt')">🤔 Solve a Doubt</button>
         <button class="bot-opt-btn" onclick="handleBotAction('music')">🎵 I'm feeling bad, play music</button>
+      </div>
+
+      <!-- Doubt Solver UI -->
+      <div id="bot-doubt-solver" class="d-none mt-2">
+        <div class="input-group mb-2">
+          <textarea id="bot-doubt-input" class="form-control bg-dark text-white border-secondary" rows="1" placeholder="Explain photosynthesis..." style="resize: none; font-size: 0.9rem; border-radius: 0.75rem 0 0 0.75rem;"></textarea>
+          <button class="btn btn-primary btn-sm" onclick="submitDoubt()" style="border-radius: 0 0.75rem 0.75rem 0;"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm w-100 fw-bold" onclick="resetBot()"><i class="fa-solid fa-arrow-left me-2"></i>Back to Options</button>
+      </div>
+
+      <!-- Progress Mini-Dashboard -->
+      <div id="bot-progress-dashboard" class="d-none mt-2">
+        <div class="bot-msg" id="bot-progress-content"></div>
+        <button class="btn btn-outline-light btn-sm w-100 mt-2" onclick="resetBot()">Back to Options</button>
       </div>
     </div>
   </div>
@@ -2008,68 +2025,7 @@
   </div>
 </div>
 
-<script>
-  const botWindow = document.getElementById('bot-window');
-  const botChatBody = document.getElementById('bot-chat-body');
-  const botInitialOptions = document.getElementById('bot-initial-options');
-
-  const botResponses = {
-    motivate: [
-      "You're closer than you think! Consistency is the bridge between goals and accomplishment. Keep pushing! 🚀",
-      "Don't stop when you're tired. Stop when you're done. Your future self will thank you! 💪",
-      "The expert in anything was once a beginner. Keep practicing, keep studying! 📚",
-      "Success is sum of small efforts, repeated day in and day out. You've got this! ✨",
-      "Your only limit is you. Break through those barriers and shine! 🌟"
-    ],
-    lazy: "Motivation is what gets you started. Habit is what keeps you going. Just start with 5 minutes of study, you can do it! ⏱️",
-    stressed: "Deep breaths. Take it one task at a time. You've handled tough days before, and you'll handle this too. You're stronger than you feel! 🧘‍♂️",
-    focus: "Clear your desk, put your phone away, and start the timer. Deep focus mode activated! You've got this! 🧠",
-    music: "Music is the best therapy! Redirecting you to our Focus Music Studio to lift your spirits... 🎶"
-  };
-
-  function toggleBot() {
-    const isOpen = botWindow.style.display === 'flex';
-    botWindow.style.display = isOpen ? 'none' : 'flex';
-  }
-
-  function handleBotAction(type) {
-    // Clear previous response if any (keep initial msg)
-    const existingRes = document.getElementById('bot-response-msg');
-    if (existingRes) existingRes.remove();
-
-    // Show typing simulation briefly
-    const typing = document.createElement('div');
-    typing.className = 'bot-msg';
-    typing.id = 'bot-response-msg';
-    typing.innerHTML = '<span class="opacity-50">...</span>';
-    botChatBody.appendChild(typing);
-    botChatBody.scrollTop = botChatBody.scrollHeight;
-
-    setTimeout(() => {
-      let response = botResponses[type];
-      if (Array.isArray(response)) {
-        response = response[Math.floor(Math.random() * response.length)];
-      }
-      typing.textContent = response;
-      botChatBody.scrollTop = botChatBody.scrollHeight;
-
-      if (type === 'music') {
-        setTimeout(() => {
-          window.location.href = '/music';
-        }, 1500);
-      }
-    }, 600);
-  }
-
-  // Auto-open after 2 seconds
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      if (botWindow.style.display !== 'flex') {
-        toggleBot();
-      }
-    }, 2000);
-  });
-</script>
+<script src="/assets/js/bot.js" defer></script>
 </body>
 
 </html>
