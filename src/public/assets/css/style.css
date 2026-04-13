@@ -532,6 +532,14 @@ body.fullscreen-active {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
     font-family: 'Inter', sans-serif;
 }
 
@@ -778,26 +786,7 @@ body.fullscreen-active {
     color: #4a4a4a;
 }
 
-.site-footer {
-    background: linear-gradient(180deg, #0d1331 0%, #171f44 100%);
-    color: #e8efff;
-}
 
-.site-footer h5 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #f1f7ff;
-}
-
-.site-footer p {
-    color: #d8e1ff;
-    line-height: 1.8;
-}
-
-.footer-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 1.4rem;
     padding: 1.8rem;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);

@@ -20,10 +20,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
     lastModified: true
 }));
 
-// Route for ads.txt at the root
-app.get('/ads.txt', (req, res) => {
-  res.sendFile(path.join(__dirname, '../ads.txt'));
-});
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -40,8 +37,8 @@ const transporter = nodemailer.createTransport({
 
 app.get('/', (req, res) => {
   res.render('index', {
-    pageTitle: '2AM Study - Focus Timer & Study Tools for Students',
-    metaDescription: '2AM Study helps students stay focused with a productivity timer, study tools, study tips and routines to improve concentration and academic performance.',
+    pageTitle: '2AM Study - #1 Student Productivity Hub, Focus Timer & Study Tips',
+    metaDescription: 'Boost your student productivity with 2AM Study. Use our Pomodoro focus timer, academic planner, and expert study tips for effective exam preparation and concentration.',
   });
 });
 
@@ -49,29 +46,29 @@ app.get('/', (req, res) => {
 
 app.get('/timer', (req, res) => {
   res.render('timer', { 
-    pageTitle: 'Best Pomodoro Timer for Students - Focus & Study More',
-    metaDescription: 'Boost your study focus with our aesthetic Pomodoro timer. Custom work/break intervals, distraction blocking, and progress tracking for students.'
+    pageTitle: 'Best Pomodoro Focus Timer for Students | Study Better',
+    metaDescription: 'Master focus techniques with our aesthetic Pomodoro timer. Customizable study intervals and distraction blocking to enhance your deep work sessions.'
   });
 });
 
 app.get('/tasks', (req, res) => {
   res.render('tasks', { 
-    pageTitle: 'Academic Planner & Task Manager - Student GPA Booster',
-    metaDescription: 'Organize your assignments, exams, and daily study goals with our free task planner. Stay consistent and never miss a deadline.'
+    pageTitle: 'Academic Planner & Student Task Manager | Stay Productive',
+    metaDescription: 'Organize your study routine with our free academic planner. Track assignments and exam preparation goals to maintain high student productivity.'
   });
 });
 
 app.get('/flashcards', (req, res) => {
   res.render('flashcards', { 
-    pageTitle: 'Online Flashcard Maker - Study Smarter with Digital Cards',
-    metaDescription: 'Create, flip, and manage digital flashcards for fast memorization. The ultimate study tool for exam prep and vocabulary building.'
+    pageTitle: 'AI Flashcard Maker - Convert PDF to Study Cards Instantly',
+    metaDescription: 'Accelerate your exam preparation with our AI-powered flashcard maker. Transform lecture notes into interactive study tools using advanced extraction.'
   });
 });
 
 app.get('/notes', (req, res) => {
   res.render('notes', { 
-    pageTitle: 'Download Free Study Notes & Academic PDFs',
-    metaDescription: 'Access a curated collection of student notes, guides, and study materials in PDF format. Download for free and excel in your exams.'
+    pageTitle: 'Free Study Notes & Academic PDF Guides for Students',
+    metaDescription: 'Download free student notes and exam preparation guides. Access high-quality academic materials to improve your study routine.'
   });
 });
 
@@ -148,33 +145,66 @@ app.get('/distraction', (req, res) => {
 
 // --- Core Pages ---
 app.get('/privacy-policy', (req, res) => {
-  res.render('privacy-policy', { pageTitle: 'Privacy Policy' });
+  res.render('privacy-policy', { 
+    pageTitle: 'Privacy Policy | 2AM Study Data Protection',
+    metaDescription: 'Read our privacy policy to understand how we protect your student productivity data and maintain your privacy on our platform.'
+  });
+});
+app.get('/terms', (req, res) => {
+  res.render('terms', { 
+    pageTitle: 'Terms & Conditions | Student Usage Guidelines',
+    metaDescription: 'Understand the terms of service for using 2AM Study productivity tools, focus techniques, and community resources.'
+  });
 });
 app.get('/about', (req, res) => {
-  res.render('about', { pageTitle: 'About Us' });
+  res.render('about', { 
+    pageTitle: 'About 2AM Study - Empowering Students with Focus Techniques',
+    metaDescription: 'Learn about our mission to improve student productivity through smart work, effective study tips, and free academic tools.'
+  });
 });
 app.get('/contact', (req, res) => {
-  res.render('contact', { pageTitle: 'Contact Us' });
+  res.render('contact', { 
+    pageTitle: 'Contact Us | Support for Student Productivity Tools',
+    metaDescription: 'Need help with our study tools or focus techniques? Contact the 2AM Study support team for academic guidance and assistance.'
+  });
 });
 
 // --- Blog Section ---
 app.get('/blog', (req, res) => {
-  res.render('blog/index', { pageTitle: 'Read Our Blog' });
+  res.render('blog/index', { 
+    pageTitle: '2AM Study Blog - Best Study Tips & Student Productivity Guides',
+    metaDescription: 'Expert study tips for exam preparation, focus techniques for concentration, and productivity hacks to help students excel academically.'
+  });
 });
 app.get('/blog/how-to-stay-focused', (req, res) => {
-  res.render('blog/how-to-stay-focused', { pageTitle: 'How to stay focused while studying' });
+  res.render('blog/how-to-stay-focused', { 
+    pageTitle: 'How to Stay Focused While Studying | Concentration Techniques',
+    metaDescription: 'Struggling with distractions? Learn expert concentration techniques and study tips to maintain deep focus for longer periods.'
+  });
 });
 app.get('/blog/best-study-techniques', (req, res) => {
-  res.render('blog/best-study-techniques', { pageTitle: 'Best study techniques for students' });
+  res.render('blog/best-study-techniques', { 
+    pageTitle: '7 Best Study Techniques for Students | Exam Preparation',
+    metaDescription: 'Master your exams with science-backed study techniques like Pomodoro, Active Recall, and Spaced Repetition for better student success.'
+  });
 });
 app.get('/blog/avoid-distraction', (req, res) => {
-  res.render('blog/avoid-distraction', { pageTitle: 'How to avoid distraction while studying' });
+  res.render('blog/avoid-distraction', { 
+    pageTitle: 'How to Avoid Distractions While Studying | Student Productivity',
+    metaDescription: 'Transform your study environment and block digital distractions. Practical focus techniques to help students stay productive.'
+  });
 });
 app.get('/blog/daily-study-routine', (req, res) => {
-  res.render('blog/daily-study-routine', { pageTitle: 'Daily study routine for success' });
+  res.render('blog/daily-study-routine', { 
+    pageTitle: 'Perfect Daily Study Routine for Academic Success',
+    metaDescription: 'Build a consistent study schedule with our daily routine guide. Tips for balancing lectures, rest, and deep work sessions.'
+  });
 });
 app.get('/blog/build-consistency', (req, res) => {
-  res.render('blog/build-consistency', { pageTitle: 'How to build consistency in study' });
+  res.render('blog/build-consistency', { 
+    pageTitle: 'How to Build Consistency in Your Study Habits',
+    metaDescription: 'Motivation is the start, but consistency is the key. Learn how to maintain a long-term study routine and achieve your academic goals.'
+  });
 });
 app.get('/blog/no-motivation-2am-study', (req, res) => {
   res.render('blog/no-motivation-2am-study', { 
@@ -213,33 +243,64 @@ app.get('/blog/study-at-night', (req, res) => {
   });
 });
 
+app.get('/blog/smart-work-student-success', (req, res) => {
+  res.render('blog/smart-work-student-success', {
+    pageTitle: 'How 2 AM Study Transforms Hard Work into Smart Work for Student Success',
+    metaDescription: 'Learn how to maximize output and minimize burnout by shifting from mere hard work to effective smart work with 2AM Study.',
+  });
+});
+
 // --- Study Tools ---
 app.get('/study-tools', (req, res) => {
-  res.render('tools/index', { pageTitle: 'Study Tools Hub' });
+  res.render('tools/index', { 
+    pageTitle: 'Student Productivity Tools Hub | Complete Academic Toolkit',
+    metaDescription: 'Discover a comprehensive suite of student productivity tools. From syllabus trackers to timetable generators, we provide everything you need to succeed.'
+  });
 });
 
 app.get('/exam-countdown', (req, res) => {
-  res.render('tools/exam-countdown', { pageTitle: 'Exam Countdown' });
+  res.render('tools/exam-countdown', { 
+    pageTitle: 'Online Exam Countdown Timer | Track Your Study Deadlines',
+    metaDescription: 'Never miss an exam date again. Set multiple countdown timers for your finals and stay on top of your academic preparation.'
+  });
 });
 app.get('/syllabus-tracker', (req, res) => {
-  res.render('tools/syllabus-tracker', { pageTitle: 'Syllabus Tracker' });
+  res.render('tools/syllabus-tracker', { 
+    pageTitle: 'Free Syllabus Tracker Online | Track Subject Progress',
+    metaDescription: 'Visualize your course completion with our interactive syllabus tracker. Stay motivated by checking off chapters as you study.'
+  });
 });
 app.get('/timetable-generator', (req, res) => {
-  res.render('tools/timetable-generator', { pageTitle: 'Study Timetable Generator' });
+  res.render('tools/timetable-generator', { 
+    pageTitle: 'Student Study Timetable Generator | PDF Export',
+    metaDescription: 'Create a professional and personalized study schedule in seconds. Optimize your study routine and export your timetable as a PDF.'
+  });
 });
 
 // --- Calculators ---
 app.get('/calculators', (req, res) => {
-  res.render('calculators/index', { pageTitle: 'Calculators Hub' });
+  res.render('calculators/index', { 
+    pageTitle: 'Student Calculator Hub: GPA, Age & Percentage Tools',
+    metaDescription: 'Access free online calculators for students. Calculate GPA/CGPA, score percentages, and precise age with our easy-to-use tools.'
+  });
 });
 app.get('/calculators/cgpa', (req, res) => {
-  res.render('calculators/cgpa', { pageTitle: 'CGPA Calculator' });
+  res.render('calculators/cgpa', { 
+    pageTitle: 'Online CGPA Calculator for Students | Academic Success',
+    metaDescription: 'Calculate your semester and cumulative GPA easily. Enter your grades and credits to track your academic performance.'
+  });
 });
 app.get('/calculators/percentage', (req, res) => {
-  res.render('calculators/percentage', { pageTitle: 'Percentage Calculator' });
+  res.render('calculators/percentage', { 
+    pageTitle: 'Free Percentage Calculator Online | Score & Grade Tool',
+    metaDescription: 'Calculate marks percentage, academic scores, and fractional increases instantly with our free student tool.'
+  });
 });
 app.get('/calculators/age', (req, res) => {
-  res.render('calculators/age', { pageTitle: 'Age Calculator' });
+  res.render('calculators/age', { 
+    pageTitle: 'Online Age Calculator | Precise Years, Months & Days',
+    metaDescription: 'Find your exact age in seconds. Perfect for filling out student applications and administrative forms.'
+  });
 });
 
 // --- Utilities ---
