@@ -61,22 +61,128 @@
     color: #a52a2a;
 }
 .highlights-section {
-    background-color: antiquewhite;
+    background-color: #fcfcfc;
+    background-image: radial-gradient(#e2e8f0 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+    border-top: 1px solid rgba(0,0,0,0.05);
 }
+
 .highlights-section h2 {
-    color: black;
-    font-size: 36px;
-    font-weight: 700;
+    color: #0f172a;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
 } 
-.highlights-section p{
-    font-size: 18px;
+
+.highlights-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #475569;
 }
-.highlightsItems h4{
-    font-size: 18px;
-    font-weight: 600;
+
+.mission-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 1.75rem;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
 }
-.highlightsItems p{
-    font-size: 15px;
+
+@media (max-width: 767px) {
+    .mission-card {
+        padding: 1.5rem 1.25rem;
+    }
+    .highlights-section {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+}
+
+.subtitle-highlight {
+    color: #4f46e5;
+    background: rgba(79, 70, 229, 0.08);
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.section-header-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 1.5rem;
+    padding: 1.5rem 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    display: inline-block;
+    margin-bottom: 2.5rem;
+}
+
+.highlightsItems {
+    background: #ffffff !important;
+    border-radius: 1.5rem !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.highlightsItems::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #4f46e5, #0ea5e9);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.highlightsItems:hover::before {
+    opacity: 1;
+}
+
+.highlightsItems:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 40px -10px rgba(79, 70, 229, 0.15) !important;
+    border-color: rgba(79, 70, 229, 0.3) !important;
+}
+
+.highlightsItems i {
+    font-size: 2rem;
+    color: #4f46e5;
+    margin-bottom: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.highlightsItems:hover i {
+    transform: scale(1.2);
+}
+
+/* Specific glows for brands */
+.highlightsItems:hover .fa-youtube { text-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+.highlightsItems:hover .fa-linkedin { text-shadow: 0 0 15px rgba(14, 165, 233, 0.4); }
+.highlightsItems:hover .fa-x-twitter { text-shadow: 0 0 15px rgba(15, 23, 42, 0.2); }
+.highlightsItems:hover .fa-quora { text-shadow: 0 0 15px rgba(185, 28, 28, 0.4); }
+.highlightsItems:hover .fa-instagram { text-shadow: 0 0 15px rgba(236, 72, 153, 0.4); }
+
+.highlightsItems h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.4rem;
+}
+
+.highlightsItems p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #64748b;
+    margin-bottom: 0;
 }
 .tabItemsContent ul {
     list-style: none;

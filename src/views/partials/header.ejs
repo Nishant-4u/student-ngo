@@ -87,6 +87,8 @@
                     Company
                   </a>
                   <ul class="dropdown-menu mobile-dropdown border-0 shadow-sm">
+                    <li><a class="dropdown-item" href="/about">About Us</a></li>
+                    <li><a class="dropdown-item" href="/contact">Contact Us</a></li>
                     <li><a class="dropdown-item" href="/privacy-policy">Privacy Policy</a></li>
                     <li><a class="dropdown-item" href="/terms">Terms & Conditions</a></li>
                   </ul>
@@ -148,3 +150,52 @@
       </div>
     </div>
   </header>
+
+  <!-- Auto-close mobile offcanvas when a link is clicked -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const offcanvasEl = document.getElementById('mobileMenuOffcanvas');
+      if (offcanvasEl) {
+        const links = offcanvasEl.querySelectorAll('a.nav-link, a.dropdown-item');
+        
+        links.forEach(link => {
+          link.addEventListener('click', function (e) {
+            // Ignore dropdown toggles (like Company, Pricing, Study Tools) so they can expand without closing the menu
+            if (this.classList.contains('dropdown-toggle')) {
+              return;
+            }
+
+            if (offcanvasEl.classList.contains('show')) {
+              const href = this.getAttribute('href');
+              const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+              
+              if (bsOffcanvas) {
+                // Check if it's an anchor link and we are on the same page
+                if (href && href.includes('#')) {
+                  const url = new URL(this.href, window.location.origin);
+                  const isSamePage = (url.pathname === window.location.pathname || url.pathname === window.location.pathname + '/');
+                  
+                  if (isSamePage) {
+                    e.preventDefault(); // Stop immediate jump
+                    bsOffcanvas.hide(); // Close menu
+                    
+                    // Wait for the menu to finish closing and restoring focus
+                    setTimeout(() => {
+                      window.location.hash = url.hash; // Manually update hash
+                      const target = document.querySelector(url.hash);
+                      if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' }); // Scroll to the target section
+                      }
+                    }, 350);
+                  }
+                } else {
+                  // For normal links (not dropdown toggles), just close the menu and let it navigate naturally
+                  bsOffcanvas.hide();
+                }
+              }
+            }
+          });
+        });
+      }
+    });
+  </script>
