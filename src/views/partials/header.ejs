@@ -27,6 +27,25 @@
     <%= pageTitle || '2AM Study - Focus Timer & Study Tools for Students' %>
   </title>
 
+  <!-- Social Media Meta Tags (Open Graph & Twitter) -->
+  <meta property="og:title"
+    content="<%= typeof ogTitle !== 'undefined' ? ogTitle : (pageTitle || '2AM Study - #1 Student Productivity Hub') %>" />
+  <meta property="og:description"
+    content="<%= typeof ogDescription !== 'undefined' ? ogDescription : (typeof metaDescription !== 'undefined' ? metaDescription : 'Enhance your study focus and academic results with 2AM Study.') %>" />
+  <meta property="og:image"
+    content="<%= typeof ogImage !== 'undefined' ? ogImage : 'https://2amstudy.online/assets/images/smart_study_banner.png' %>" />
+  <meta property="og:url" content="<%= typeof ogUrl !== 'undefined' ? ogUrl : 'https://2amstudy.online' %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="2AM Study" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title"
+    content="<%= typeof ogTitle !== 'undefined' ? ogTitle : (pageTitle || '2AM Study - #1 Student Productivity Hub') %>" />
+  <meta name="twitter:description"
+    content="<%= typeof ogDescription !== 'undefined' ? ogDescription : (typeof metaDescription !== 'undefined' ? metaDescription : 'Enhance your study focus and academic results with 2AM Study.') %>" />
+  <meta name="twitter:image"
+    content="<%= typeof ogImage !== 'undefined' ? ogImage : 'https://2amstudy.online/assets/images/smart_study_banner.png' %>" />
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0HF04M8D2K"></script>
   <script>
@@ -88,6 +107,7 @@
                   </a>
                   <ul class="dropdown-menu mobile-dropdown border-0 shadow-sm">
                     <li><a class="dropdown-item" href="/about">About Us</a></li>
+                    <li><a class="dropdown-item" href="/behind-2am-study">Behind 2 AM Study</a></li>
                     <li><a class="dropdown-item" href="/contact">Contact Us</a></li>
                     <li><a class="dropdown-item" href="/privacy-policy">Privacy Policy</a></li>
                     <li><a class="dropdown-item" href="/terms">Terms & Conditions</a></li>
@@ -124,7 +144,8 @@
                     <li><a class="dropdown-item" href="/game">Study Game</a></li>
                     <li><a class="dropdown-item" href="/calculators">Calculator Tools</a></li>
                     <li><a class="dropdown-item" href="/college-student">College Student Support</a></li>
-                    <li><a class="dropdown-item" href="/clock"><i class="fa-solid fa-clock me-2 opacity-75 text-info"></i>Digital Clock Hub</a></li>
+                    <li><a class="dropdown-item" href="/clock"><i
+                          class="fa-solid fa-clock me-2 opacity-75 text-info"></i>Digital Clock Hub</a></li>
                     <li><a class="dropdown-item" href="/#pdf-features-section">PDF Tools Hub</a></li>
                     <li><a class="dropdown-item" href="/utilities">Utilities Hub (AQI, Grammar)</a></li>
                   </ul>
@@ -157,7 +178,7 @@
       const offcanvasEl = document.getElementById('mobileMenuOffcanvas');
       if (offcanvasEl) {
         const links = offcanvasEl.querySelectorAll('a.nav-link, a.dropdown-item');
-        
+
         links.forEach(link => {
           link.addEventListener('click', function (e) {
             // Ignore dropdown toggles (like Company, Pricing, Study Tools) so they can expand without closing the menu
@@ -168,17 +189,17 @@
             if (offcanvasEl.classList.contains('show')) {
               const href = this.getAttribute('href');
               const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
-              
+
               if (bsOffcanvas) {
                 // Check if it's an anchor link and we are on the same page
                 if (href && href.includes('#')) {
                   const url = new URL(this.href, window.location.origin);
                   const isSamePage = (url.pathname === window.location.pathname || url.pathname === window.location.pathname + '/');
-                  
+
                   if (isSamePage) {
                     e.preventDefault(); // Stop immediate jump
                     bsOffcanvas.hide(); // Close menu
-                    
+
                     // Wait for the menu to finish closing and restoring focus
                     setTimeout(() => {
                       window.location.hash = url.hash; // Manually update hash

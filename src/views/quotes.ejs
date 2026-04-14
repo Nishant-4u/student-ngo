@@ -1,229 +1,262 @@
 <%- include('partials/header') %>
 
-<main class="container-fluid py-5 bg-light min-vh-100" style="padding-top: 100px !important;">
-  <div class="container">
-    
-    <div class="row mb-5 align-items-center">
-        <div class="col-md-6 text-center text-md-start">
-            <h1 class="display-4 fw-bold mb-0 text-dark"><i class="fa-solid fa-quote-left text-primary me-2"></i> Student Inspiration Hub: Motivational Study Quotes</h1>
-            <p class="text-muted fs-5 mt-2">Fuel your study sessions with aesthetic wisdom.</p>
-        </div>
-        <div class="col-md-6 mt-4 mt-md-0 d-flex flex-wrap gap-2 justify-content-center justify-content-md-end" id="category-filters">
-            <button class="btn btn-primary rounded-pill px-4 cat-btn active" data-category="all">All</button>
-            <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn" data-category="focus">Focus</button>
-            <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn" data-category="success">Success</button>
-            <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn" data-category="persistence">Persistence</button>
-            <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn" data-category="discipline">Discipline</button>
-        </div>
-    </div>
+    <main class="container-fluid py-5 bg-light min-vh-100" style="padding-top: 100px !important;">
+        <div class="container">
 
-    <div class="row justify-content-center">
-      <div class="col-lg-10">
-        
-        <!-- Quote Card (Capture Area) -->
-        <div id="quote-capture-area" class="position-relative overflow-hidden rounded-5 shadow-2xl mb-5" style="min-height: 500px; transition: all 0.5s ease;">
-            
-            <!-- Dynamic Background Image -->
-            <div id="quote-bg" class="position-absolute top-0 start-0 w-100 h-100" style="background: url('https://picsum.photos/1200/800?blur=2') center/cover no-repeat; transition: opacity 0.8s ease;"></div>
-            
-            <!-- Readability Overlay (Dark/Blur) -->
-            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)); backdrop-filter: blur(2px);"></div>
-
-            <!-- Content Area -->
-            <div class="position-relative h-100 d-flex flex-column align-items-center justify-content-center text-center text-white p-4 p-md-5" style="z-index: 10;">
-                <div class="quote-content-wrapper mb-4">
-                    <i class="fa-solid fa-quote-left fa-3x opacity-25 mb-4 d-block"></i>
-                    <h2 id="quote-text" class="display-5 fw-bold mb-4 px-lg-5" style="text-shadow: 2px 2px 15px rgba(0,0,0,0.5); line-height: 1.3;">"The quality of your work is defined by the depth of your focus."</h2>
-                    <div id="quote-author" class="fs-4 fw-light opacity-75">— 2AM Study</div>
+            <div class="row mb-5 align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <h1 class="display-4 fw-bold mb-0 text-dark"><i
+                            class="fa-solid fa-quote-left text-primary me-2"></i> Student Inspiration Hub: Motivational
+                        Study Quotes</h1>
+                    <p class="text-muted fs-5 mt-2">Fuel your study sessions with aesthetic wisdom.</p>
                 </div>
-
-                <!-- Action Toolbar (Inside Card) -->
-                <div class="d-flex flex-wrap gap-3 justify-content-center mt-5 no-export">
-                    <button id="new-quote-btn" class="btn btn-white text-dark rounded-circle shadow p-3 hover-scale"><i class="fa-solid fa-rotate fa-xl"></i></button>
-                    <button onclick="copyQuote()" class="btn btn-white text-dark rounded-circle shadow p-3 hover-scale"><i class="fa-solid fa-copy fa-xl"></i></button>
-                    <button onclick="shareQuote()" class="btn btn-white text-dark rounded-circle shadow p-3 hover-scale"><i class="fa-solid fa-share-nodes fa-xl"></i></button>
-                    <button onclick="downloadQuote()" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow hover-scale"><i class="fa-solid fa-download me-2"></i> Save Image</button>
+                <div class="col-md-6 mt-4 mt-md-0 d-flex flex-wrap gap-2 justify-content-center justify-content-md-end"
+                    id="category-filters">
+                    <button class="btn btn-primary rounded-pill px-4 cat-btn active" data-category="all">All</button>
+                    <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn"
+                        data-category="focus">Focus</button>
+                    <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn"
+                        data-category="success">Success</button>
+                    <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn"
+                        data-category="persistence">Persistence</button>
+                    <button class="btn btn-outline-secondary rounded-pill px-4 cat-btn"
+                        data-category="discipline">Discipline</button>
                 </div>
             </div>
 
-            <!-- Branding (Overlay) -->
-            <div class="position-absolute bottom-0 end-0 p-4 pe-none">
-                <span class="badge bg-white text-dark rounded-pill opacity-50 px-3 py-2 fw-bold small">2AMStudy.com</span>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+
+                    <!-- Quote Card (Capture Area) -->
+                    <div id="quote-capture-area" class="position-relative overflow-hidden rounded-5 shadow-2xl mb-5"
+                        style="min-height: 500px; transition: all 0.5s ease;">
+
+                        <!-- Dynamic Background Image -->
+                        <div id="quote-bg" class="position-absolute top-0 start-0 w-100 h-100"
+                            style="background: url('https://picsum.photos/1200/800?blur=2') center/cover no-repeat; transition: opacity 0.8s ease;">
+                        </div>
+
+                        <!-- Readability Overlay (Dark/Blur) -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100"
+                            style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)); backdrop-filter: blur(2px);">
+                        </div>
+
+                        <!-- Content Area -->
+                        <div class="position-relative h-100 d-flex flex-column align-items-center justify-content-center text-center text-white p-4 p-md-5"
+                            style="z-index: 10;">
+                            <div class="quote-content-wrapper mb-4">
+                                <i class="fa-solid fa-quote-left fa-3x opacity-25 mb-4 d-block"></i>
+                                <h2 id="quote-text" class="display-5 fw-bold mb-4 px-lg-5"
+                                    style="text-shadow: 2px 2px 15px rgba(0,0,0,0.5); line-height: 1.3;">"The quality of
+                                    your work is defined by the depth of your focus."</h2>
+                                <div id="quote-author" class="fs-4 fw-light opacity-75">— 2AM Study</div>
+                            </div>
+
+                            <!-- Action Toolbar (Inside Card) -->
+                            <div class="d-flex flex-wrap gap-3 justify-content-center mt-5 no-export">
+                                <button id="new-quote-btn"
+                                    class="btn btn-white text-dark rounded-circle shadow p-3 hover-scale"><i
+                                        class="fa-solid fa-rotate fa-xl"></i></button>
+                                <button onclick="copyQuote()"
+                                    class="btn btn-white text-dark rounded-circle shadow p-3 hover-scale"><i
+                                        class="fa-solid fa-copy fa-xl"></i></button>
+                                <button onclick="shareQuote()"
+                                    class="btn btn-white text-dark rounded-circle shadow p-3 hover-scale"><i
+                                        class="fa-solid fa-share-nodes fa-xl"></i></button>
+                                <button onclick="downloadQuote()"
+                                    class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow hover-scale"><i
+                                        class="fa-solid fa-download me-2"></i> Save Image</button>
+                            </div>
+                        </div>
+
+                        <!-- Branding (Overlay) -->
+                        <div class="position-absolute bottom-0 end-0 p-4 pe-none">
+                            <span
+                                class="badge bg-white text-dark rounded-pill opacity-50 px-3 py-2 fw-bold small">2AMStudy.online</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted small"><i class="fa-regular fa-lightbulb me-1"></i> New quotes and
+                            aesthetic backgrounds are generated on every refresh.</p>
+                    </div>
+
+                </div>
             </div>
+
         </div>
+    </main>
 
-        <div class="text-center mt-4">
-            <p class="text-muted small"><i class="fa-regular fa-lightbulb me-1"></i> New quotes and aesthetic backgrounds are generated on every refresh.</p>
-        </div>
+    <!-- html2canvas for Image Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-      </div>
-    </div>
+    <style>
+        /* Inspiration Hub Advanced Styles */
+        .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
 
-  </div>
-</main>
+        .hover-scale {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-<!-- html2canvas for Image Export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        .hover-scale:hover {
+            transform: scale(1.1);
+        }
 
-<style>
-/* Inspiration Hub Advanced Styles */
-.shadow-2xl {
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
+        .btn-white {
+            background-color: #ffffff;
+            border: none;
+        }
 
-.hover-scale {
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.hover-scale:hover {
-    transform: scale(1.1);
-}
+        .cat-btn {
+            transition: all 0.3s ease;
+        }
 
-.btn-white {
-    background-color: #ffffff;
-    border: none;
-}
+        #quote-text {
+            animation: fadeInScale 0.8s ease-out;
+        }
 
-.cat-btn {
-    transition: all 0.3s ease;
-}
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
 
-#quote-text {
-    animation: fadeInScale 0.8s ease-out;
-}
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
-@keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            #quote-capture-area {
+                min-height: 400px;
+            }
+        }
+    </style>
 
-/* Mobile Adjustments */
-@media (max-width: 768px) {
-    #quote-capture-area {
-        min-height: 400px;
-    }
-}
-</style>
+    <script>
+        const quotes = [
+            { text: "The quality of your work is defined by the depth of your focus.", author: "Cal Newport", category: "focus" },
+            { text: "It’s not that I’m so smart, it’s just that I stay with problems longer.", author: "Albert Einstein", category: "persistence" },
+            { text: "Focusing is about saying no to the hundred other good ideas that there are.", author: "Steve Jobs", category: "focus" },
+            { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier", category: "success" },
+            { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln", category: "discipline" },
+            { text: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", author: "Thomas Edison", category: "persistence" },
+            { text: "Don't stop when you're tired. Stop when you're done.", author: "David Goggins", category: "discipline" },
+            { text: "Focus on being productive instead of busy.", author: "Tim Ferriss", category: "focus" },
+            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill", category: "success" },
+            { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar", category: "success" },
+            { text: "Hard work beats talent when talent doesn't work hard.", author: "Tim Notke", category: "discipline" },
+            { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun", category: "discipline" },
+            { text: "The secret of getting ahead is getting started.", author: "Mark Twain", category: "success" },
+            { text: "Straying from your path for 100 days is fine, as long as you return for the 101st.", author: "Midnight Wisdom", category: "persistence" }
+        ];
 
-<script>
-const quotes = [
-    { text: "The quality of your work is defined by the depth of your focus.", author: "Cal Newport", category: "focus" },
-    { text: "It’s not that I’m so smart, it’s just that I stay with problems longer.", author: "Albert Einstein", category: "persistence" },
-    { text: "Focusing is about saying no to the hundred other good ideas that there are.", author: "Steve Jobs", category: "focus" },
-    { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier", category: "success" },
-    { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln", category: "discipline" },
-    { text: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", author: "Thomas Edison", category: "persistence" },
-    { text: "Don't stop when you're tired. Stop when you're done.", author: "David Goggins", category: "discipline" },
-    { text: "Focus on being productive instead of busy.", author: "Tim Ferriss", category: "focus" },
-    { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill", category: "success" },
-    { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar", category: "success" },
-    { text: "Hard work beats talent when talent doesn't work hard.", author: "Tim Notke", category: "discipline" },
-    { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun", category: "discipline" },
-    { text: "The secret of getting ahead is getting started.", author: "Mark Twain", category: "success" },
-    { text: "Straying from your path for 100 days is fine, as long as you return for the 101st.", author: "Midnight Wisdom", category: "persistence" }
-];
+        let currentCategory = 'all';
 
-let currentCategory = 'all';
-
-// Initialize UI
-document.addEventListener('DOMContentLoaded', () => {
-    generateNewQuote();
-    
-    // Category Filtering
-    document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                b.classList.remove('btn-primary', 'active');
-                b.classList.add('btn-outline-secondary');
-            });
-            btn.classList.add('btn-primary', 'active');
-            btn.classList.remove('btn-outline-secondary');
-            currentCategory = btn.dataset.category;
+        // Initialize UI
+        document.addEventListener('DOMContentLoaded', () => {
             generateNewQuote();
+
+            // Category Filtering
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.cat-btn').forEach(b => {
+                        b.classList.remove('btn-primary', 'active');
+                        b.classList.add('btn-outline-secondary');
+                    });
+                    btn.classList.add('btn-primary', 'active');
+                    btn.classList.remove('btn-outline-secondary');
+                    currentCategory = btn.dataset.category;
+                    generateNewQuote();
+                });
+            });
+
+            document.getElementById('new-quote-btn').addEventListener('click', generateNewQuote);
         });
-    });
 
-    document.getElementById('new-quote-btn').addEventListener('click', generateNewQuote);
-});
+        function generateNewQuote() {
+            const quoteText = document.getElementById('quote-text');
+            const quoteAuthor = document.getElementById('quote-author');
+            const quoteBg = document.getElementById('quote-bg');
 
-function generateNewQuote() {
-    const quoteText = document.getElementById('quote-text');
-    const quoteAuthor = document.getElementById('quote-author');
-    const quoteBg = document.getElementById('quote-bg');
-    
-    // Filter quotes
-    const filtered = currentCategory === 'all' 
-        ? quotes 
-        : quotes.filter(q => q.category === currentCategory);
-    
-    const randomQuote = filtered[Math.floor(Math.random() * filtered.length)];
-    
-    // Animate out
-    quoteText.style.opacity = 0;
-    quoteAuthor.style.opacity = 0;
-    quoteBg.style.opacity = 0;
+            // Filter quotes
+            const filtered = currentCategory === 'all'
+                ? quotes
+                : quotes.filter(q => q.category === currentCategory);
 
-    setTimeout(() => {
-        // Update content
-        quoteText.innerText = `"${randomQuote.text}"`;
-        quoteAuthor.innerText = `— ${randomQuote.author}`;
-        
-        // Random Aesthetic Background (Nature, Space, Minimal)
-        const randomId = Math.floor(Math.random() * 1000);
-        quoteBg.style.background = `url('https://picsum.photos/id/${(randomId % 200) + 10}/1200/800?blur=1') center/cover no-repeat`;
-        
-        // Animate in
-        quoteText.style.opacity = 1;
-        quoteAuthor.style.opacity = 1;
-        quoteBg.style.opacity = 1;
-    }, 400);
-}
+            const randomQuote = filtered[Math.floor(Math.random() * filtered.length)];
 
-function copyQuote() {
-    const text = `${document.getElementById('quote-text').innerText} ${document.getElementById('quote-author').innerText}`;
-    navigator.clipboard.writeText(text).then(() => {
-        alert("✨ Quote copied to clipboard!");
-    });
-}
+            // Animate out
+            quoteText.style.opacity = 0;
+            quoteAuthor.style.opacity = 0;
+            quoteBg.style.opacity = 0;
 
-function shareQuote() {
-    const text = document.getElementById('quote-text').innerText;
-    if (navigator.share) {
-        navigator.share({
-            title: 'Quote of the Moment',
-            text: text,
-            url: window.location.href
-        }).catch(console.error);
-    } else {
-        copyQuote();
-    }
-}
+            setTimeout(() => {
+                // Update content
+                quoteText.innerText = `"${randomQuote.text}"`;
+                quoteAuthor.innerText = `— ${randomQuote.author}`;
 
-async function downloadQuote() {
-    const btn = event.currentTarget;
-    const captureArea = document.getElementById('quote-capture-area');
-    const noExportItems = document.querySelectorAll('.no-export');
-    
-    // Hide buttons before capture
-    noExportItems.forEach(item => item.style.visibility = 'hidden');
-    
-    const originalTransform = captureArea.style.transform;
-    captureArea.style.transform = 'none'; // Ensure no weird scale shifts during capture
+                // Random Aesthetic Background (Nature, Space, Minimal)
+                const randomId = Math.floor(Math.random() * 1000);
+                quoteBg.style.background = `url('https://picsum.photos/id/${(randomId % 200) + 10}/1200/800?blur=1') center/cover no-repeat`;
 
-    html2canvas(captureArea, {
-        useCORS: true, // Crucial for loading picsum images
-        scale: 2, // High resolution
-        backgroundColor: null
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `Motivation_2AMStudy_${new Date().getTime()}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        // Restore buttons
-        noExportItems.forEach(item => item.style.visibility = 'visible');
-        captureArea.style.transform = originalTransform;
-    });
-}
-</script>
+                // Animate in
+                quoteText.style.opacity = 1;
+                quoteAuthor.style.opacity = 1;
+                quoteBg.style.opacity = 1;
+            }, 400);
+        }
 
-<%- include('partials/footer') %>
+        function copyQuote() {
+            const text = `${document.getElementById('quote-text').innerText} ${document.getElementById('quote-author').innerText}`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("✨ Quote copied to clipboard!");
+            });
+        }
+
+        function shareQuote() {
+            const text = document.getElementById('quote-text').innerText;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Quote of the Moment',
+                    text: text,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                copyQuote();
+            }
+        }
+
+        async function downloadQuote() {
+            const btn = event.currentTarget;
+            const captureArea = document.getElementById('quote-capture-area');
+            const noExportItems = document.querySelectorAll('.no-export');
+
+            // Hide buttons before capture
+            noExportItems.forEach(item => item.style.visibility = 'hidden');
+
+            const originalTransform = captureArea.style.transform;
+            captureArea.style.transform = 'none'; // Ensure no weird scale shifts during capture
+
+            html2canvas(captureArea, {
+                useCORS: true, // Crucial for loading picsum images
+                scale: 2, // High resolution
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Motivation_2AMStudy_${new Date().getTime()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                // Restore buttons
+                noExportItems.forEach(item => item.style.visibility = 'visible');
+                captureArea.style.transform = originalTransform;
+            });
+        }
+    </script>
+
+    <%- include('partials/footer') %>

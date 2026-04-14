@@ -168,6 +168,16 @@ app.get('/contact', (req, res) => {
     metaDescription: 'Need help with our study tools or focus techniques? Contact the 2AM Study support team for academic guidance and assistance.'
   });
 });
+app.get('/behind-2am-study', (req, res) => {
+  res.render('behind-2am-study', { 
+    pageTitle: 'Behind 2 AM Study - Our Story, Mission & Vision',
+    metaDescription: 'Discover the story behind 2AM Study. Learn about our mission to empower students with the best focus tools and study techniques for late-night success.',
+    ogTitle: 'Behind 2 AM Study: The Story of a Student Productivity Revolution',
+    ogDescription: 'From late-night study sessions to a global platform. Learn how we built the ultimate hub for students to master focus and achieve academic excellence.',
+    ogImage: 'https://2amstudy.com/assets/images/smart_study_banner.png', // Assuming this exists or will be useful
+    ogUrl: 'https://2amstudy.com/behind-2am-study'
+  });
+});
 
 // --- Blog Section ---
 app.get('/blog', (req, res) => {
