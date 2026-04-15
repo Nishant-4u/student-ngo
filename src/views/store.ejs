@@ -1,836 +1,620 @@
 <%- include('partials/header') %>
 
 <style>
-  /* ── Store Page Variables ─────────────────────────── */
-  :root {
-    --store-bg: #0a0a0f;
-    --store-card: #111118;
-    --store-card-hover: #16161f;
-    --store-border: rgba(255,255,255,0.07);
-    --store-accent: #6366f1;
-    --store-accent2: #a855f7;
-    --store-gold: #f59e0b;
-    --store-green: #10b981;
-    --store-text: #e2e8f0;
-    --store-muted: #64748b;
-    --store-pill-bg: rgba(99,102,241,0.1);
-  }
-
-  /* ── Base Layout ──────────────────────────────────── */
-  .store-page {
-    background: var(--store-bg);
-    min-height: 100vh;
-    color: var(--store-text);
-    padding-top: 80px;
-  }
-
-  /* ── Hero Banner ──────────────────────────────────── */
-  .store-hero {
-    background: linear-gradient(135deg, #0f0c29 0%, #1e1b4b 40%, #0f172a 100%);
-    padding: 72px 0 56px;
-    position: relative;
-    overflow: hidden;
-    border-bottom: 1px solid var(--store-border);
-  }
-
-  .store-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 20% 60%, rgba(99,102,241,0.2) 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 30%, rgba(168,85,247,0.15) 0%, transparent 50%);
-  }
-
-  .store-hero-content { position: relative; z-index: 1; }
-
-  .store-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: rgba(99,102,241,0.12);
-    border: 1px solid rgba(99,102,241,0.3);
-    color: #a5b4fc;
-    padding: 0.3rem 1rem;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 1.25rem;
-  }
-
-  .store-hero h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #fff 0%, #c7d2fe 50%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.75rem;
-  }
-
-  .store-hero p { color: #94a3b8; font-size: 1.05rem; max-width: 560px; }
-
-  .store-search-bar {
-    display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 999px;
-    padding: 0.5rem 0.5rem 0.5rem 1.25rem;
-    max-width: 420px;
-    transition: all 0.3s ease;
-  }
-
-  .store-search-bar:focus-within {
-    border-color: rgba(99,102,241,0.5);
-    background: rgba(255,255,255,0.08);
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
-  }
-
-  .store-search-bar input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-size: 0.92rem;
-    flex: 1;
-  }
-
-  .store-search-bar input::placeholder { color: #64748b; }
-
-  .search-submit {
-    background: var(--store-accent);
-    border: none;
-    color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-
-  .search-submit:hover { background: #4f46e5; transform: scale(1.05); }
-
-  /* ── Stats Row ────────────────────────────────────── */
-  .store-stats {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    margin-top: 2rem;
-  }
-
-  .store-stat { text-align: left; }
-  .store-stat-num { font-size: 1.5rem; font-weight: 800; color: #c7d2fe; }
-  .store-stat-label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; }
-
-  /* ── Filter Tabs ──────────────────────────────────── */
-  .filter-strip {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    padding: 1.5rem 0 0.5rem;
-    border-bottom: 1px solid var(--store-border);
-    margin-bottom: 2rem;
-  }
-
-  .filter-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.45rem 1.1rem;
-    border-radius: 999px;
-    border: 1px solid var(--store-border);
-    background: transparent;
-    color: var(--store-muted);
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .filter-tab:hover { border-color: rgba(99,102,241,0.4); color: #a5b4fc; }
-
-  .filter-tab.active {
-    background: var(--store-accent);
-    border-color: var(--store-accent);
-    color: white;
-    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
-  }
-
-  /* ── Product Grid ─────────────────────────────────── */
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
-  }
-
-  /* ── Product Card ─────────────────────────────────── */
-  .product-card {
-    background: var(--store-card);
-    border: 1px solid var(--store-border);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    cursor: pointer;
-  }
-
-  .product-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(99,102,241,0.3);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.1);
-    background: var(--store-card-hover);
-  }
-
-  .product-image-wrap {
-    position: relative;
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    background: linear-gradient(135deg, #1e1b4b, #1e293b);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .product-emoji {
-    font-size: 5rem;
-    line-height: 1;
-    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
-    transition: transform 0.4s ease;
-  }
-
-  .product-card:hover .product-emoji { transform: scale(1.1) rotate(-3deg); }
-
-  .product-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .badge-new    { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-  .badge-hot    { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-  .badge-best   { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-  .badge-free   { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
-
-  .product-wishlist {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.85rem;
-  }
-
-  .product-wishlist:hover, .product-wishlist.active {
-    background: rgba(239,68,68,0.2);
-    color: #f87171;
-    border-color: rgba(239,68,68,0.3);
-  }
-
-  .product-info { padding: 1.25rem; }
-
-  .product-category {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #6366f1;
-    margin-bottom: 0.4rem;
-  }
-
-  .product-name {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #f1f5f9;
-    margin-bottom: 0.4rem;
-    line-height: 1.35;
-  }
-
-  .product-desc {
-    font-size: 0.82rem;
-    color: #64748b;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-  }
-
-  .product-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-bottom: 1rem;
-    font-size: 0.8rem;
-  }
-
-  .stars { color: #f59e0b; letter-spacing: 1px; }
-  .rating-count { color: #64748b; }
-
-  .product-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .product-price {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-  }
-
-  .price-current {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #f1f5f9;
-  }
-
-  .price-original {
-    font-size: 0.85rem;
-    color: #475569;
-    text-decoration: line-through;
-  }
-
-  .price-free {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #34d399;
-  }
-
-  .price-discount {
-    font-size: 0.72rem;
-    background: rgba(16,185,129,0.1);
-    color: #34d399;
-    border: 1px solid rgba(16,185,129,0.25);
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
-    font-weight: 700;
-    align-self: center;
-  }
-
-  .btn-buy {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 1.1rem;
-    background: var(--store-accent);
-    color: white;
-    border: none;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .btn-buy:hover {
-    background: #4f46e5;
-    transform: scale(1.05);
-    color: white;
-    box-shadow: 0 6px 16px rgba(99,102,241,0.4);
-  }
-
-  .btn-buy-green {
-    background: var(--store-green);
-  }
-
-  .btn-buy-green:hover {
-    background: #059669;
-    box-shadow: 0 6px 16px rgba(16,185,129,0.4);
-  }
-
-  /* ── Section Heading ──────────────────────────────── */
-  .section-heading {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #f1f5f9;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.25rem;
-  }
-
-  .section-subhead {
-    color: #64748b;
-    font-size: 0.9rem;
-    margin-bottom: 1.75rem;
-  }
-
-  /* ── Banner Strip ─────────────────────────────────── */
-  .promo-strip {
-    background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(168,85,247,0.08) 100%);
-    border: 1px solid rgba(99,102,241,0.2);
-    border-radius: 16px;
-    padding: 1.25rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .promo-strip p { margin: 0; color: #c7d2fe; font-weight: 600; }
-  .promo-strip span { color: #64748b; font-size: 0.85rem; }
-
-  .btn-promo {
-    background: var(--store-accent);
-    color: white;
-    border: none;
-    padding: 0.5rem 1.3rem;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .btn-promo:hover { background: #4f46e5; color: white; transform: translateY(-1px); }
-
-  /* ── Order Modal ──────────────────────────────────── */
-  .order-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: blur(10px);
-    z-index: 9998;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-
-  .order-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .order-modal {
-    background: #12121c;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 24px;
-    width: 100%;
-    max-width: 480px;
-    padding: 2rem;
-    transform: translateY(24px) scale(0.97);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-
-  .order-overlay.open .order-modal {
-    transform: translateY(0) scale(1);
-  }
-
-  .order-modal h3 { font-weight: 800; color: #f1f5f9; margin-bottom: 0.25rem; }
-  .order-modal p  { color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem; }
-
-  .order-product-preview {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px;
-    padding: 1rem 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .order-product-preview .preview-emoji { font-size: 2.5rem; }
-
-  .order-product-preview .preview-info h5 {
-    font-weight: 700;
-    color: #f1f5f9;
-    margin: 0 0 0.2rem;
-    font-size: 0.95rem;
-  }
-
-  .order-product-preview .preview-info span { color: #6366f1; font-weight: 700; font-size: 1rem; }
-
-  .form-label-dark { color: #94a3b8; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.4rem; display: block; }
-
-  .form-input-dark {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 0.7rem 1rem;
-    color: #f1f5f9;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 1rem;
-  }
-
-  .form-input-dark:focus { border-color: rgba(99,102,241,0.5); }
-
-  .btn-wa-order {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    width: 100%;
-    background: #25D366;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 0.85rem;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.25s;
-    text-decoration: none;
-    margin-top: 0.5rem;
-  }
-
-  .btn-wa-order:hover { background: #1ebe5d; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,211,102,0.3); color: white; }
-
-  .btn-close-modal {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #64748b;
-    border-radius: 8px;
-    padding: 0.6rem 1.2rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    margin-top: 0.75rem;
-  }
-
-  .btn-close-modal:hover { background: rgba(255,255,255,0.1); color: #f1f5f9; }
-
-  /* ── No Results ───────────────────────────────────── */
-  .no-results {
-    display: none;
-    text-align: center;
-    padding: 4rem 2rem;
-    color: #475569;
-  }
-
-  .no-results i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
-
-  /* ── Responsive ───────────────────────────────────── */
-  @media (max-width: 768px) {
-    .products-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-    .store-hero { padding: 56px 0 40px; }
-    .promo-strip { padding: 1rem 1.25rem; }
-    .store-stats { gap: 1.25rem; }
-  }
-
-  @media (max-width: 480px) {
-    .products-grid { grid-template-columns: 1fr 1fr; }
-    .product-emoji { font-size: 3.5rem; }
-  }
+/* ════════════════════════════════════════════════
+   2AM STUDY — STORE  (Dark Premium E-commerce)
+   ════════════════════════════════════════════════ */
+:root {
+  --s-bg:       #080810;
+  --s-card:     #0f0f1a;
+  --s-card-h:   #141425;
+  --s-border:   rgba(255,255,255,0.07);
+  --s-accent:   #6366f1;
+  --s-accent2:  #a855f7;
+  --s-green:    #10b981;
+  --s-gold:     #f59e0b;
+  --s-red:      #ef4444;
+  --s-text:     #e2e8f0;
+  --s-muted:    #64748b;
+}
+
+/* ── Page Base ─────────────────────────────────── */
+.store-page { background: var(--s-bg); min-height:100vh; color:var(--s-text); padding-top:80px; }
+
+/* ── Top Banner ────────────────────────────────── */
+.store-topbar {
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  text-align: center;
+  padding: 0.55rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+.store-topbar a { color:#fde68a; text-decoration:none; }
+
+/* ── Hero ──────────────────────────────────────── */
+.store-hero {
+  background: linear-gradient(135deg, #0f0c29, #1e1b4b, #0f172a);
+  padding: 60px 0 48px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--s-border);
+}
+.store-hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse at 15% 60%, rgba(99,102,241,.22) 0%, transparent 55%),
+              radial-gradient(ellipse at 85% 30%, rgba(168,85,247,.15) 0%, transparent 50%);
+}
+.store-hero-inner { position:relative; z-index:1; }
+
+.hero-tag {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:rgba(99,102,241,.14); border:1px solid rgba(99,102,241,.35);
+  color:#a5b4fc; padding:.28rem 1rem; border-radius:999px;
+  font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  margin-bottom:1rem;
+}
+
+.store-hero h1 {
+  font-size:clamp(1.9rem,5vw,3.2rem); font-weight:900; letter-spacing:-.03em;
+  background:linear-gradient(135deg,#fff 0%,#c7d2fe 55%,#a78bfa 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:.5rem;
+}
+.store-hero p { color:#94a3b8; font-size:1rem; max-width:530px; }
+
+/* ── Search + Sort row ─────────────────────────── */
+.toolbar {
+  display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
+  padding:1.25rem 0;
+  border-bottom: 1px solid var(--s-border);
+  margin-bottom:1.5rem;
+}
+.search-wrap {
+  display:flex; align-items:center;
+  background:rgba(255,255,255,.05); border:1px solid var(--s-border);
+  border-radius:12px; padding:.52rem 1rem; gap:.6rem; flex:1; min-width:200px;
+  transition:.25s;
+}
+.search-wrap:focus-within {
+  border-color:rgba(99,102,241,.5); background:rgba(255,255,255,.07);
+  box-shadow:0 0 0 3px rgba(99,102,241,.1);
+}
+.search-wrap input {
+  background:transparent; border:none; outline:none; color:#fff; font-size:.9rem; flex:1;
+}
+.search-wrap input::placeholder { color:#475569; }
+
+.sort-select {
+  background:rgba(255,255,255,.05); border:1px solid var(--s-border);
+  color:#cbd5e1; border-radius:12px; padding:.52rem 1rem;
+  font-size:.85rem; font-weight:600; cursor:pointer; outline:none;
+  transition:.2s;
+}
+.sort-select:focus { border-color:rgba(99,102,241,.5); }
+.sort-select option { background:#1e293b; }
+
+.results-count { color:var(--s-muted); font-size:.82rem; white-space:nowrap; }
+
+/* ── Layout: sidebar + grid ─────────────────────── */
+.store-layout { display:grid; grid-template-columns:230px 1fr; gap:2rem; align-items:start; }
+
+/* ── Category Sidebar ──────────────────────────── */
+.cat-sidebar {
+  background:var(--s-card); border:1px solid var(--s-border);
+  border-radius:20px; overflow:hidden; position:sticky; top:90px;
+}
+.cat-sidebar-head {
+  padding:1.1rem 1.25rem;
+  border-bottom:1px solid var(--s-border);
+  font-size:.72rem; font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--s-muted);
+}
+.cat-item {
+  display:flex; align-items:center; gap:.75rem;
+  padding:.85rem 1.25rem;
+  border-bottom:1px solid var(--s-border);
+  cursor:pointer; transition:.2s; text-decoration:none;
+  color:var(--s-muted); font-weight:600; font-size:.9rem;
+  border-left: 3px solid transparent;
+}
+.cat-item:last-child { border-bottom:0; }
+.cat-item:hover { color:#a5b4fc; background:rgba(99,102,241,.06); border-left-color:rgba(99,102,241,.3); }
+.cat-item.active { color:#a5b4fc; background:rgba(99,102,241,.1); border-left-color:var(--s-accent); }
+.cat-icon { font-size:1.2rem; }
+.cat-count {
+  margin-left:auto; background:rgba(255,255,255,.06);
+  color:var(--s-muted); font-size:.7rem; font-weight:700;
+  padding:.15rem .55rem; border-radius:999px;
+}
+
+/* ── Price Filter ──────────────────────────────── */
+.price-filter { padding:1.25rem; border-top:1px solid var(--s-border); }
+.price-filter h6 { font-size:.72rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--s-muted); margin-bottom:.75rem; }
+.price-btn {
+  display:block; width:100%; text-align:left;
+  background:transparent; border:none; color:var(--s-muted);
+  font-size:.85rem; font-weight:600; padding:.4rem .5rem;
+  border-radius:8px; cursor:pointer; transition:.15s;
+}
+.price-btn:hover,.price-btn.active { color:#a5b4fc; background:rgba(99,102,241,.08); }
+
+/* ── Product Grid ──────────────────────────────── */
+.products-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(228px,1fr)); gap:1.25rem;
+}
+
+/* ── Product Card ──────────────────────────────── */
+.p-card {
+  background:var(--s-card); border:1px solid var(--s-border); border-radius:18px;
+  overflow:hidden; transition:.3s cubic-bezier(.4,0,.2,1); position:relative;
+  display:flex; flex-direction:column;
+}
+.p-card:hover {
+  transform:translateY(-5px); border-color:rgba(99,102,241,.3);
+  box-shadow:0 16px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(99,102,241,.08);
+  background:var(--s-card-h);
+}
+
+.p-img {
+  aspect-ratio:1; overflow:hidden;
+  background:linear-gradient(135deg,#1e1b4b,#1e293b);
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.p-emoji { font-size:5.5rem; line-height:1; transition:.4s; filter:drop-shadow(0 8px 20px rgba(0,0,0,.4)); }
+.p-card:hover .p-emoji { transform:scale(1.12) rotate(-4deg); }
+
+/* Badges */
+.p-badge {
+  position:absolute; top:10px; left:10px;
+  padding:.22rem .7rem; border-radius:999px;
+  font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+}
+.badge-sale   { background:rgba(239,68,68,.15);  color:#fca5a5; border:1px solid rgba(239,68,68,.3); }
+.badge-new    { background:rgba(16,185,129,.15); color:#6ee7b7; border:1px solid rgba(16,185,129,.3); }
+.badge-hot    { background:rgba(245,158,11,.15); color:#fcd34d; border:1px solid rgba(245,158,11,.3); }
+.badge-top    { background:rgba(99,102,241,.15); color:#a5b4fc; border:1px solid rgba(99,102,241,.3); }
+
+/* Wishlist */
+.p-heart {
+  position:absolute; top:10px; right:10px;
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.1);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:.2s; color:#475569; font-size:.82rem;
+}
+.p-heart:hover,.p-heart.on { background:rgba(239,68,68,.2); color:#f87171; border-color:rgba(239,68,68,.3); }
+
+/* Info */
+.p-info { padding:1.1rem; flex:1; display:flex; flex-direction:column; }
+.p-cat   { font-size:.65rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--s-accent); margin-bottom:.3rem; }
+.p-name  { font-size:.95rem; font-weight:700; color:#f1f5f9; line-height:1.3; margin-bottom:.35rem; }
+.p-desc  { font-size:.8rem; color:var(--s-muted); line-height:1.5; margin-bottom:.75rem; flex:1; }
+
+/* Rating */
+.p-stars { display:flex; align-items:center; gap:.3rem; margin-bottom:.75rem; font-size:.78rem; }
+.stars-gold { color:#f59e0b; }
+.rev-count  { color:var(--s-muted); }
+
+/* Price row */
+.p-footer { display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+.p-price  { display:flex; align-items:baseline; gap:.35rem; flex-wrap:wrap; }
+.price-now  { font-size:1.2rem; font-weight:800; color:#f1f5f9; }
+.price-was  { font-size:.8rem; color:#475569; text-decoration:line-through; }
+.price-off  {
+  font-size:.65rem; font-weight:800;
+  background:rgba(16,185,129,.12); color:#34d399;
+  border:1px solid rgba(16,185,129,.25); padding:.1rem .4rem; border-radius:999px;
+}
+
+/* Cart button */
+.btn-cart {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:var(--s-accent); color:#fff; border:none;
+  border-radius:999px; padding:.5rem 1rem;
+  font-size:.78rem; font-weight:700; cursor:pointer;
+  transition:.25s; white-space:nowrap;
+}
+.btn-cart:hover { background:#4f46e5; transform:scale(1.05); box-shadow:0 6px 14px rgba(99,102,241,.35); }
+.btn-cart.added { background:var(--s-green); }
+.btn-cart.added:hover { background:#059669; }
+
+/* ── Cart Drawer ───────────────────────────────── */
+.cart-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.65); backdrop-filter:blur(8px);
+  z-index:9998; opacity:0; pointer-events:none; transition:.3s;
+}
+.cart-overlay.open { opacity:1; pointer-events:all; }
+
+.cart-drawer {
+  position:fixed; top:0; right:-420px; width:420px; max-width:100vw; height:100%;
+  background:#0d0d1a; border-left:1px solid var(--s-border);
+  z-index:9999; display:flex; flex-direction:column;
+  transition:.4s cubic-bezier(.16,1,.3,1); box-shadow:-20px 0 60px rgba(0,0,0,.6);
+}
+.cart-drawer.open { right:0; }
+
+.cart-head {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.25rem 1.5rem; border-bottom:1px solid var(--s-border);
+}
+.cart-head h5 { font-weight:800; color:#f1f5f9; margin:0; font-size:1.1rem; }
+.cart-close {
+  width:36px; height:36px; border-radius:50%; border:1px solid var(--s-border);
+  background:rgba(255,255,255,.04); color:#94a3b8; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:.2s;
+}
+.cart-close:hover { background:rgba(239,68,68,.1); color:#f87171; }
+
+.cart-body { flex:1; overflow-y:auto; padding:1rem 1.5rem; }
+
+.cart-empty {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  height:100%; gap:1rem; color:var(--s-muted); text-align:center;
+}
+.cart-empty i { font-size:3.5rem; opacity:.3; }
+
+/* Cart item */
+.cart-item {
+  display:flex; gap:1rem; align-items:flex-start;
+  padding:1rem 0; border-bottom:1px solid var(--s-border);
+}
+.ci-emoji { font-size:2.8rem; line-height:1; flex-shrink:0; }
+.ci-info  { flex:1; }
+.ci-name  { font-size:.9rem; font-weight:700; color:#f1f5f9; margin-bottom:.2rem; }
+.ci-price { font-size:.85rem; color:var(--s-accent); font-weight:700; margin-bottom:.5rem; }
+
+/* Quantity control */
+.qty-ctrl { display:flex; align-items:center; gap:.5rem; }
+.qty-btn {
+  width:28px; height:28px; border-radius:8px; border:1px solid var(--s-border);
+  background:rgba(255,255,255,.05); color:#fff; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:.9rem;
+  transition:.15s;
+}
+.qty-btn:hover { background:rgba(99,102,241,.15); border-color:rgba(99,102,241,.3); }
+.qty-val { min-width:24px; text-align:center; font-weight:700; color:#f1f5f9; font-size:.9rem; }
+.ci-remove {
+  background:transparent; border:none; color:#475569; cursor:pointer;
+  font-size:.8rem; padding:.2rem; transition:.2s;
+}
+.ci-remove:hover { color:#f87171; }
+
+/* Cart footer */
+.cart-foot { padding:1.25rem 1.5rem; border-top:1px solid var(--s-border); }
+.cart-summary { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:.4rem; }
+.cart-summary .label { color:var(--s-muted); font-size:.85rem; }
+.cart-summary .val   { color:#f1f5f9; font-weight:800; font-size:1.2rem; }
+.cart-summary .small { font-size:.75rem; color:var(--s-green); }
+.btn-checkout {
+  display:flex; align-items:center; justify-content:center; gap:.6rem;
+  width:100%; background:#25D366; color:#fff; border:none;
+  border-radius:14px; padding:1rem; font-size:1rem; font-weight:800;
+  cursor:pointer; transition:.25s; margin-top:.75rem; text-decoration:none;
+}
+.btn-checkout:hover { background:#1ebe5d; transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,211,102,.3); color:#fff; }
+.btn-clear {
+  display:block; width:100%; margin-top:.6rem; background:transparent;
+  border:1px solid var(--s-border); color:var(--s-muted); border-radius:10px;
+  padding:.6rem; font-size:.82rem; font-weight:600; cursor:pointer; transition:.2s;
+}
+.btn-clear:hover { background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.2); color:#f87171; }
+
+/* Cart badge */
+.cart-fab {
+  position:fixed; bottom:90px; right:24px; z-index:999;
+  background:var(--s-accent); color:#fff; border:none;
+  width:56px; height:56px; border-radius:50%; font-size:1.3rem;
+  cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.5);
+  transition:.25s; display:flex; align-items:center; justify-content:center;
+}
+.cart-fab:hover { transform:scale(1.1); background:#4f46e5; }
+.cart-badge {
+  position:absolute; top:-6px; right:-6px;
+  width:22px; height:22px; background:#ef4444; color:#fff;
+  border-radius:50%; font-size:.68rem; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid var(--s-bg);
+}
+.cart-badge:empty, .cart-badge[data-count="0"] { display:none; }
+
+/* ── No Results ────────────────────────────────── */
+.no-results {
+  grid-column:1/-1; text-align:center;
+  padding:5rem 2rem; color:var(--s-muted);
+}
+.no-results i { font-size:3.5rem; opacity:.3; display:block; margin-bottom:1rem; }
+
+/* ── Responsive ────────────────────────────────── */
+@media (max-width:900px) {
+  .store-layout { grid-template-columns:1fr; }
+  .cat-sidebar { position:static; display:flex; flex-wrap:wrap; border-radius:16px; }
+  .cat-sidebar-head { width:100%; }
+  .cat-item { border-bottom:0; border-right:1px solid var(--s-border); flex:1; justify-content:center; min-width:120px; border-left:0; border-top:3px solid transparent; }
+  .cat-item.active { border-top-color:var(--s-accent); border-left-color:transparent; }
+  .cat-count { display:none; }
+  .price-filter { display:none; }
+}
+@media (max-width:540px) {
+  .products-grid { grid-template-columns:1fr 1fr; gap:.8rem; }
+  .p-emoji { font-size:3.8rem; }
+  .p-name { font-size:.88rem; }
+  .cart-drawer { width:100%; }
+}
 </style>
 
-<!-- Order Modal -->
-<div class="order-overlay" id="orderOverlay">
-  <div class="order-modal" id="orderModal">
-    <h3 id="modalProductName">Order Product</h3>
-    <p>Fill in your details and we'll connect you via WhatsApp to confirm your order.</p>
-
-    <div class="order-product-preview">
-      <span class="preview-emoji" id="modalEmoji">📦</span>
-      <div class="preview-info">
-        <h5 id="modalPreviewName">Product</h5>
-        <span id="modalPreviewPrice">₹0</span>
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║           CART DRAWER                ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h5><i class="fa-solid fa-bag-shopping me-2" style="color:var(--s-accent)"></i> Your Cart <span id="cartCountHead" style="color:var(--s-muted);font-size:.85rem;font-weight:500;"></span></h5>
+    <button class="cart-close" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-summary">
+      <span class="label">Subtotal</span>
+      <div>
+        <span class="val" id="cartTotal">₹0</span>
+        <div class="small" id="cartFreeShip"></div>
       </div>
     </div>
-
-    <label class="form-label-dark">Your Name *</label>
-    <input type="text" class="form-input-dark" id="orderName" placeholder="Enter your full name">
-
-    <label class="form-label-dark">Phone Number *</label>
-    <input type="tel" class="form-input-dark" id="orderPhone" placeholder="+91 XXXXX XXXXX">
-
-    <label class="form-label-dark">Delivery Address</label>
-    <textarea class="form-input-dark" id="orderAddress" rows="2" placeholder="City, State (we'll confirm details on WhatsApp)" style="resize:none;"></textarea>
-
-    <a href="#" class="btn-wa-order" id="waOrderBtn" target="_blank">
-      <i class="fa-brands fa-whatsapp fa-lg"></i> Confirm Order on WhatsApp
+    <a href="#" class="btn-checkout" id="waBtn" target="_blank">
+      <i class="fa-brands fa-whatsapp fa-lg"></i> Order via WhatsApp
     </a>
-    <button class="btn-close-modal" onclick="closeOrderModal()">Cancel</button>
+    <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
   </div>
 </div>
 
-<!-- Page Content -->
+<!-- Cart FAB -->
+<button class="cart-fab" onclick="openCart()" title="View Cart">
+  <i class="fa-solid fa-bag-shopping"></i>
+  <span class="cart-badge" id="cartBadge">0</span>
+</button>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                    PAGE CONTENT                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
 <div class="store-page">
+
+  <!-- Top promo bar -->
+  <div class="store-topbar">
+    🚚 Free delivery on orders above ₹499 &nbsp;|&nbsp; 
+    Order via WhatsApp: <a href="tel:+917250395555">+91 72503 95555</a> &nbsp;|&nbsp;
+    <a href="mailto:support@2amstudy.online">support@2amstudy.online</a>
+  </div>
 
   <!-- Hero -->
   <div class="store-hero">
-    <div class="container store-hero-content">
+    <div class="container store-hero-inner">
       <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-          <span class="store-badge"><i class="fa-solid fa-store me-1"></i> 2AM Study Store</span>
-          <h1>Student Essentials,<br>At Your Price</h1>
-          <p class="mt-2">Curated study accessories, digital tools & resources to help you focus. Delivered with care.</p>
-          <div class="store-search-bar mt-4" style="margin-left: 0;">
-            <i class="fa-solid fa-magnifying-glass me-2" style="color:#64748b;"></i>
-            <input type="text" id="globalSearch" placeholder="Search products…" autocomplete="off" oninput="filterAll()">
-            <button class="search-submit"><i class="fa-solid fa-arrow-right fa-xs"></i></button>
-          </div>
-          <div class="store-stats">
-            <div class="store-stat">
-              <div class="store-stat-num">50+</div>
-              <div class="store-stat-label">Products</div>
-            </div>
-            <div class="store-stat" style="border-left:1px solid rgba(255,255,255,0.08); padding-left: 2rem;">
-              <div class="store-stat-num">100%</div>
-              <div class="store-stat-label">Student-Focused</div>
-            </div>
-            <div class="store-stat" style="border-left:1px solid rgba(255,255,255,0.08); padding-left: 2rem;">
-              <div class="store-stat-num">Free</div>
-              <div class="store-stat-label">Digital Tools</div>
-            </div>
-          </div>
+        <div class="col-lg-8">
+          <span class="hero-tag"><i class="fa-solid fa-store me-1"></i> 2AM Study Store</span>
+          <h1>Everything a Student Needs</h1>
+          <p>Notebooks, Bottles, Bags & Study Essentials — curated for students who refuse to give up at 2 AM.</p>
         </div>
-        <div class="col-lg-5 text-center d-none d-lg-block">
-          <div style="font-size:9rem; line-height:1; filter:drop-shadow(0 20px 40px rgba(99,102,241,0.3)); animation: float 4s ease-in-out infinite;">🎒</div>
+        <div class="col-lg-4 text-center d-none d-lg-flex justify-content-end gap-4 align-items-center">
+          <div style="text-align:center;">
+            <div style="font-size:4rem;">📚</div>
+            <div style="font-size:.72rem;color:#64748b;margin-top:.3rem;font-weight:700;">200+ Items</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:4rem;">🚚</div>
+            <div style="font-size:.72rem;color:#64748b;margin-top:.3rem;font-weight:700;">Pan India</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:4rem;">🔒</div>
+            <div style="font-size:.72rem;color:#64748b;margin-top:.3rem;font-weight:700;">Secure Order</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Main Store -->
-  <div class="container py-5">
+  <!-- Main -->
+  <div class="container py-4">
 
-    <!-- Promo Banner -->
-    <div class="promo-strip">
-      <div>
-        <p><i class="fa-solid fa-bolt me-2" style="color:#fbbf24;"></i> Free Delivery on orders above ₹499 &nbsp;•&nbsp; All digital tools are always free</p>
-        <span>Orders confirmed via WhatsApp · Support: support@2amstudy.online</span>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass" style="color:#475569;font-size:.85rem;"></i>
+        <input id="searchInput" type="text" placeholder="Search notebooks, bottles, bags…" oninput="applyFilters()" autocomplete="off">
       </div>
-      <a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid" target="_blank" class="btn-promo">
-        <i class="fa-brands fa-whatsapp me-1"></i> Join Community
-      </a>
+      <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="price-desc">Price: High → Low</option>
+        <option value="rating">Top Rated</option>
+        <option value="discount">Biggest Discount</option>
+      </select>
+      <span class="results-count" id="resultCount"></span>
     </div>
 
-    <!-- Filter Tabs -->
-    <div class="filter-strip" id="filterStrip">
-      <button class="filter-tab active" data-cat="all" onclick="setFilter('all', this)">
-        <i class="fa-solid fa-border-all fa-xs"></i> All
-      </button>
-      <button class="filter-tab" data-cat="accessories" onclick="setFilter('accessories', this)">
-        <i class="fa-solid fa-pen-ruler fa-xs"></i> Study Accessories
-      </button>
-      <button class="filter-tab" data-cat="digital" onclick="setFilter('digital', this)">
-        <i class="fa-solid fa-laptop fa-xs"></i> Digital Downloads
-      </button>
-      <button class="filter-tab" data-cat="wellness" onclick="setFilter('wellness', this)">
-        <i class="fa-solid fa-leaf fa-xs"></i> Wellness
-      </button>
-      <button class="filter-tab" data-cat="tools" onclick="setFilter('tools', this)">
-        <i class="fa-solid fa-screwdriver-wrench fa-xs"></i> Study Tools
-      </button>
+    <div class="store-layout">
+
+      <!-- ── Sidebar ────────────────────────────── -->
+      <aside>
+        <div class="cat-sidebar">
+          <div class="cat-sidebar-head">Categories</div>
+          <div class="cat-item active" data-cat="all" onclick="setCat('all',this)">
+            <span class="cat-icon">🛍️</span> All Products <span class="cat-count" id="cnt-all">0</span>
+          </div>
+          <div class="cat-item" data-cat="notebooks" onclick="setCat('notebooks',this)">
+            <span class="cat-icon">📓</span> Notebooks <span class="cat-count" id="cnt-notebooks">0</span>
+          </div>
+          <div class="cat-item" data-cat="bottles" onclick="setCat('bottles',this)">
+            <span class="cat-icon">💧</span> Water Bottles <span class="cat-count" id="cnt-bottles">0</span>
+          </div>
+          <div class="cat-item" data-cat="bags" onclick="setCat('bags',this)">
+            <span class="cat-icon">🎒</span> College Bags <span class="cat-count" id="cnt-bags">0</span>
+          </div>
+          <div class="cat-item" data-cat="essentials" onclick="setCat('essentials',this)">
+            <span class="cat-icon">✏️</span> Study Essentials <span class="cat-count" id="cnt-essentials">0</span>
+          </div>
+
+          <!-- Price Filter -->
+          <div class="price-filter">
+            <h6>Filter by Price</h6>
+            <button class="price-btn active" data-price="all"    onclick="setPrice('all',this)">All Prices</button>
+            <button class="price-btn"       data-price="u200"   onclick="setPrice('u200',this)">Under ₹200</button>
+            <button class="price-btn"       data-price="200-500" onclick="setPrice('200-500',this)">₹200 – ₹500</button>
+            <button class="price-btn"       data-price="500-1000" onclick="setPrice('500-1000',this)">₹500 – ₹1,000</button>
+            <button class="price-btn"       data-price="o1000"  onclick="setPrice('o1000',this)">Above ₹1,000</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── Products ─────────────────────────── -->
+      <div>
+        <div class="products-grid" id="productsGrid"></div>
+        <div class="no-results" id="noResults" style="display:none;">
+          <i class="fa-solid fa-box-open"></i>
+          No products match your filter. Try adjusting your search.
+        </div>
+      </div>
+
     </div>
-
-    <!-- Products Grid -->
-    <div class="products-grid" id="productsGrid"></div>
-
-    <div class="no-results" id="noResults">
-      <i class="fa-solid fa-box-open d-block"></i>
-      No products found. Try a different filter or search term.
-    </div>
-
   </div>
 </div>
 
-<style>
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-14px); }
-  }
-</style>
-
+<!-- ═══════════════════════════════════ SCRIPT ══════════════════════════ -->
 <script>
-// ── Product Catalogue ─────────────────────────────────────────────
+/* ── Product Catalogue ─────────────────────────────────────────────── */
 const PRODUCTS = [
-  // Study Accessories
-  {
-    id: 1, cat: 'accessories',
-    emoji: '🖊️', badge: 'best', badgeLabel: 'Best Seller',
-    name: 'Premium Study Pen Set',
-    desc: 'Smooth-writing gel pens perfect for long study sessions. Pack of 10 assorted colours.',
-    price: 149, original: 249,
-    rating: 4.8, reviews: 124,
-    tags: ['pen', 'stationery', 'writing'],
-  },
-  {
-    id: 2, cat: 'accessories',
-    emoji: '📓', badge: 'hot', badgeLabel: 'Hot',
-    name: 'A5 Dot-Grid Study Notebook',
-    desc: '200-page dotted notebook great for notes, mind-maps and bujo-style planning.',
-    price: 199, original: 349,
-    rating: 4.7, reviews: 88,
-    tags: ['notebook', 'stationery', 'notes'],
-  },
-  {
-    id: 3, cat: 'accessories',
-    emoji: '🗂️', badge: null, badgeLabel: '',
-    name: 'Subject Divider Tabs Pack',
-    desc: 'Colour-coded index tabs to organise every subject in your binder seamlessly.',
-    price: 79, original: 129,
-    rating: 4.5, reviews: 61,
-    tags: ['organiser', 'tabs', 'stationery'],
-  },
-  {
-    id: 4, cat: 'accessories',
-    emoji: '📐', badge: 'new', badgeLabel: 'New',
-    name: 'Maths Geometry Kit',
-    desc: 'Full precision geometry set — compass, ruler, protractor & 2 set squares in a zip case.',
-    price: 129, original: 199,
-    rating: 4.6, reviews: 47,
-    tags: ['maths', 'geometry', 'kit'],
-  },
-  {
-    id: 5, cat: 'accessories',
-    emoji: '🖥️', badge: null, badgeLabel: '',
-    name: 'Laptop Stand (Foldable)',
-    desc: 'Portable aluminium-look stand with 7 height angles to improve posture during study.',
-    price: 399, original: 699,
-    rating: 4.9, reviews: 203,
-    tags: ['laptop', 'stand', 'ergonomic'],
-  },
-  {
-    id: 6, cat: 'accessories',
-    emoji: '💡', badge: 'best', badgeLabel: 'Best Seller',
-    name: 'Clip-On Study Lamp',
-    desc: 'USB-powered LED desk lamp with 3 brightness levels. Eye-care mode for late-night sessions.',
-    price: 299, original: 499,
-    rating: 4.8, reviews: 156,
-    tags: ['lamp', 'light', 'desk'],
-  },
-  // Digital Downloads
-  {
-    id: 7, cat: 'digital',
-    emoji: '📅', badge: 'free', badgeLabel: 'Free',
-    name: '2AM Semester Planner (PDF)',
-    desc: 'Printable A4 semester planner with weekly layout, habit tracker & exam countdown.',
-    price: 0, original: 99,
-    rating: 4.9, reviews: 342,
-    tags: ['planner', 'pdf', 'digital', 'free'],
-  },
-  {
-    id: 8, cat: 'digital',
-    emoji: '🃏', badge: 'free', badgeLabel: 'Free',
-    name: 'Flashcard Template Pack',
-    desc: '50 pre-designed Canva flashcard templates for fast, effective revision.',
-    price: 0, original: 149,
-    rating: 4.7, reviews: 219,
-    tags: ['flashcard', 'canva', 'digital', 'free', 'template'],
-  },
-  {
-    id: 9, cat: 'digital',
-    emoji: '📊', badge: 'new', badgeLabel: 'New',
-    name: 'Study Timetable Generator',
-    desc: 'Interactive Excel/Google Sheets timetable auto-generator with subject slots.',
-    price: 49, original: 149,
-    rating: 4.6, reviews: 78,
-    tags: ['timetable', 'schedule', 'digital'],
-  },
-  {
-    id: 10, cat: 'digital',
-    emoji: '📝', badge: 'hot', badgeLabel: 'Hot',
-    name: 'Exam Prep Checklist Bundle',
-    desc: '7-day, 30-day & semester-end exam preparation checklists in PDF.',
-    price: 29, original: 99,
-    rating: 4.8, reviews: 186,
-    tags: ['checklist', 'exam', 'pdf', 'digital'],
-  },
-  // Wellness
-  {
-    id: 11, cat: 'wellness',
-    emoji: '🫖', badge: 'best', badgeLabel: 'Best Seller',
-    name: 'Focus Herbal Tea Combo',
-    desc: 'Green tea + ashwagandha combo pack for calm focus. 40 sachets.',
-    price: 349, original: 549,
-    rating: 4.7, reviews: 94,
-    tags: ['tea', 'focus', 'wellness', 'herbal'],
-  },
-  {
-    id: 12, cat: 'wellness',
-    emoji: '🎧', badge: 'new', badgeLabel: 'New',
-    name: 'Noise-Isolating Earplugs (12-pack)',
-    desc: 'Soft memory-foam earplugs — block distractions during deep study sessions.',
-    price: 99, original: 199,
-    rating: 4.5, reviews: 57,
-    tags: ['earplugs', 'noise', 'focus', 'wellness'],
-  },
-  {
-    id: 13, cat: 'wellness',
-    emoji: '💧', badge: null, badgeLabel: '',
-    name: 'BPA-Free Study Bottle (750ml)',
-    desc: 'Insulated stainless steel bottle with time markers to stay hydrated all day.',
-    price: 449, original: 699,
-    rating: 4.8, reviews: 133,
-    tags: ['bottle', 'water', 'wellness'],
-  },
-  // Study Tools
-  {
-    id: 14, cat: 'tools',
-    emoji: '⏱️', badge: 'free', badgeLabel: 'Free',
-    name: 'Pomodoro Focus Timer (Web)',
-    desc: 'Our built-in focus timer — 100% free, no download required.',
-    price: 0, original: 0,
-    link: '/timer',
-    rating: 5.0, reviews: 512,
-    tags: ['timer', 'pomodoro', 'tool', 'free'],
-  },
-  {
-    id: 15, cat: 'tools',
-    emoji: '🎵', badge: 'free', badgeLabel: 'Free',
-    name: 'LoFi Study Music Room',
-    desc: 'Curated playlists & YouTube integration for ambient focus music.',
-    price: 0, original: 0,
-    link: '/music',
-    rating: 4.9, reviews: 389,
-    tags: ['music', 'lofi', 'tool', 'free'],
-  },
-  {
-    id: 16, cat: 'tools',
-    emoji: '🧠', badge: 'free', badgeLabel: 'Free',
-    name: 'AI Flashcard Maker',
-    desc: 'Convert your PDF notes into smart flashcards automatically.',
-    price: 0, original: 0,
-    link: '/flashcards',
-    rating: 4.8, reviews: 271,
-    tags: ['flashcard', 'ai', 'tool', 'free'],
-  },
+
+  /* ─── NOTEBOOKS ─────────────────────────────── */
+  { id:101, cat:'notebooks', emoji:'📒', badge:'hot', badgeLabel:'Hot',
+    name:'A5 Spiral Ruled Notebook', desc:'200 pages, 70gsm smooth paper. Perfect for daily note-taking and lecture notes.', price:149, orig:249, rating:4.8, reviews:214 },
+  { id:102, cat:'notebooks', emoji:'📓', badge:'top', badgeLabel:'Top Pick',
+    name:'A4 Premium Hardcover Journal', desc:'Lay-flat binding, 240 dotted pages. Ideal for planning and mind mapping.', price:249, orig:399, rating:4.9, reviews:178 },
+  { id:103, cat:'notebooks', emoji:'📔', badge:null, badgeLabel:'',
+    name:'A5 Dotted Bullet Journal', desc:'192 pre-numbered pages with index, dotted grid layout, ribbon bookmark.', price:199, orig:349, rating:4.7, reviews:142 },
+  { id:104, cat:'notebooks', emoji:'🗒️', badge:'new', badgeLabel:'New',
+    name:'Pocket Notebook Set (3-Pack)', desc:'3× A6 pocket notebooks, 80 pages each, ruled. Slip into any bag pocket.', price:129, orig:199, rating:4.6, reviews:95 },
+  { id:105, cat:'notebooks', emoji:'📗', badge:null, badgeLabel:'',
+    name:'Graph Paper Math Notebook', desc:'1mm grid ruled, A4, 160 pages. Essential for engineering and science subjects.', price:179, orig:279, rating:4.7, reviews:108 },
+  { id:106, cat:'notebooks', emoji:'📘', badge:'sale', badgeLabel:'Sale',
+    name:'5-Subject College Notebook', desc:'Tabbed 5-subject divider notebook, A4, 300 pages. One notebook for all subjects.', price:299, orig:499, rating:4.8, reviews:267 },
+
+  /* ─── WATER BOTTLES ──────────────────────────── */
+  { id:201, cat:'bottles', emoji:'🍶', badge:'top', badgeLabel:'Best Seller',
+    name:'750ml Insulated Steel Bottle', desc:'Double-wall vacuum insulation. Keeps drinks cold 24hr, hot 12hr. BPA-free lid.', price:449, orig:699, rating:4.9, reviews:356 },
+  { id:202, cat:'bottles', emoji:'💧', badge:'hot', badgeLabel:'Hot',
+    name:'1L Motivational Bottle with Tracker', desc:'Time-marked with motivational quotes to keep you hydrated all day.', price:299, orig:449, rating:4.7, reviews:203 },
+  { id:203, cat:'bottles', emoji:'🥤', badge:'new', badgeLabel:'New',
+    name:'Glass Bottle with Neoprene Sleeve', desc:'Borosilicate glass, 600ml. Sleeve protects from drops. Easy-carry strap.', price:399, orig:599, rating:4.6, reviews:87 },
+  { id:204, cat:'bottles', emoji:'🫗', badge:null, badgeLabel:'',
+    name:'500ml Sports Sipper Bottle', desc:'Flip-top sipper with wide mouth, BPA-free Tritan plastic. Leak-proof.', price:199, orig:299, rating:4.5, reviews:143 },
+  { id:205, cat:'bottles', emoji:'🧊', badge:'sale', badgeLabel:'Sale',
+    name:'2L Large Campus Water Jug', desc:'Wide-mouth fridge jug. Perfect for long library study sessions. Filter cap.', price:349, orig:599, rating:4.7, reviews:119 },
+
+  /* ─── COLLEGE BAGS ───────────────────────────── */
+  { id:301, cat:'bags', emoji:'🎒', badge:'top', badgeLabel:'Top Pick',
+    name:'30L Laptop Backpack', desc:'Fits 15.6" laptop. USB charging port, anti-scratch lining, rain cover included.', price:1299, orig:2199, rating:4.9, reviews:412 },
+  { id:302, cat:'bags', emoji:'👜', badge:'hot', badgeLabel:'Hot',
+    name:'Slim Messenger Shoulder Bag', desc:'Crossbody style, water-resistant polyester, fits 13" laptop. 3 compartments.', price:899, orig:1499, rating:4.7, reviews:186 },
+  { id:303, cat:'bags', emoji:'🛍️', badge:'new', badgeLabel:'New',
+    name:'Premium Canvas Tote Bag', desc:'Heavy-duty cotton canvas, reinforced handles. Zip closure. Fits A4 books easily.', price:599, orig:899, rating:4.6, reviews:142 },
+  { id:304, cat:'bags', emoji:'🔒', badge:'sale', badgeLabel:'Sale',
+    name:'Anti-Theft Security Backpack', desc:'Hidden zipper, RFID-blocking pocket, USB port, 30L. TSA-approved styling.', price:1599, orig:2799, rating:4.8, reviews:233 },
+  { id:305, cat:'bags', emoji:'🎽', badge:null, badgeLabel:'',
+    name:'Mini Sling Crossbody Bag', desc:'Compact 5L sling for quick campus trips. Water-resistant, adjustable strap.', price:499, orig:799, rating:4.5, reviews:98 },
+  { id:306, cat:'bags', emoji:'📁', badge:null, badgeLabel:'',
+    name:'A4 Document Carrying Bag', desc:'Professional zip-file bag for notes, papers and tablets. Multiple pockets.', price:349, orig:549, rating:4.4, reviews:74 },
+
+  /* ─── STUDY ESSENTIALS ───────────────────────── */
+  { id:401, cat:'essentials', emoji:'🖊️', badge:'top', badgeLabel:'Best Seller',
+    name:'Premium Gel Pen Set (10 pcs)', desc:'Smooth 0.5mm tip, 10 assorted colours. Great for notes and colour coding.', price:149, orig:249, rating:4.8, reviews:328 },
+  { id:402, cat:'essentials', emoji:'🖍️', badge:'hot', badgeLabel:'Hot',
+    name:'Highlighter Set (8 Colors)', desc:'Dual-tip pastel + vibrant highlighters. Ink-safe, won\'t bleed through pages.', price:149, orig:229, rating:4.7, reviews:195 },
+  { id:403, cat:'essentials', emoji:'📐', badge:'new', badgeLabel:'New',
+    name:'Complete Geometry Kit', desc:'Steel compass, ruler, 2 set-squares, protractor in hardcase. Precision tools.', price:129, orig:199, rating:4.6, reviews:112 },
+  { id:404, cat:'essentials', emoji:'💡', badge:'top', badgeLabel:'Top Pick',
+    name:'USB Clip-On LED Study Lamp', desc:'3 brightness levels, eye-care mode, flexible gooseneck. 5W. USB powered.', price:349, orig:599, rating:4.9, reviews:287 },
+  { id:405, cat:'essentials', emoji:'🗂️', badge:null, badgeLabel:'',
+    name:'Index Tab Dividers (50 tabs)', desc:'Colour-coded sticky index tabs. Writable, repositionable. Fits all notebooks.', price:79, orig:129, rating:4.5, reviews:89 },
+  { id:406, cat:'essentials', emoji:'📌', badge:null, badgeLabel:'',
+    name:'Sticky Notes Super Pack', desc:'4 sizes × 3 colours = 300 sheets. Strong adhesive. Stays put on any surface.', price:99, orig:159, rating:4.6, reviews:176 },
+  { id:407, cat:'essentials', emoji:'🖥️', badge:'hot', badgeLabel:'Hot',
+    name:'Foldable Laptop Stand (Aluminium)', desc:'7 height angles, 360° rotatable, folds flat. Supports up to 15.6" laptop.', price:399, orig:699, rating:4.9, reviews:342 },
+  { id:408, cat:'essentials', emoji:'🎧', badge:'new', badgeLabel:'New',
+    name:'Noise Isolating Earplugs (12-pack)', desc:'High-fidelity memory foam, SNR 33dB. Block exam halls and dorm noise.', price:99, orig:199, rating:4.5, reviews:143 },
+  { id:409, cat:'essentials', emoji:'📏', badge:null, badgeLabel:'',
+    name:'Whiteboard Marker Set (6 colors)', desc:'Chisel & fine tip dual-ended, quick-dry, erasable. Great for revision boards.', price:179, orig:279, rating:4.7, reviews:94 },
+  { id:410, cat:'essentials', emoji:'🧲', badge:'sale', badgeLabel:'Sale',
+    name:'Study Desk Organiser Set', desc:'Mesh desk tray + pen holder + sticky pad holder. Keeps your desk clutter-free.', price:299, orig:549, rating:4.6, reviews:167 },
 ];
 
-// ── State ──────────────────────────────────────────────────────────
-let currentFilter = 'all';
-let currentProduct = null;
+/* ── State ────────────────────────────────────────────────────────── */
+let currentCat   = 'all';
+let currentPrice = 'all';
+let cart = JSON.parse(localStorage.getItem('2am_cart') || '[]');
 
-// ── Render ──────────────────────────────────────────────────────────
+/* ── Category Counts ──────────────────────────────────────────────── */
+function updateCounts() {
+  const cats = ['all','notebooks','bottles','bags','essentials'];
+  cats.forEach(c => {
+    const el = document.getElementById('cnt-'+c);
+    if (!el) return;
+    el.textContent = c === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.cat === c).length;
+  });
+}
+
+/* ── Filters ────────────────────────────────────────────────────────  */
+function setCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-item').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function setPrice(range, el) {
+  currentPrice = range;
+  document.querySelectorAll('.price-btn').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function priceInRange(price) {
+  if (currentPrice === 'all')     return true;
+  if (currentPrice === 'u200')    return price < 200;
+  if (currentPrice === '200-500') return price >= 200 && price <= 500;
+  if (currentPrice === '500-1000')return price > 500 && price <= 1000;
+  if (currentPrice === 'o1000')   return price > 1000;
+  return true;
+}
+
+function applyFilters() {
+  const q    = document.getElementById('searchInput').value.toLowerCase().trim();
+  const sort = document.getElementById('sortSelect').value;
+
+  let list = PRODUCTS.filter(p => {
+    const catOk   = currentCat === 'all' || p.cat === currentCat;
+    const priceOk = priceInRange(p.price);
+    const textOk  = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.cat.includes(q);
+    return catOk && priceOk && textOk;
+  });
+
+  if (sort === 'price-asc')  list.sort((a,b) => a.price - b.price);
+  if (sort === 'price-desc') list.sort((a,b) => b.price - a.price);
+  if (sort === 'rating')     list.sort((a,b) => b.rating - a.rating);
+  if (sort === 'discount')   list.sort((a,b) => (b.orig - b.price) - (a.orig - a.price));
+
+  renderProducts(list);
+}
+
+/* ── Render Products ───────────────────────────────────────────────── */
 function renderProducts(list) {
-  const grid = document.getElementById('productsGrid');
-  const noRes = document.getElementById('noResults');
+  const grid   = document.getElementById('productsGrid');
+  const noRes  = document.getElementById('noResults');
+  const rc     = document.getElementById('resultCount');
+
+  rc.textContent = list.length + ' product' + (list.length !== 1 ? 's' : '');
 
   if (!list.length) {
     grid.innerHTML = '';
@@ -839,141 +623,187 @@ function renderProducts(list) {
   }
   noRes.style.display = 'none';
 
+  const wl = JSON.parse(localStorage.getItem('2am_wl') || '[]');
+  const inCart = id => cart.some(c => c.id === id);
+
   grid.innerHTML = list.map(p => {
-    const isWishlisted = (JSON.parse(localStorage.getItem('2am_wishlist') || '[]')).includes(p.id);
-    const stars = '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5 - Math.round(p.rating));
-    const badgeHtml = p.badge ? `<span class="product-badge badge-${p.badge}">${p.badgeLabel}</span>` : '';
-    const origHtml  = p.original && p.original !== p.price ? `<span class="price-original">₹${p.original}</span>` : '';
-    const discHtml  = p.original && p.original > p.price && p.price > 0
-      ? `<span class="price-discount">${Math.round((p.original - p.price)*100/p.original)}% off</span>` : '';
-
-    const priceHtml = p.price === 0
-      ? `<span class="price-free">FREE</span>`
-      : `<div class="product-price"><span class="price-current">₹${p.price}</span>${origHtml}${discHtml}</div>`;
-
-    const btnHtml = p.link
-      ? `<a href="${p.link}" class="btn-buy btn-buy-green"><i class="fa-solid fa-arrow-right fa-xs"></i> Open</a>`
-      : p.price === 0
-        ? `<button class="btn-buy btn-buy-green" onclick="event.stopPropagation(); downloadProduct(${p.id})"><i class="fa-solid fa-download fa-xs"></i> Get Free</button>`
-        : `<button class="btn-buy" onclick="event.stopPropagation(); openOrder(${p.id})"><i class="fa-solid fa-bag-shopping fa-xs"></i> Order</button>`;
+    const disc    = p.orig > p.price ? Math.round((p.orig - p.price) * 100 / p.orig) : 0;
+    const stars   = '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5 - Math.round(p.rating));
+    const badgeHtml = p.badge ? `<span class="p-badge badge-${p.badge}">${p.badgeLabel}</span>` : '';
+    const heartOn   = wl.includes(p.id);
+    const added     = inCart(p.id);
 
     return `
-    <div class="product-card" data-id="${p.id}" data-cat="${p.cat}">
-      <div class="product-image-wrap">
-        <span class="product-emoji">${p.emoji}</span>
+    <div class="p-card" data-id="${p.id}">
+      <div class="p-img">
+        <span class="p-emoji">${p.emoji}</span>
         ${badgeHtml}
-        <button class="product-wishlist ${isWishlisted ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist(${p.id}, this)" title="Add to wishlist">
-          <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
+        <button class="p-heart ${heartOn?'on':''}" onclick="toggleWL(${p.id},this)" title="Wishlist">
+          <i class="fa-${heartOn?'solid':'regular'} fa-heart"></i>
         </button>
       </div>
-      <div class="product-info">
-        <div class="product-category">${p.cat.charAt(0).toUpperCase() + p.cat.slice(1)}</div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc}</div>
-        <div class="product-rating">
-          <span class="stars">${stars}</span>
-          <span style="color:#f59e0b; font-weight:700;">${p.rating}</span>
-          <span class="rating-count">(${p.reviews})</span>
+      <div class="p-info">
+        <div class="p-cat">${p.cat === 'essentials' ? 'Study Essentials' : p.cat === 'bottles' ? 'Water Bottles' : p.cat === 'bags' ? 'College Bags' : 'Notebooks'}</div>
+        <div class="p-name">${p.name}</div>
+        <div class="p-desc">${p.desc}</div>
+        <div class="p-stars">
+          <span class="stars-gold">${stars}</span>
+          <span style="color:#f59e0b;font-weight:700;">${p.rating}</span>
+          <span class="rev-count">(${p.reviews})</span>
         </div>
-        <div class="product-footer">
-          ${priceHtml}
-          ${btnHtml}
+        <div class="p-footer">
+          <div class="p-price">
+            <span class="price-now">₹${p.price}</span>
+            ${p.orig > p.price ? `<span class="price-was">₹${p.orig}</span><span class="price-off">${disc}% off</span>` : ''}
+          </div>
+          <button class="btn-cart ${added?'added':''}" id="btn-${p.id}" onclick="addToCart(${p.id})">
+            <i class="fa-solid fa-${added?'check':'bag-shopping'} fa-xs"></i>
+            ${added ? 'Added' : 'Add'}
+          </button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── Filter ─────────────────────────────────────────────────────────
-function setFilter(cat, btn) {
-  currentFilter = cat;
-  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  filterAll();
-}
-
-function filterAll() {
-  const query = (document.getElementById('globalSearch')?.value || '').toLowerCase().trim();
-  let list = currentFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentFilter);
-  if (query) {
-    list = list.filter(p =>
-      p.name.toLowerCase().includes(query) ||
-      p.desc.toLowerCase().includes(query) ||
-      (p.tags || []).some(t => t.includes(query))
-    );
-  }
-  renderProducts(list);
-}
-
-// ── Wishlist ───────────────────────────────────────────────────────
-function toggleWishlist(id, btn) {
-  let wl = JSON.parse(localStorage.getItem('2am_wishlist') || '[]');
-  const idx = wl.indexOf(id);
-  if (idx === -1) {
-    wl.push(id);
-    btn.classList.add('active');
-    btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
-  } else {
-    wl.splice(idx, 1);
-    btn.classList.remove('active');
-    btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
-  }
-  localStorage.setItem('2am_wishlist', JSON.stringify(wl));
-}
-
-// ── Free Download ──────────────────────────────────────────────────
-function downloadProduct(id) {
+/* ── Cart Logic ────────────────────────────────────────────────────── */
+function addToCart(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
-  // For now open WhatsApp to request
-  const msg = encodeURIComponent(`Hi! I'd like to get the FREE download: *${p.name}* from 2AM Study Store 🎒`);
-  window.open(`https://wa.me/+917250395555?text=${msg}`, '_blank');
+  const existing = cart.find(c => c.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id: p.id, name: p.name, price: p.price, emoji: p.emoji, qty: 1 });
+  }
+  saveCart();
+  // Update button
+  const btn = document.getElementById('btn-' + id);
+  if (btn) {
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fa-solid fa-check fa-xs"></i> Added';
+  }
+  updateCartUI();
+  openCart();
 }
 
-// ── Order Modal ────────────────────────────────────────────────────
-function openOrder(id) {
-  currentProduct = PRODUCTS.find(p => p.id === id);
-  if (!currentProduct) return;
-  document.getElementById('modalProductName').textContent = 'Order: ' + currentProduct.name;
-  document.getElementById('modalEmoji').textContent = currentProduct.emoji;
-  document.getElementById('modalPreviewName').textContent = currentProduct.name;
-  document.getElementById('modalPreviewPrice').textContent = currentProduct.price === 0 ? 'FREE' : '₹' + currentProduct.price;
-  document.getElementById('orderName').value = '';
-  document.getElementById('orderPhone').value = '';
-  document.getElementById('orderAddress').value = '';
-  updateWALink();
-  document.getElementById('orderOverlay').classList.add('open');
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+  saveCart();
+  updateCartUI();
+  renderCart();
+  // Re-render product grid to update button states
+  applyFilters();
+}
+
+function removeItem(id) {
+  cart = cart.filter(c => c.id !== id);
+  saveCart();
+  updateCartUI();
+  renderCart();
+  applyFilters();
+}
+
+function clearCart() {
+  cart = [];
+  saveCart();
+  updateCartUI();
+  renderCart();
+  applyFilters();
+}
+
+function saveCart() { localStorage.setItem('2am_cart', JSON.stringify(cart)); }
+
+function updateCartUI() {
+  const total = cart.reduce((s, c) => s + c.qty, 0);
+  const badge = document.getElementById('cartBadge');
+  const head  = document.getElementById('cartCountHead');
+  badge.textContent = total || '';
+  if (head) head.textContent = total ? `(${total} item${total > 1 ? 's' : ''})` : '';
+}
+
+function renderCart() {
+  const body = document.getElementById('cartBody');
+  const foot = document.getElementById('cartFoot');
+
+  if (!cart.length) {
+    body.innerHTML = `
+      <div class="cart-empty">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <div>
+          <p style="font-weight:700;color:#94a3b8;margin-bottom:.25rem;">Your cart is empty</p>
+          <small style="color:#475569;">Explore our products and add items to your cart</small>
+        </div>
+      </div>`;
+    foot.style.display = 'none';
+    return;
+  }
+
+  foot.style.display = 'block';
+  body.innerHTML = cart.map(c => `
+    <div class="cart-item">
+      <span class="ci-emoji">${c.emoji}</span>
+      <div class="ci-info">
+        <div class="ci-name">${c.name}</div>
+        <div class="ci-price">₹${c.price} × ${c.qty} = ₹${c.price * c.qty}</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${c.id},-1)"><i class="fa-solid fa-minus fa-xs"></i></button>
+          <span class="qty-val">${c.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${c.id},1)"><i class="fa-solid fa-plus fa-xs"></i></button>
+          <button class="ci-remove" onclick="removeItem(${c.id})" title="Remove"><i class="fa-solid fa-trash-can fa-xs"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+
+  const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  document.getElementById('cartTotal').textContent = '₹' + subtotal;
+  document.getElementById('cartFreeShip').textContent = subtotal >= 499
+    ? '✓ Free delivery applied!'
+    : `Add ₹${499 - subtotal} more for free delivery`;
+  document.getElementById('cartFreeShip').style.color = subtotal >= 499 ? '#34d399' : '#94a3b8';
+
+  // Build WhatsApp message
+  const lines = cart.map(c => `• ${c.name} × ${c.qty} = ₹${c.price * c.qty}`).join('%0A');
+  const msg   = encodeURIComponent(`Hi 2AM Study! 👋 I'd like to place an order:%0A%0A${decodeURIComponent(lines)}%0A%0A*Total: ₹${subtotal}*%0A%0APlease confirm my order 🎒`);
+  document.getElementById('waBtn').href = `https://wa.me/917250395555?text=${msg}`;
+}
+
+/* ── Cart Drawer Open/Close ─────────────────────────────────────────── */
+function openCart() {
+  renderCart();
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
-function closeOrderModal() {
-  document.getElementById('orderOverlay').classList.remove('open');
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
 
-function updateWALink() {
-  if (!currentProduct) return;
-  const name    = document.getElementById('orderName').value.trim() || 'Customer';
-  const phone   = document.getElementById('orderPhone').value.trim();
-  const address = document.getElementById('orderAddress').value.trim();
-  const price   = currentProduct.price === 0 ? 'FREE' : '₹' + currentProduct.price;
-  const msg = encodeURIComponent(
-    `Hi 2AM Study! 👋\nI'd like to order:\n\n*Product:* ${currentProduct.name}\n*Price:* ${price}\n*Name:* ${name}\n*Phone:* ${phone}\n*Address:* ${address || 'To be confirmed'}\n\nPlease confirm my order! 🎒`
-  );
-  document.getElementById('waOrderBtn').href = `https://wa.me/+917250395555?text=${msg}`;
+/* ── Wishlist ────────────────────────────────────────────────────────── */
+function toggleWL(id, btn) {
+  let wl = JSON.parse(localStorage.getItem('2am_wl') || '[]');
+  const idx = wl.indexOf(id);
+  if (idx === -1) {
+    wl.push(id);
+    btn.classList.add('on');
+    btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+  } else {
+    wl.splice(idx, 1);
+    btn.classList.remove('on');
+    btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+  }
+  localStorage.setItem('2am_wl', JSON.stringify(wl));
 }
 
-['orderName','orderPhone','orderAddress'].forEach(id => {
-  document.getElementById(id)?.addEventListener('input', updateWALink);
-});
-
-// Close on backdrop click
-document.getElementById('orderOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeOrderModal();
-});
-
-// ── Init ──────────────────────────────────────────────────────────
-renderProducts(PRODUCTS);
+/* ── Init ────────────────────────────────────────────────────────────── */
+updateCounts();
+applyFilters();
+updateCartUI();
 </script>
 
 <%- include('partials/footer') %>
