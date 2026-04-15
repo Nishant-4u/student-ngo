@@ -1,0 +1,979 @@
+<%- include('partials/header') %>
+
+<style>
+  /* ── Store Page Variables ─────────────────────────── */
+  :root {
+    --store-bg: #0a0a0f;
+    --store-card: #111118;
+    --store-card-hover: #16161f;
+    --store-border: rgba(255,255,255,0.07);
+    --store-accent: #6366f1;
+    --store-accent2: #a855f7;
+    --store-gold: #f59e0b;
+    --store-green: #10b981;
+    --store-text: #e2e8f0;
+    --store-muted: #64748b;
+    --store-pill-bg: rgba(99,102,241,0.1);
+  }
+
+  /* ── Base Layout ──────────────────────────────────── */
+  .store-page {
+    background: var(--store-bg);
+    min-height: 100vh;
+    color: var(--store-text);
+    padding-top: 80px;
+  }
+
+  /* ── Hero Banner ──────────────────────────────────── */
+  .store-hero {
+    background: linear-gradient(135deg, #0f0c29 0%, #1e1b4b 40%, #0f172a 100%);
+    padding: 72px 0 56px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--store-border);
+  }
+
+  .store-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 60%, rgba(99,102,241,0.2) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 30%, rgba(168,85,247,0.15) 0%, transparent 50%);
+  }
+
+  .store-hero-content { position: relative; z-index: 1; }
+
+  .store-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.3);
+    color: #a5b4fc;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+
+  .store-hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #fff 0%, #c7d2fe 50%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+  }
+
+  .store-hero p { color: #94a3b8; font-size: 1.05rem; max-width: 560px; }
+
+  .store-search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+    max-width: 420px;
+    transition: all 0.3s ease;
+  }
+
+  .store-search-bar:focus-within {
+    border-color: rgba(99,102,241,0.5);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+  }
+
+  .store-search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 0.92rem;
+    flex: 1;
+  }
+
+  .store-search-bar input::placeholder { color: #64748b; }
+
+  .search-submit {
+    background: var(--store-accent);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .search-submit:hover { background: #4f46e5; transform: scale(1.05); }
+
+  /* ── Stats Row ────────────────────────────────────── */
+  .store-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .store-stat { text-align: left; }
+  .store-stat-num { font-size: 1.5rem; font-weight: 800; color: #c7d2fe; }
+  .store-stat-label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* ── Filter Tabs ──────────────────────────────────── */
+  .filter-strip {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 1.5rem 0 0.5rem;
+    border-bottom: 1px solid var(--store-border);
+    margin-bottom: 2rem;
+  }
+
+  .filter-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--store-border);
+    background: transparent;
+    color: var(--store-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-tab:hover { border-color: rgba(99,102,241,0.4); color: #a5b4fc; }
+
+  .filter-tab.active {
+    background: var(--store-accent);
+    border-color: var(--store-accent);
+    color: white;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+  }
+
+  /* ── Product Grid ─────────────────────────────────── */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* ── Product Card ─────────────────────────────────── */
+  .product-card {
+    background: var(--store-card);
+    border: 1px solid var(--store-border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(99,102,241,0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.1);
+    background: var(--store-card-hover);
+  }
+
+  .product-image-wrap {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1e1b4b, #1e293b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-emoji {
+    font-size: 5rem;
+    line-height: 1;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
+    transition: transform 0.4s ease;
+  }
+
+  .product-card:hover .product-emoji { transform: scale(1.1) rotate(-3deg); }
+
+  .product-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .badge-new    { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+  .badge-hot    { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-best   { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-free   { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+
+  .product-wishlist {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+  }
+
+  .product-wishlist:hover, .product-wishlist.active {
+    background: rgba(239,68,68,0.2);
+    color: #f87171;
+    border-color: rgba(239,68,68,0.3);
+  }
+
+  .product-info { padding: 1.25rem; }
+
+  .product-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6366f1;
+    margin-bottom: 0.4rem;
+  }
+
+  .product-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
+  }
+
+  .product-desc {
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .stars { color: #f59e0b; letter-spacing: 1px; }
+  .rating-count { color: #64748b; }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .product-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .price-current {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #f1f5f9;
+  }
+
+  .price-original {
+    font-size: 0.85rem;
+    color: #475569;
+    text-decoration: line-through;
+  }
+
+  .price-free {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #34d399;
+  }
+
+  .price-discount {
+    font-size: 0.72rem;
+    background: rgba(16,185,129,0.1);
+    color: #34d399;
+    border: 1px solid rgba(16,185,129,0.25);
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 700;
+    align-self: center;
+  }
+
+  .btn-buy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    background: var(--store-accent);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-buy:hover {
+    background: #4f46e5;
+    transform: scale(1.05);
+    color: white;
+    box-shadow: 0 6px 16px rgba(99,102,241,0.4);
+  }
+
+  .btn-buy-green {
+    background: var(--store-green);
+  }
+
+  .btn-buy-green:hover {
+    background: #059669;
+    box-shadow: 0 6px 16px rgba(16,185,129,0.4);
+  }
+
+  /* ── Section Heading ──────────────────────────────── */
+  .section-heading {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #f1f5f9;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+
+  .section-subhead {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 1.75rem;
+  }
+
+  /* ── Banner Strip ─────────────────────────────────── */
+  .promo-strip {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(168,85,247,0.08) 100%);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 16px;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .promo-strip p { margin: 0; color: #c7d2fe; font-weight: 600; }
+  .promo-strip span { color: #64748b; font-size: 0.85rem; }
+
+  .btn-promo {
+    background: var(--store-accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.3rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-promo:hover { background: #4f46e5; color: white; transform: translateY(-1px); }
+
+  /* ── Order Modal ──────────────────────────────────── */
+  .order-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .order-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .order-modal {
+    background: #12121c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem;
+    transform: translateY(24px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .order-overlay.open .order-modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .order-modal h3 { font-weight: 800; color: #f1f5f9; margin-bottom: 0.25rem; }
+  .order-modal p  { color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+  .order-product-preview {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .order-product-preview .preview-emoji { font-size: 2.5rem; }
+
+  .order-product-preview .preview-info h5 {
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 0 0 0.2rem;
+    font-size: 0.95rem;
+  }
+
+  .order-product-preview .preview-info span { color: #6366f1; font-weight: 700; font-size: 1rem; }
+
+  .form-label-dark { color: #94a3b8; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.4rem; display: block; }
+
+  .form-input-dark {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 1rem;
+  }
+
+  .form-input-dark:focus { border-color: rgba(99,102,241,0.5); }
+
+  .btn-wa-order {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    background: #25D366;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.85rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    margin-top: 0.5rem;
+  }
+
+  .btn-wa-order:hover { background: #1ebe5d; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,211,102,0.3); color: white; }
+
+  .btn-close-modal {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #64748b;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+
+  .btn-close-modal:hover { background: rgba(255,255,255,0.1); color: #f1f5f9; }
+
+  /* ── No Results ───────────────────────────────────── */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #475569;
+  }
+
+  .no-results i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+
+  /* ── Responsive ───────────────────────────────────── */
+  @media (max-width: 768px) {
+    .products-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .store-hero { padding: 56px 0 40px; }
+    .promo-strip { padding: 1rem 1.25rem; }
+    .store-stats { gap: 1.25rem; }
+  }
+
+  @media (max-width: 480px) {
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    .product-emoji { font-size: 3.5rem; }
+  }
+</style>
+
+<!-- Order Modal -->
+<div class="order-overlay" id="orderOverlay">
+  <div class="order-modal" id="orderModal">
+    <h3 id="modalProductName">Order Product</h3>
+    <p>Fill in your details and we'll connect you via WhatsApp to confirm your order.</p>
+
+    <div class="order-product-preview">
+      <span class="preview-emoji" id="modalEmoji">📦</span>
+      <div class="preview-info">
+        <h5 id="modalPreviewName">Product</h5>
+        <span id="modalPreviewPrice">₹0</span>
+      </div>
+    </div>
+
+    <label class="form-label-dark">Your Name *</label>
+    <input type="text" class="form-input-dark" id="orderName" placeholder="Enter your full name">
+
+    <label class="form-label-dark">Phone Number *</label>
+    <input type="tel" class="form-input-dark" id="orderPhone" placeholder="+91 XXXXX XXXXX">
+
+    <label class="form-label-dark">Delivery Address</label>
+    <textarea class="form-input-dark" id="orderAddress" rows="2" placeholder="City, State (we'll confirm details on WhatsApp)" style="resize:none;"></textarea>
+
+    <a href="#" class="btn-wa-order" id="waOrderBtn" target="_blank">
+      <i class="fa-brands fa-whatsapp fa-lg"></i> Confirm Order on WhatsApp
+    </a>
+    <button class="btn-close-modal" onclick="closeOrderModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- Page Content -->
+<div class="store-page">
+
+  <!-- Hero -->
+  <div class="store-hero">
+    <div class="container store-hero-content">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <span class="store-badge"><i class="fa-solid fa-store me-1"></i> 2AM Study Store</span>
+          <h1>Student Essentials,<br>At Your Price</h1>
+          <p class="mt-2">Curated study accessories, digital tools & resources to help you focus. Delivered with care.</p>
+          <div class="store-search-bar mt-4" style="margin-left: 0;">
+            <i class="fa-solid fa-magnifying-glass me-2" style="color:#64748b;"></i>
+            <input type="text" id="globalSearch" placeholder="Search products…" autocomplete="off" oninput="filterAll()">
+            <button class="search-submit"><i class="fa-solid fa-arrow-right fa-xs"></i></button>
+          </div>
+          <div class="store-stats">
+            <div class="store-stat">
+              <div class="store-stat-num">50+</div>
+              <div class="store-stat-label">Products</div>
+            </div>
+            <div class="store-stat" style="border-left:1px solid rgba(255,255,255,0.08); padding-left: 2rem;">
+              <div class="store-stat-num">100%</div>
+              <div class="store-stat-label">Student-Focused</div>
+            </div>
+            <div class="store-stat" style="border-left:1px solid rgba(255,255,255,0.08); padding-left: 2rem;">
+              <div class="store-stat-num">Free</div>
+              <div class="store-stat-label">Digital Tools</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 text-center d-none d-lg-block">
+          <div style="font-size:9rem; line-height:1; filter:drop-shadow(0 20px 40px rgba(99,102,241,0.3)); animation: float 4s ease-in-out infinite;">🎒</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Store -->
+  <div class="container py-5">
+
+    <!-- Promo Banner -->
+    <div class="promo-strip">
+      <div>
+        <p><i class="fa-solid fa-bolt me-2" style="color:#fbbf24;"></i> Free Delivery on orders above ₹499 &nbsp;•&nbsp; All digital tools are always free</p>
+        <span>Orders confirmed via WhatsApp · Support: support@2amstudy.online</span>
+      </div>
+      <a href="https://chat.whatsapp.com/Fq87TyqNwL4GAmxRsKUkid" target="_blank" class="btn-promo">
+        <i class="fa-brands fa-whatsapp me-1"></i> Join Community
+      </a>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-strip" id="filterStrip">
+      <button class="filter-tab active" data-cat="all" onclick="setFilter('all', this)">
+        <i class="fa-solid fa-border-all fa-xs"></i> All
+      </button>
+      <button class="filter-tab" data-cat="accessories" onclick="setFilter('accessories', this)">
+        <i class="fa-solid fa-pen-ruler fa-xs"></i> Study Accessories
+      </button>
+      <button class="filter-tab" data-cat="digital" onclick="setFilter('digital', this)">
+        <i class="fa-solid fa-laptop fa-xs"></i> Digital Downloads
+      </button>
+      <button class="filter-tab" data-cat="wellness" onclick="setFilter('wellness', this)">
+        <i class="fa-solid fa-leaf fa-xs"></i> Wellness
+      </button>
+      <button class="filter-tab" data-cat="tools" onclick="setFilter('tools', this)">
+        <i class="fa-solid fa-screwdriver-wrench fa-xs"></i> Study Tools
+      </button>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="productsGrid"></div>
+
+    <div class="no-results" id="noResults">
+      <i class="fa-solid fa-box-open d-block"></i>
+      No products found. Try a different filter or search term.
+    </div>
+
+  </div>
+</div>
+
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+</style>
+
+<script>
+// ── Product Catalogue ─────────────────────────────────────────────
+const PRODUCTS = [
+  // Study Accessories
+  {
+    id: 1, cat: 'accessories',
+    emoji: '🖊️', badge: 'best', badgeLabel: 'Best Seller',
+    name: 'Premium Study Pen Set',
+    desc: 'Smooth-writing gel pens perfect for long study sessions. Pack of 10 assorted colours.',
+    price: 149, original: 249,
+    rating: 4.8, reviews: 124,
+    tags: ['pen', 'stationery', 'writing'],
+  },
+  {
+    id: 2, cat: 'accessories',
+    emoji: '📓', badge: 'hot', badgeLabel: 'Hot',
+    name: 'A5 Dot-Grid Study Notebook',
+    desc: '200-page dotted notebook great for notes, mind-maps and bujo-style planning.',
+    price: 199, original: 349,
+    rating: 4.7, reviews: 88,
+    tags: ['notebook', 'stationery', 'notes'],
+  },
+  {
+    id: 3, cat: 'accessories',
+    emoji: '🗂️', badge: null, badgeLabel: '',
+    name: 'Subject Divider Tabs Pack',
+    desc: 'Colour-coded index tabs to organise every subject in your binder seamlessly.',
+    price: 79, original: 129,
+    rating: 4.5, reviews: 61,
+    tags: ['organiser', 'tabs', 'stationery'],
+  },
+  {
+    id: 4, cat: 'accessories',
+    emoji: '📐', badge: 'new', badgeLabel: 'New',
+    name: 'Maths Geometry Kit',
+    desc: 'Full precision geometry set — compass, ruler, protractor & 2 set squares in a zip case.',
+    price: 129, original: 199,
+    rating: 4.6, reviews: 47,
+    tags: ['maths', 'geometry', 'kit'],
+  },
+  {
+    id: 5, cat: 'accessories',
+    emoji: '🖥️', badge: null, badgeLabel: '',
+    name: 'Laptop Stand (Foldable)',
+    desc: 'Portable aluminium-look stand with 7 height angles to improve posture during study.',
+    price: 399, original: 699,
+    rating: 4.9, reviews: 203,
+    tags: ['laptop', 'stand', 'ergonomic'],
+  },
+  {
+    id: 6, cat: 'accessories',
+    emoji: '💡', badge: 'best', badgeLabel: 'Best Seller',
+    name: 'Clip-On Study Lamp',
+    desc: 'USB-powered LED desk lamp with 3 brightness levels. Eye-care mode for late-night sessions.',
+    price: 299, original: 499,
+    rating: 4.8, reviews: 156,
+    tags: ['lamp', 'light', 'desk'],
+  },
+  // Digital Downloads
+  {
+    id: 7, cat: 'digital',
+    emoji: '📅', badge: 'free', badgeLabel: 'Free',
+    name: '2AM Semester Planner (PDF)',
+    desc: 'Printable A4 semester planner with weekly layout, habit tracker & exam countdown.',
+    price: 0, original: 99,
+    rating: 4.9, reviews: 342,
+    tags: ['planner', 'pdf', 'digital', 'free'],
+  },
+  {
+    id: 8, cat: 'digital',
+    emoji: '🃏', badge: 'free', badgeLabel: 'Free',
+    name: 'Flashcard Template Pack',
+    desc: '50 pre-designed Canva flashcard templates for fast, effective revision.',
+    price: 0, original: 149,
+    rating: 4.7, reviews: 219,
+    tags: ['flashcard', 'canva', 'digital', 'free', 'template'],
+  },
+  {
+    id: 9, cat: 'digital',
+    emoji: '📊', badge: 'new', badgeLabel: 'New',
+    name: 'Study Timetable Generator',
+    desc: 'Interactive Excel/Google Sheets timetable auto-generator with subject slots.',
+    price: 49, original: 149,
+    rating: 4.6, reviews: 78,
+    tags: ['timetable', 'schedule', 'digital'],
+  },
+  {
+    id: 10, cat: 'digital',
+    emoji: '📝', badge: 'hot', badgeLabel: 'Hot',
+    name: 'Exam Prep Checklist Bundle',
+    desc: '7-day, 30-day & semester-end exam preparation checklists in PDF.',
+    price: 29, original: 99,
+    rating: 4.8, reviews: 186,
+    tags: ['checklist', 'exam', 'pdf', 'digital'],
+  },
+  // Wellness
+  {
+    id: 11, cat: 'wellness',
+    emoji: '🫖', badge: 'best', badgeLabel: 'Best Seller',
+    name: 'Focus Herbal Tea Combo',
+    desc: 'Green tea + ashwagandha combo pack for calm focus. 40 sachets.',
+    price: 349, original: 549,
+    rating: 4.7, reviews: 94,
+    tags: ['tea', 'focus', 'wellness', 'herbal'],
+  },
+  {
+    id: 12, cat: 'wellness',
+    emoji: '🎧', badge: 'new', badgeLabel: 'New',
+    name: 'Noise-Isolating Earplugs (12-pack)',
+    desc: 'Soft memory-foam earplugs — block distractions during deep study sessions.',
+    price: 99, original: 199,
+    rating: 4.5, reviews: 57,
+    tags: ['earplugs', 'noise', 'focus', 'wellness'],
+  },
+  {
+    id: 13, cat: 'wellness',
+    emoji: '💧', badge: null, badgeLabel: '',
+    name: 'BPA-Free Study Bottle (750ml)',
+    desc: 'Insulated stainless steel bottle with time markers to stay hydrated all day.',
+    price: 449, original: 699,
+    rating: 4.8, reviews: 133,
+    tags: ['bottle', 'water', 'wellness'],
+  },
+  // Study Tools
+  {
+    id: 14, cat: 'tools',
+    emoji: '⏱️', badge: 'free', badgeLabel: 'Free',
+    name: 'Pomodoro Focus Timer (Web)',
+    desc: 'Our built-in focus timer — 100% free, no download required.',
+    price: 0, original: 0,
+    link: '/timer',
+    rating: 5.0, reviews: 512,
+    tags: ['timer', 'pomodoro', 'tool', 'free'],
+  },
+  {
+    id: 15, cat: 'tools',
+    emoji: '🎵', badge: 'free', badgeLabel: 'Free',
+    name: 'LoFi Study Music Room',
+    desc: 'Curated playlists & YouTube integration for ambient focus music.',
+    price: 0, original: 0,
+    link: '/music',
+    rating: 4.9, reviews: 389,
+    tags: ['music', 'lofi', 'tool', 'free'],
+  },
+  {
+    id: 16, cat: 'tools',
+    emoji: '🧠', badge: 'free', badgeLabel: 'Free',
+    name: 'AI Flashcard Maker',
+    desc: 'Convert your PDF notes into smart flashcards automatically.',
+    price: 0, original: 0,
+    link: '/flashcards',
+    rating: 4.8, reviews: 271,
+    tags: ['flashcard', 'ai', 'tool', 'free'],
+  },
+];
+
+// ── State ──────────────────────────────────────────────────────────
+let currentFilter = 'all';
+let currentProduct = null;
+
+// ── Render ──────────────────────────────────────────────────────────
+function renderProducts(list) {
+  const grid = document.getElementById('productsGrid');
+  const noRes = document.getElementById('noResults');
+
+  if (!list.length) {
+    grid.innerHTML = '';
+    noRes.style.display = 'block';
+    return;
+  }
+  noRes.style.display = 'none';
+
+  grid.innerHTML = list.map(p => {
+    const isWishlisted = (JSON.parse(localStorage.getItem('2am_wishlist') || '[]')).includes(p.id);
+    const stars = '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5 - Math.round(p.rating));
+    const badgeHtml = p.badge ? `<span class="product-badge badge-${p.badge}">${p.badgeLabel}</span>` : '';
+    const origHtml  = p.original && p.original !== p.price ? `<span class="price-original">₹${p.original}</span>` : '';
+    const discHtml  = p.original && p.original > p.price && p.price > 0
+      ? `<span class="price-discount">${Math.round((p.original - p.price)*100/p.original)}% off</span>` : '';
+
+    const priceHtml = p.price === 0
+      ? `<span class="price-free">FREE</span>`
+      : `<div class="product-price"><span class="price-current">₹${p.price}</span>${origHtml}${discHtml}</div>`;
+
+    const btnHtml = p.link
+      ? `<a href="${p.link}" class="btn-buy btn-buy-green"><i class="fa-solid fa-arrow-right fa-xs"></i> Open</a>`
+      : p.price === 0
+        ? `<button class="btn-buy btn-buy-green" onclick="event.stopPropagation(); downloadProduct(${p.id})"><i class="fa-solid fa-download fa-xs"></i> Get Free</button>`
+        : `<button class="btn-buy" onclick="event.stopPropagation(); openOrder(${p.id})"><i class="fa-solid fa-bag-shopping fa-xs"></i> Order</button>`;
+
+    return `
+    <div class="product-card" data-id="${p.id}" data-cat="${p.cat}">
+      <div class="product-image-wrap">
+        <span class="product-emoji">${p.emoji}</span>
+        ${badgeHtml}
+        <button class="product-wishlist ${isWishlisted ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist(${p.id}, this)" title="Add to wishlist">
+          <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
+        </button>
+      </div>
+      <div class="product-info">
+        <div class="product-category">${p.cat.charAt(0).toUpperCase() + p.cat.slice(1)}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-rating">
+          <span class="stars">${stars}</span>
+          <span style="color:#f59e0b; font-weight:700;">${p.rating}</span>
+          <span class="rating-count">(${p.reviews})</span>
+        </div>
+        <div class="product-footer">
+          ${priceHtml}
+          ${btnHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Filter ─────────────────────────────────────────────────────────
+function setFilter(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  filterAll();
+}
+
+function filterAll() {
+  const query = (document.getElementById('globalSearch')?.value || '').toLowerCase().trim();
+  let list = currentFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentFilter);
+  if (query) {
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(query) ||
+      p.desc.toLowerCase().includes(query) ||
+      (p.tags || []).some(t => t.includes(query))
+    );
+  }
+  renderProducts(list);
+}
+
+// ── Wishlist ───────────────────────────────────────────────────────
+function toggleWishlist(id, btn) {
+  let wl = JSON.parse(localStorage.getItem('2am_wishlist') || '[]');
+  const idx = wl.indexOf(id);
+  if (idx === -1) {
+    wl.push(id);
+    btn.classList.add('active');
+    btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+  } else {
+    wl.splice(idx, 1);
+    btn.classList.remove('active');
+    btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+  }
+  localStorage.setItem('2am_wishlist', JSON.stringify(wl));
+}
+
+// ── Free Download ──────────────────────────────────────────────────
+function downloadProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  // For now open WhatsApp to request
+  const msg = encodeURIComponent(`Hi! I'd like to get the FREE download: *${p.name}* from 2AM Study Store 🎒`);
+  window.open(`https://wa.me/+917250395555?text=${msg}`, '_blank');
+}
+
+// ── Order Modal ────────────────────────────────────────────────────
+function openOrder(id) {
+  currentProduct = PRODUCTS.find(p => p.id === id);
+  if (!currentProduct) return;
+  document.getElementById('modalProductName').textContent = 'Order: ' + currentProduct.name;
+  document.getElementById('modalEmoji').textContent = currentProduct.emoji;
+  document.getElementById('modalPreviewName').textContent = currentProduct.name;
+  document.getElementById('modalPreviewPrice').textContent = currentProduct.price === 0 ? 'FREE' : '₹' + currentProduct.price;
+  document.getElementById('orderName').value = '';
+  document.getElementById('orderPhone').value = '';
+  document.getElementById('orderAddress').value = '';
+  updateWALink();
+  document.getElementById('orderOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOrderModal() {
+  document.getElementById('orderOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function updateWALink() {
+  if (!currentProduct) return;
+  const name    = document.getElementById('orderName').value.trim() || 'Customer';
+  const phone   = document.getElementById('orderPhone').value.trim();
+  const address = document.getElementById('orderAddress').value.trim();
+  const price   = currentProduct.price === 0 ? 'FREE' : '₹' + currentProduct.price;
+  const msg = encodeURIComponent(
+    `Hi 2AM Study! 👋\nI'd like to order:\n\n*Product:* ${currentProduct.name}\n*Price:* ${price}\n*Name:* ${name}\n*Phone:* ${phone}\n*Address:* ${address || 'To be confirmed'}\n\nPlease confirm my order! 🎒`
+  );
+  document.getElementById('waOrderBtn').href = `https://wa.me/+917250395555?text=${msg}`;
+}
+
+['orderName','orderPhone','orderAddress'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', updateWALink);
+});
+
+// Close on backdrop click
+document.getElementById('orderOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeOrderModal();
+});
+
+// ── Init ──────────────────────────────────────────────────────────
+renderProducts(PRODUCTS);
+</script>
+
+<%- include('partials/footer') %>

@@ -174,10 +174,18 @@ app.get('/behind-2am-study', (req, res) => {
     metaDescription: 'Discover the story behind 2AM Study. Learn about our mission to empower students with the best focus tools and study techniques for late-night success.',
     ogTitle: 'Behind 2 AM Study: The Story of a Student Productivity Revolution',
     ogDescription: 'From late-night study sessions to a global platform. Learn how we built the ultimate hub for students to master focus and achieve academic excellence.',
-    ogImage: 'https://2amstudy.com/assets/images/smart_study_banner.png', // Assuming this exists or will be useful
+    ogImage: 'https://2amstudy.com/assets/images/smart_study_banner.png',
     ogUrl: 'https://2amstudy.com/behind-2am-study'
   });
 });
+
+app.get('/store', (req, res) => {
+  res.render('store', {
+    pageTitle: '2AM Study Store - Student Essentials, Digital Tools & Accessories',
+    metaDescription: 'Shop curated study accessories, digital planners, focus tools and wellness products designed for students. Free digital downloads & fast WhatsApp ordering.'
+  });
+});
+
 
 // --- Blog Section ---
 app.get('/blog', (req, res) => {

@@ -194,73 +194,55 @@
             transform: translateY(-3px);
         }
 
-        /* Hero mini-stats strip */
-        .hero-stats-strip {
-            display: flex;
-            justify-content: center;
-            gap: 2.5rem;
-            flex-wrap: wrap;
-        }
-
-        .hero-stat-item {
-            text-align: center;
-        }
-
-        .hero-stat-num {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-        }
-
-        .hero-stat-label {
-            font-size: 0.72rem;
-            opacity: 0.65;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 0.2rem;
-        }
-
-        .hero-divider {
-            width: 1px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            align-self: center;
-        }
-
-        /* Scroll indicator */
-        .hero-scroll-hint {
-            position: absolute;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
+        /* Hero highlighted badge */
+        .hero-free-badge {
+            display: inline-flex;
             align-items: center;
-            gap: 6px;
-            opacity: 0.6;
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
+            gap: 0.6rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(52, 211, 153, 0.1) 100%);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            color: #6ee7b7;
+            padding: 0.65rem 1.8rem;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
-            color: white;
-            animation: scrollBounce 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            animation: badgeFadeIn 0.8s ease 0.3s both;
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.15),
+                        inset 0 0 20px rgba(52, 211, 153, 0.05);
         }
 
-        @keyframes scrollBounce {
-
-            0%,
-            100% {
-                transform: translateX(-50%) translateY(0);
-            }
-
-            50% {
-                transform: translateX(-50%) translateY(6px);
-            }
+        .hero-free-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -75%;
+            width: 50%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 3s ease-in-out infinite;
         }
+
+        .hero-free-badge i {
+            font-size: 1rem;
+            filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.5));
+        }
+
+        @keyframes badgeFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes shimmer {
+            0%   { left: -75%; }
+            100% { left: 125%; }
+        }
+
+
 
         /* ── GLASS CARDS ──────────────────────────────────── */
         .glass-card {
@@ -311,12 +293,9 @@
         }
 
         @media (max-width: 576px) {
-            .hero-stats-strip {
-                gap: 1.25rem;
-            }
-
-            .hero-divider {
-                display: none;
+            .hero-free-badge {
+                font-size: 0.82rem;
+                padding: 0.5rem 1.4rem;
             }
         }
     </style>
@@ -354,34 +333,12 @@
                 </a>
             </div>
 
-            <!-- Mini Stats Strip -->
-            <div class="hero-stats-strip">
-                <div class="hero-stat-item">
-                    <div class="hero-stat-num">2.1K+</div>
-                    <div class="hero-stat-label">Students Helped</div>
-                </div>
-                <div class="hero-divider"></div>
-                <div class="hero-stat-item">
-                    <div class="hero-stat-num">100+</div>
-                    <div class="hero-stat-label">Minutes Focused</div>
-                </div>
-                <div class="hero-divider"></div>
-                <div class="hero-stat-item">
-                    <div class="hero-stat-num">20+</div>
-                    <div class="hero-stat-label">Free Resources</div>
-                </div>
-                <div class="hero-divider"></div>
-                <div class="hero-stat-item">
-                    <div class="hero-stat-num">100%</div>
-                    <div class="hero-stat-label">Free Tools</div>
-                </div>
+            <!-- Always Free Badge -->
+            <div class="text-center mt-2">
+                <span class="hero-free-badge">
+                    <i class="fa-solid fa-lock-open"></i> Always Free
+                </span>
             </div>
-        </div>
-
-        <!-- Scroll hint -->
-        <div class="hero-scroll-hint">
-            <span>Scroll</span>
-            <i class="fa-solid fa-chevron-down"></i>
         </div>
     </div>
 
