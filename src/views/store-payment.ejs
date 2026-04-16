@@ -1,0 +1,534 @@
+<%- include('partials/header') %>
+
+<style>
+/* Review & Pay - Advanced Flipkart Style Formatting */
+:root {
+  --rp-bg: #0b1220;
+  --rp-card: #0f172a;
+  --rp-border: rgba(255,255,255,0.07);
+  --rp-accent: #6366f1;
+  --rp-accent-hover: #4f46e5;
+  --rp-orange: #fb641b; 
+  --rp-orange-hover: #ff7531;
+  --rp-green: #388e3c;
+  --rp-text: #f8fafc;
+  --rp-text-muted: #94a3b8;
+}
+
+body {
+  background-color: var(--rp-bg);
+  color: var(--rp-text);
+  font-family: 'Inter', sans-serif;
+}
+
+.rp-main {
+  padding-top: 100px;
+  padding-bottom: 60px;
+  min-height: 100vh;
+}
+
+/* Steps Framework */
+.rp-step-box {
+  background: var(--rp-card);
+  border: 1px solid var(--rp-border);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.rp-step-header {
+  background: rgba(255,255,255,0.03);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--rp-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.rp-step-header-left {
+  display: flex; align-items: center; gap: 1rem;
+}
+.rp-step-num {
+  width: 24px;
+  height: 24px;
+  background: var(--rp-accent);
+  color: #fff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.rp-step-title {
+  font-weight: 700;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+  margin: 0;
+}
+.rp-step-btn {
+  background: transparent; color: var(--rp-accent);
+  border: 1px solid var(--rp-border); border-radius: 6px;
+  padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; transition: 0.2s; text-decoration: none;
+}
+.rp-step-btn:hover { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.4); color: #818cf8; }
+
+.rp-step-body { padding: 1.5rem; }
+
+/* Contact Specifics */
+.rp-contact-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.2rem; color: #fff; }
+.rp-contact-line { font-size: 0.95rem; color: #cbd5e1; margin-bottom: 0.2rem; }
+
+/* Item Specifics */
+.rp-item-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rp-border);
+}
+.rp-item-row:last-child { border-bottom: none; padding-bottom: 0; }
+.rp-item-left { display: flex; align-items: center; gap: 1rem; }
+.rp-item-img {
+  width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--rp-border);
+}
+.rp-item-details { display: flex; flex-direction: column; }
+.rp-item-name { font-weight: 600; font-size: 0.95rem; color: #e2e8f0; }
+.rp-item-qty { font-size: 0.85rem; color: var(--rp-text-muted); }
+.rp-item-price { font-weight: 800; font-size: 1.1rem; color: #fff; }
+
+/* Price Details Specifics */
+.rp-price-box {
+  background: var(--rp-card);
+  border: 1px solid var(--rp-border);
+  border-radius: 8px;
+}
+.rp-price-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--rp-border);
+  font-weight: 700;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+.rp-price-body { padding: 1.5rem; }
+.rp-price-row {
+  display: flex; justify-content: space-between; margin-bottom: 1.1rem; font-size: 0.95rem;
+}
+.rp-price-final {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.2rem 0; margin: 0.5rem 0;
+  border-top: 1px dashed var(--rp-border);
+  border-bottom: 1px dashed var(--rp-border);
+}
+.rp-price-final span { font-weight: 700; font-size: 1.1rem; }
+.rp-price-final strong { font-weight: 800; font-size: 1.4rem; color: #fff; }
+
+.rp-saved-text { color: var(--rp-green); font-weight: 700; font-size: 0.95rem; padding-top: 0.5rem; display: block; }
+
+.rp-checkout-btn-wrap {
+  background: var(--rp-card);
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--rp-border);
+}
+.btn-rp-pay {
+  background: var(--rp-orange); color: #fff; border: none; width: 100%; padding: 1.1rem; border-radius: 6px; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; box-shadow: 0 4px 6px rgba(251, 100, 27, 0.2); transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-rp-pay:hover { 
+  background: var(--rp-orange-hover); 
+  box-shadow: 0 0 20px rgba(251, 100, 27, 0.4); 
+  transform: translateY(-1px); 
+}
+
+/* Trust Line */
+.rp-trust-box {
+  display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; padding: 1rem;
+  color: var(--rp-text-muted); font-size: 0.85rem; font-weight: 600;
+}
+.rp-trust-item { display: flex; align-items: center; gap: 0.5rem; }
+
+@media (max-width: 768px) {
+  .rp-checkout-btn-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 -10px 20px rgba(0,0,0,0.5);
+  }
+  .rp-main { padding-bottom: 110px; }
+}
+</style>
+
+<main class="container rp-main">
+  <div class="row justify-content-center">
+    
+    <div class="col-12 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <h1 class="fs-3 fw-bold mb-0">Review & Pay</h1>
+    </div>
+
+    <!-- Empty State -->
+    <div id="paymentEmpty" class="col-12 text-center py-5 d-none">
+      <div class="mb-4">
+        <i class="fa-solid fa-cart-arrow-down text-muted" style="font-size:3rem; opacity:0.5;"></i>
+      </div>
+      <h3 class="fw-bold mb-3">No items in your active order</h3>
+      <p class="text-muted mb-4">You have securely exited the payment process.</p>
+      <a href="/store" class="btn btn-outline-light px-5 py-2 fw-semibold rounded-pill">Return to Store</a>
+    </div>
+
+    <div class="col-12 row g-4" id="paymentContent">
+      
+      <!-- LEFT COL: Review Assets -->
+      <div class="col-lg-8">
+        
+        <!-- 1. Address Block -->
+        <div class="rp-step-box">
+          <div class="rp-step-header">
+            <div class="rp-step-header-left">
+              <div class="rp-step-num"><i class="fa-solid fa-check" style="font-size:0.6rem;"></i></div>
+              <h2 class="rp-step-title">Delivery Address</h2>
+            </div>
+            <a href="/store/order-summary" class="rp-step-btn">Change Address ❗</a>
+          </div>
+          <div class="rp-step-body" id="payAddressBox">
+            <!-- Intercepted by JS -->
+          </div>
+        </div>
+
+        <!-- 2. Items Block -->
+        <div class="rp-step-box">
+          <div class="rp-step-header">
+            <div class="rp-step-header-left">
+              <div class="rp-step-num"><i class="fa-solid fa-check" style="font-size:0.6rem;"></i></div>
+              <h2 class="rp-step-title">Order Summary (<span id="rpItemCount">0</span> Items)</h2>
+            </div>
+            <a href="/store/order-summary" class="rp-step-btn">Edit Cart ❗</a>
+          </div>
+          <div class="rp-step-body" id="payItemsBox" style="padding-top: 0.5rem;">
+            <!-- Intercepted by JS -->
+          </div>
+        </div>
+
+        <!-- 3. Payment Method -->
+        <div class="rp-step-box">
+          <div class="rp-step-header">
+            <div class="rp-step-header-left">
+              <div class="rp-step-num"><i class="fa-solid fa-check" style="font-size:0.6rem;"></i></div>
+              <h2 class="rp-step-title">Payment Method</h2>
+            </div>
+          </div>
+          <div class="rp-step-body py-3">
+            <div class="d-flex align-items-center gap-3">
+              <i class="fa-solid fa-credit-card fs-3" style="color:var(--rp-accent)"></i>
+              <div>
+                <div class="fw-bold" style="color:#fff; font-size:1.05rem;">Secure payment via Razorpay</div>
+                <div style="font-size:0.85rem; color:var(--rp-text-muted);">(UPI / Card / Net Banking / Wallets)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COL: Price Execution -->
+      <div class="col-lg-4">
+        <div style="position: sticky; top: 100px; padding-bottom: 20px;">
+          <div class="rp-price-box">
+            <div class="rp-price-header">Price Details</div>
+            
+            <div class="rp-price-body">
+              <div class="rp-price-row">
+                <span>Price (<span id="rpItemCountBadge">0</span> items)</span>
+                <span id="rpBasePrice">₹0</span>
+              </div>
+              <div class="rp-price-row">
+                <span>Discount</span>
+                <span id="rpDiscount" class="text-success">- ₹0</span>
+              </div>
+              <div class="rp-price-row" id="rpCouponRow" style="display:none;">
+                <span>Coupon Discount</span>
+                <span id="rpCouponDisc" class="text-success">- ₹0</span>
+              </div>
+              <div class="rp-price-row">
+                <span>Platform Fee</span>
+                <span>₹1</span>
+              </div>
+              <div class="rp-price-row border-bottom pb-3 mb-2" style="border-color:var(--rp-border)!important;">
+                <span>Delivery Charges</span>
+                <span id="rpDelivery">₹0</span>
+              </div>
+
+              <div class="rp-price-final">
+                <span>Total Amount</span>
+                <strong id="rpFinalTotal">₹0</strong>
+              </div>
+
+              <div class="rp-saved-text" id="rpSavedBlock">🎉 You saved ₹0 on this order</div>
+            </div>
+
+            <div class="rp-checkout-btn-wrap">
+              <button id="payNowBtn" class="btn-rp-pay">
+                Proceed to Pay &nbsp;<i class="fa-solid fa-angle-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="rp-trust-box flex-column gap-3 text-center mt-3 p-3 border rounded" style="background: rgba(255,255,255,0.02); border-color: var(--rp-border)!important;">
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-shield-halved text-success fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">100% Secure<br>Payments</span></div>
+              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-ban text-danger fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">No Cash on<br>Delivery</span></div>
+              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-rotate-left text-warning fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">7-Day<br>Replacement</span></div>
+              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-truck-fast text-info fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">Fast<br>Delivery</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  (function () {
+    const RAZORPAY_KEY_ID = '<%= razorpayKeyId || "" %>';
+    const cart = JSON.parse(localStorage.getItem('2am_cart') || '[]');
+    const appliedCoupon = JSON.parse(localStorage.getItem('2am_coupon') || 'null');
+    const checkoutCustomer = JSON.parse(localStorage.getItem('2am_checkout_customer') || 'null');
+    const hasOrderedBefore = () => localStorage.getItem('2am_has_ordered') === 'true';
+
+    const empty = document.getElementById('paymentEmpty');
+    const content = document.getElementById('paymentContent');
+    if (!cart.length) {
+      empty.classList.remove('d-none');
+      content.classList.add('d-none');
+      return;
+    }
+
+    if (!checkoutCustomer) {
+      window.location.href = '/store/order-summary';
+      return;
+    }
+
+    // Insert Layout UI Data
+    const delStartDate = new Date();
+    delStartDate.setDate(delStartDate.getDate() + 3);
+    const delEndDate = new Date();
+    delEndDate.setDate(delEndDate.getDate() + 5);
+    const dateOptions = { month: 'short', day: 'numeric' };
+    
+    document.getElementById('payAddressBox').innerHTML = `
+      <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+        <span style="font-weight: 700; font-size: 1.1rem; color: #fff;">${checkoutCustomer.name}</span>
+        <span class="badge bg-secondary text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Home</span>
+        <span style="font-weight: 700; font-size: 1.05rem; color: #fff; margin-left: 0.5rem;">${checkoutCustomer.phone}</span>
+      </div>
+      <div style="font-size: 0.95rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem; max-width: 500px;">
+        ${checkoutCustomer.address}, ${checkoutCustomer.city} 
+        <span style="font-weight: 600;">- ${checkoutCustomer.pincode}</span>
+      </div>
+      <div style="font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem;">
+        <i class="fa-regular fa-envelope"></i> ${checkoutCustomer.email}
+      </div>
+      <div style="font-size: 0.9rem; color: var(--rp-green); font-weight: 700; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed var(--rp-border);">
+        <i class="fa-solid fa-truck me-1"></i> Delivery by ${delStartDate.toLocaleDateString('en-US', dateOptions)} – ${delEndDate.toLocaleDateString('en-US', dateOptions)}
+      </div>
+    `;
+
+    document.getElementById('rpItemCount').textContent = cart.length;
+    document.getElementById('rpItemCountBadge').textContent = cart.length;
+
+    document.getElementById('payItemsBox').innerHTML = cart.map((i, idx) => {
+      const imgUrl = i.image || `https://picsum.photos/seed/imgA${i.id || idx}/200/200`;
+      return `
+      <div class="rp-item-row">
+        <div class="rp-item-left">
+          <img src="${imgUrl}" class="rp-item-img">
+          <div class="rp-item-details">
+            <span class="rp-item-name">${i.name}</span>
+            <span class="rp-item-qty">Qty: ${i.qty}</span>
+          </div>
+        </div>
+        <div class="rp-item-price">₹${i.price * i.qty}</div>
+      </div>
+    `}).join('');
+
+
+    // Math Engine
+    const COUPONS = {
+      'HAPPY BIRTHDAY': { type: 'full_no_delivery' },
+      WELCOME: { type: 'flat_first_time', value: 100 },
+      BHAIYA: { type: 'full_with_delivery_free' }
+    };
+    
+    // Core sum from selling price
+    const getSubtotal = () => cart.reduce((s, c) => s + c.price * c.qty, 0);
+    // Base MRP mapped to simulate savings vs original 
+    const getBaseMrpTotal = () => cart.reduce((s, c) => s + ((c.orig || Math.round(c.price * 1.4)) * c.qty), 0);
+    const getBaseDelivery = subtotal => subtotal > 0 && subtotal < 499 ? 50 : 0;
+    const couponLimitReached = () => cart.length > 2 || cart.some(item => item.qty > 1);
+
+    function getPriceSummary() {
+      const spSubtotal = getSubtotal(); // Actual selling sum
+      const mrpSubtotal = getBaseMrpTotal(); // Fake padded sum to show standard flipkart discount
+      let delivery = getBaseDelivery(spSubtotal);
+      
+      let baseStoreDiscount = mrpSubtotal - spSubtotal; // difference between real store price and MRP
+      let platformFee = 1;
+
+      let couponDiscount = 0;
+      let couponError = '';
+
+      if (appliedCoupon && COUPONS[appliedCoupon.code]) {
+        const cfg = COUPONS[appliedCoupon.code];
+        if (['HAPPY BIRTHDAY', 'BHAIYA'].includes(appliedCoupon.code) && couponLimitReached()) {
+          couponError = 'Limit reached';
+        } else if (cfg.type === 'full_no_delivery') {
+          couponDiscount = spSubtotal; // Full item cost off
+        } else if (cfg.type === 'flat_first_time') {
+          if (hasOrderedBefore()) couponError = 'WELCOME applies only for first-time users.';
+          else couponDiscount = Math.min(cfg.value, spSubtotal);
+        } else if (cfg.type === 'full_with_delivery_free') {
+          couponDiscount = spSubtotal;
+          delivery = 0;
+        }
+      }
+
+      // Calculation Breakdown
+      // Subtotal to display is MRP.
+      // Total Discount includes the base store discount PLUS any valid coupon
+      // Final = MRP - (Base + Coupon) + Delivery + Platform
+      let mathNet = Math.max(0, spSubtotal - couponDiscount);
+      let finalTotal = mathNet + delivery + platformFee;
+      
+      // Override boundary cases identical to previous script
+      if (appliedCoupon && !couponError) {
+        if (appliedCoupon.code === 'BHAIYA') finalTotal = 1 + platformFee; 
+        else if (appliedCoupon.code === 'HAPPY BIRTHDAY') finalTotal = Math.max(1, delivery + platformFee); 
+        else if (appliedCoupon.code === 'WELCOME') finalTotal = Math.max(1, finalTotal);
+      }
+
+      const totalSaved = baseStoreDiscount + couponDiscount;
+
+      return { mrpSubtotal, baseStoreDiscount, couponDiscount, delivery, platformFee, finalTotal, couponError, totalSaved };
+    }
+
+    const summary = getPriceSummary();
+
+    // Map outputs to UI
+    document.getElementById('rpBasePrice').textContent = `₹${summary.mrpSubtotal}`;
+    document.getElementById('rpDiscount').textContent = `- ₹${summary.baseStoreDiscount}`;
+    
+    if (summary.couponDiscount > 0 && !summary.couponError) {
+      document.getElementById('rpCouponRow').style.display = 'flex';
+      document.getElementById('rpCouponDisc').textContent = `- ₹${summary.couponDiscount}`;
+    }
+
+    const delEl = document.getElementById('rpDelivery');
+    if (summary.delivery === 0) {
+      delEl.innerHTML = `<span style="text-decoration: line-through; color: #cbd5e1; font-size: 0.85rem; margin-right: 6px; opacity: 0.7;">₹50</span> <span style="color: #388e3c; font-weight: 700;">FREE</span>`;
+    } else {
+      delEl.textContent = `₹${summary.delivery}`;
+    }
+
+    document.getElementById('rpFinalTotal').textContent = `₹${summary.finalTotal}`;
+    document.getElementById('rpFinalTotal').insertAdjacentHTML('afterend', '<div style="font-size:0.8rem; color: #cbd5e1; text-align:right; margin-top:2px; font-weight:500; opacity: 0.8;">Inclusive of all taxes</div>');
+    document.getElementById('payNowBtn').innerHTML = `Proceed to Pay ₹${summary.finalTotal}`;
+    document.getElementById('rpSavedBlock').textContent = `🎉 You saved ₹${summary.totalSaved} on this order`;
+
+    // Process order natively
+    document.getElementById('payNowBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('payNowBtn');
+      if (!RAZORPAY_KEY_ID) return alert('Razorpay server key not found in environment.');
+      if (summary.couponError) return alert('Cannot process: ' + summary.couponError);
+      
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Secure payment loading...`;
+      btn.disabled = true;
+
+      const orderMeta = {
+        coupon: appliedCoupon?.code || '',
+        itemCount: cart.reduce((s, c) => s + c.qty, 0),
+        subtotal: summary.mrpSubtotal,
+        discount: summary.baseStoreDiscount + summary.couponDiscount,
+        delivery: summary.delivery,
+        platformFee: summary.platformFee,
+        total: summary.finalTotal,
+        customer: checkoutCustomer,
+        products: cart.map(c => `${c.name} x${c.qty}`).slice(0, 10).join(', ')
+      };
+
+      try {
+        const res = await fetch('/api/store/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: summary.finalTotal, metadata: orderMeta })
+        });
+        const order = await res.json();
+        if (!res.ok) throw new Error(order.error || 'Unable to create order with server.');
+
+        const rzp = new Razorpay({
+          key: RAZORPAY_KEY_ID,
+          amount: order.amount,
+          currency: order.currency,
+          name: '2 AM Study',
+          description: 'Secure Checkout',
+          order_id: order.id,
+          prefill: { name: checkoutCustomer.name, email: checkoutCustomer.email, contact: checkoutCustomer.phone },
+          theme: { color: '#6366f1' },
+          handler: async function (response) {
+            
+            document.body.insertAdjacentHTML('beforeend', `
+              <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(11,18,32,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem; margin-bottom:1rem;" role="status"></div>
+                <h4 class="text-white fw-bold">Verifying Payment...</h4>
+              </div>
+            `);
+
+            const verifyRes = await fetch('/api/store/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(response)
+            });
+            const verifyData = await verifyRes.json();
+            if (!verifyRes.ok || !verifyData.verified) {
+              alert(verifyData.error || 'Payment verification failed.');
+              window.location.reload();
+              return;
+            }
+
+            localStorage.setItem('2am_last_order', JSON.stringify({
+              paymentId: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
+              items: [...cart],
+              address: checkoutCustomer,
+              total: summary.finalTotal,
+              coupon: appliedCoupon?.code || '',
+              platformFee: summary.platformFee
+            }));
+
+            localStorage.setItem('2am_has_ordered', 'true');
+            localStorage.removeItem('2am_coupon');
+            localStorage.removeItem('2am_cart');
+            window.location.href = `/store/payment-success?payment_id=${encodeURIComponent(response.razorpay_payment_id)}&order_id=${encodeURIComponent(response.razorpay_order_id)}`;
+          }
+        });
+        
+        rzp.on('payment.failed', function () {
+          btn.innerHTML = `Proceed to Pay ₹${summary.finalTotal}`;
+          btn.disabled = false;
+        });
+
+        rzp.open();
+      } catch (e) {
+        alert(e.message || 'Payment engine failure. Please try again.');
+        btn.innerHTML = `Proceed to Pay ₹${summary.finalTotal}`;
+        btn.disabled = false;
+      }
+    });
+
+  })();
+</script>
+
+<%- include('partials/footer') %>

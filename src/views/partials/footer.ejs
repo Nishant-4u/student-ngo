@@ -565,6 +565,7 @@
           <li class="footer-link-item"><i class="fa-solid fa-clock"></i><a href="/clock">Digital Clock</a></li>
           <li class="footer-link-item"><i class="fa-solid fa-graduation-cap"></i><a href="/college-student">Student
               Support</a></li>
+          <li class="footer-link-item"><i class="fa-solid fa-store"></i><a href="/store">Student Store</a></li>
         </ul>
       </div>
 
@@ -708,6 +709,28 @@
 <script>
   const loginProtectedMessage = 'Please register first. We’ll connect you soon after registration.';
   const isLoggedIn = () => localStorage.getItem('isLoggedIn') === 'true' || localStorage.getItem('studentRegistered') === 'true';
+  const triggerRegisterFlow = () => {
+    const heroRegisterSection = document.getElementById('hero-register-section');
+    if (heroRegisterSection) {
+      heroRegisterSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const inlineRegisterButton = document.getElementById('register-button');
+    if (inlineRegisterButton) {
+      inlineRegisterButton.classList.remove('d-none');
+      inlineRegisterButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (window.location.pathname !== '/') {
+      window.location.href = '/?openRegister=1';
+    }
+  };
+  const markUserRegistered = () => {
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('studentRegistered', 'true');
+  };
 
   /* ── Custom Window UI Logic ── */
   const windowOverlay = document.getElementById('custom-window-overlay');
@@ -1982,11 +2005,18 @@
       const link = event.target.closest('a[href]');
       if (!link) return;
       const href = link.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
-
       if (link.dataset.loginProtected && !isLoggedIn()) {
         event.preventDefault();
-        showWindow({ title: 'Restricted Content', message: loginProtectedMessage, type: 'warning' });
+        await showWindow({
+          title: 'Registration Required',
+          message: `${loginProtectedMessage} Please complete Register Now first.`,
+          type: 'warning'
+        });
+        triggerRegisterFlow();
+        return;
+      }
+
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) {
         return;
       }
 
@@ -2023,6 +2053,22 @@
     initMusic();
     updateFocusModeUI();
     bindInteractions();
+
+    const heroRegisterForm = document.getElementById('hero-register-form');
+    heroRegisterForm?.addEventListener('submit', () => {
+      if (heroRegisterForm.checkValidity()) {
+        markUserRegistered();
+      }
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('openRegister') === '1' && !isLoggedIn()) {
+      triggerRegisterFlow();
+      params.delete('openRegister');
+      const cleanQuery = params.toString();
+      const cleanUrl = `${window.location.pathname}${cleanQuery ? '?' + cleanQuery : ''}${window.location.hash || ''}`;
+      window.history.replaceState({}, '', cleanUrl);
+    }
   });
 </script>
 <div id="full-screen-loader" class="full-screen-loader d-none">
@@ -2031,6 +2077,7 @@
   <p class="text-light opacity-75">Please wait, we are securing your transaction.</p>
 </div>
 <!-- Motivational Help Bot HTML -->
+<% if (typeof hideBot === 'undefined' || !hideBot) { %>
 <div class="help-bot-container" id="help-bot">
   <div class="help-bot-window" id="bot-window">
     <div class="bot-header">
@@ -2077,6 +2124,7 @@
     <i class="fa-solid fa-comment-dots"></i>
   </div>
 </div>
+<% } %>
 
 <!-- Firebase Integration for Global Forms -->
 <script type="module">
@@ -2182,7 +2230,9 @@
   });
 </script>
 
+<% if (typeof hideBot === 'undefined' || !hideBot) { %>
 <script src="/assets/js/bot.js" defer></script>
+<% } %>
 </body>
 
 </html>

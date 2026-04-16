@@ -2,10 +2,42 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const compression = require('compression');
 const path = require('path');
+const crypto = require('crypto');
+const Razorpay = require('razorpay');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const STORE_PRODUCTS = [
+  { id:101, cat:'notebooks', emoji:'📓', badge:'top', badgeLabel:'2 AM Edition', name:'Notebook', desc:'Signature everyday notebook from 2 AM Study with smooth ruled pages for focused class notes.', price:199, orig:299 },
+  { id:102, cat:'notebooks', emoji:'📔', badge:'hot', badgeLabel:'Hot', name:'Diary', desc:'Premium diary by 2 AM Study for journaling goals, daily reflection, and planning your productivity streak.', price:249, orig:399 },
+  { id:103, cat:'notebooks', emoji:'🗒️', badge:'new', badgeLabel:'New', name:'Spiral Notebook Set', desc:'Spiral notebook combo pack for multiple subjects and long study sessions.', price:399, orig:599 },
+  { id:201, cat:'bottles', emoji:'💧', badge:'top', badgeLabel:'Best Seller', name:'Insulated Water Bottle', desc:'Double-wall insulated bottle to keep water cool and support all-day hydration.', price:449, orig:699 },
+  { id:202, cat:'bottles', emoji:'🍱', badge:'new', badgeLabel:'New', name:'Insulated Lunch Box', desc:'Compact insulated lunch box for students on campus and coaching days.', price:549, orig:799 },
+  { id:203, cat:'bottles', emoji:'☕', badge:'hot', badgeLabel:'2 AM Study', name:'Coffee Mug', desc:'Aesthetic mug for chai or coffee during late-night focus hours.', price:299, orig:449 },
+  { id:301, cat:'bags', emoji:'🎒', badge:'top', badgeLabel:'Top Pick', name:'College Backpack', desc:'Spacious and durable backpack for books, laptop, and daily student essentials.', price:1299, orig:1899 },
+  { id:302, cat:'bags', emoji:'🧳', badge:'sale', badgeLabel:'Sale', name:'Travel Backpack', desc:'Multi-purpose travel backpack designed for short trips, classes, and weekend plans. Co-branded by 2 AM Study.', price:1499, orig:2299 },
+  { id:401, cat:'essentials', emoji:'🖊️', badge:'top', badgeLabel:'Best Seller', name:'Premium Pen Set', desc:'Smooth-flow premium pens for clean handwriting and exam-ready notes.', price:199, orig:299 },
+  { id:402, cat:'essentials', emoji:'🖍️', badge:'hot', badgeLabel:'Hot', name:'Highlighter Set', desc:'Bright and pastel highlighters to mark key concepts quickly.', price:179, orig:279 },
+  { id:403, cat:'essentials', emoji:'📌', badge:null, badgeLabel:'', name:'Sticky Notes Pack', desc:'Sticky notes pack for reminders, formulas, and revision tags.', price:149, orig:229 },
+  { id:404, cat:'essentials', emoji:'🗂️', badge:'new', badgeLabel:'New', name:'Desk Organizer Kit', desc:'Desk organizer kit to keep pens, notes, and supplies neatly arranged.', price:499, orig:749 },
+  { id:405, cat:'essentials', emoji:'💡', badge:'top', badgeLabel:'Top Pick', name:'LED Study Lamp', desc:'Adjustable LED lamp with eye-comfort lighting for long study routines.', price:699, orig:999 },
+  { id:406, cat:'essentials', emoji:'🔦', badge:'new', badgeLabel:'New', name:'Compact Study Lamp', desc:'Portable compact lamp for hostel desks and bedside study corners.', price:549, orig:799 },
+  { id:407, cat:'essentials', emoji:'⏰', badge:null, badgeLabel:'', name:'Aesthetic Desk Clock', desc:'Minimal desk clock to manage pomodoro cycles and class schedules.', price:399, orig:599 },
+  { id:408, cat:'essentials', emoji:'👕', badge:'hot', badgeLabel:'2 AM Edition', name:'T-Shirt (Unisex)', desc:'Soft, comfortable unisex T-shirt with 2 AM Study brand print.', price:599, orig:899 },
+  { id:409, cat:'essentials', emoji:'🧥', badge:'sale', badgeLabel:'Sale', name:'Hoodie (Unisex)', desc:'Warm and stylish hoodie perfect for winter classes and late-night study, by 2 AM Study.', price:1199, orig:1699 },
+  { id:410, cat:'essentials', emoji:'🎀', badge:null, badgeLabel:'', name:'Hair Scrunchie Set', desc:'Aesthetic scrunchie set with comfortable hold for daily use.', price:149, orig:249 },
+  { id:411, cat:'essentials', emoji:'🚨', badge:'new', badgeLabel:'New', name:'Safety Alarm Keychain', desc:'Personal alarm keychain for added confidence during commute.', price:299, orig:449 },
+  { id:412, cat:'essentials', emoji:'🔦', badge:null, badgeLabel:'', name:'Night Safety Flashlight', desc:'Compact flashlight for hostels, travel, and emergency use.', price:249, orig:379 },
+  { id:413, cat:'essentials', emoji:'🎁', badge:'hot', badgeLabel:'Gift', name:'Birthday Surprise Box', desc:'Curated birthday gift box with 2 AM Study goodies and notes.', price:999, orig:1499 },
+  { id:414, cat:'essentials', emoji:'💝', badge:'new', badgeLabel:'2 AM Study', name:'Birthday Memory Kit', desc:'Memory kit to preserve photos, messages, and celebration moments.', price:799, orig:1199 },
+  { id:415, cat:'essentials', emoji:'🖼️', badge:null, badgeLabel:'', name:'Motivational Wall Poster', desc:'Inspirational wall poster to keep your study space energetic.', price:199, orig:299 },
+  { id:416, cat:'essentials', emoji:'🧰', badge:'top', badgeLabel:'Best Value', name:'Compact Study Essentials Kit', desc:'All-in-one compact essentials kit from 2 AM Study for school, college, and self-study.', price:899, orig:1299 },
+];
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || '',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+});
 
 // Enable Compression for all responses
 app.use(compression());
@@ -181,8 +213,58 @@ app.get('/behind-2am-study', (req, res) => {
 
 app.get('/store', (req, res) => {
   res.render('store', {
-    pageTitle: '2AM Study Store - Student Essentials, Digital Tools & Accessories',
-    metaDescription: 'Shop curated study accessories, digital planners, focus tools and wellness products designed for students. Free digital downloads & fast WhatsApp ordering.'
+      pageTitle: '2AM Study Store - Student Essentials, Digital Tools & Accessories',
+      metaDescription: 'Shop curated study accessories, digital planners, focus tools and wellness products designed for students. Free digital downloads & fast WhatsApp ordering.',
+      razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
+      hideBot: true
+    });
+});
+
+app.get('/store/product/:id', (req, res) => {
+  const productId = Number(req.params.id);
+  const product = STORE_PRODUCTS.find(p => p.id === productId) || null;
+  if (!product) {
+    return res.status(404).render('store-payment-success', {
+      pageTitle: 'Product Not Found | 2AM Study Store',
+      metaDescription: 'Requested product is not available.',
+      paymentId: '',
+      orderId: '',
+      hideBot: true
+    });
+  }
+  return res.render('store-product', {
+    pageTitle: `${product.name} | 2AM Study Store`,
+    metaDescription: product.desc,
+    product,
+    storeProducts: STORE_PRODUCTS,
+    hideBot: true
+  });
+});
+
+app.get('/store/order-summary', (req, res) => {
+  res.render('store-order-summary', {
+    pageTitle: 'Order Summary | 2AM Study Store',
+    metaDescription: 'Review your cart items, total amount, and proceed to checkout securely.',
+    hideBot: true
+  });
+});
+
+app.get('/store/payment', (req, res) => {
+  res.render('store-payment', {
+    pageTitle: 'Complete Payment | 2AM Study Store',
+    metaDescription: 'Complete secure Razorpay payment for your 2AM Study Store order.',
+    razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
+    hideBot: true
+  });
+});
+
+app.get('/store/payment-success', (req, res) => {
+  res.render('store-payment-success', {
+    pageTitle: 'Payment Successful | 2AM Study Store',
+    metaDescription: 'Your payment is successful. Thank you for shopping with 2AM Study Store.',
+    paymentId: req.query.payment_id || '',
+    orderId: req.query.order_id || '',
+    hideBot: true
   });
 });
 
@@ -437,6 +519,67 @@ app.post('/send-email', async (req, res) => {
   } catch (error) {
     console.error('Email send error:', error);
     return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+  }
+});
+
+app.post('/api/store/create-order', async (req, res) => {
+  try {
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return res.status(500).json({ error: 'Razorpay is not configured on server.' });
+    }
+
+    const amount = Number(req.body.amount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid order amount.' });
+    }
+
+    const metadata = req.body.metadata || {};
+    const customer = metadata.customer || {};
+    const safe = (val, max = 120) => String(val || '').trim().slice(0, max);
+    const options = {
+      amount: Math.round(amount * 100),
+      currency: 'INR',
+      receipt: `2am_${Date.now()}`,
+      notes: {
+        source: 'student_store',
+        coupon: safe(metadata.coupon || 'none', 40),
+        itemCount: safe(metadata.itemCount || 0, 10),
+        customerName: safe(customer.name, 80),
+        customerPhone: safe(customer.phone, 20),
+        customerEmail: safe(customer.email, 80),
+        customerCity: safe(customer.city, 60),
+        customerPincode: safe(customer.pincode, 20),
+        customerAddress: safe(customer.address, 200)
+      }
+    };
+
+    const order = await razorpay.orders.create(options);
+    return res.json(order);
+  } catch (error) {
+    console.error('Razorpay create order error:', error);
+    return res.status(500).json({ error: 'Unable to create payment order.' });
+  }
+});
+
+app.post('/api/store/verify-payment', (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ verified: false, error: 'Missing payment verification fields.' });
+    }
+
+    const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || '');
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const generatedSignature = hmac.digest('hex');
+    const verified = generatedSignature === razorpay_signature;
+
+    if (!verified) {
+      return res.status(400).json({ verified: false, error: 'Payment verification failed.' });
+    }
+    return res.json({ verified: true });
+  } catch (error) {
+    console.error('Razorpay verify error:', error);
+    return res.status(500).json({ verified: false, error: 'Verification service unavailable.' });
   }
 });
 

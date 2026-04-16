@@ -7,12 +7,82 @@
     </div>
 </section>
 
+<style>
+  .blog-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    margin-bottom: 1.5rem;
+  }
+
+  .blog-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex: 1;
+    min-width: 220px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 12px;
+    padding: 0.55rem 0.9rem;
+    background: #f8fafc;
+  }
+
+  .blog-search-wrap input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 0.92rem;
+    color: #0f172a;
+  }
+
+  .blog-sort-select {
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #334155;
+    font-weight: 600;
+    padding: 0.58rem 0.85rem;
+    min-width: 180px;
+  }
+
+  .blog-results-count {
+    font-size: 0.84rem;
+    color: #64748b;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+
+  #blogNoResults {
+    display: none;
+  }
+</style>
 
 
 <main class="container py-5 my-0">
+  <div class="blog-toolbar">
+    <div class="blog-search-wrap">
+      <i class="fa-solid fa-magnifying-glass text-muted"></i>
+      <input type="text" id="blogSearchInput" placeholder="Search blog by topic, title, or keyword..." autocomplete="off">
+    </div>
+    <select class="blog-sort-select" id="blogSortSelect">
+      <option value="default">Sort: Featured</option>
+      <option value="title-asc">Title: A to Z</option>
+      <option value="title-desc">Title: Z to A</option>
+      <option value="category-asc">Category: A to Z</option>
+    </select>
+    <span class="blog-results-count" id="blogResultCount"></span>
+  </div>
+
   <div class="row g-4">
     <!-- Blog - Mistakes (Latest) -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-danger pt-5 text-center text-white" style="background: linear-gradient(135deg, #f43f5e, #fb923c); height: 180px;">
            <i class="fa-solid fa-triangle-exclamation fa-4x mb-3 opacity-75"></i>
@@ -27,7 +97,7 @@
     </div>
 
     <!-- Blog 0 - Motivation -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #4f46e5, #ec4899); height: 180px;">
            <i class="fa-solid fa-fire fa-4x mb-3 opacity-75"></i>
@@ -43,7 +113,7 @@
 
 
     <!-- Blog 1 -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #4f46e5, #ec4899); height: 180px;">
            <i class="fa-solid fa-bullseye fa-4x mb-3 opacity-75"></i>
@@ -58,7 +128,7 @@
     </div>
     
     <!-- Blog 2 -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #10b981, #3b82f6); height: 180px;">
            <i class="fa-solid fa-brain fa-4x mb-3 opacity-75"></i>
@@ -73,7 +143,7 @@
     </div>
 
     <!-- Blog 3 -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #f59e0b, #ef4444); height: 180px;">
            <i class="fa-solid fa-ban fa-4x mb-3 opacity-75"></i>
@@ -88,7 +158,7 @@
     </div>
 
     <!-- Blog 4 -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6); height: 180px;">
            <i class="fa-solid fa-calendar-check fa-4x mb-3 opacity-75"></i>
@@ -103,7 +173,7 @@
     </div>
 
     <!-- Blog 5 -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #14b8a6, #06b6d4); height: 180px;">
            <i class="fa-solid fa-infinity fa-4x mb-3 opacity-75"></i>
@@ -116,7 +186,7 @@
         </div>
       </div>
     </div>    <!-- Blog 6 -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #9333ea); height: 180px;">
            <i class="fa-solid fa-lightbulb fa-4x mb-3 opacity-75"></i>
@@ -141,7 +211,7 @@
 
   <div class="row g-4 mb-5">
     <!-- Focus Tips -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #f43f5e, #10b981); height: 180px;">
            <i class="fa-solid fa-lightbulb fa-4x mb-3 opacity-75"></i>
@@ -156,7 +226,7 @@
     </div>
     
     <!-- Study Routine Guide -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #10b981, #f59e0b); height: 180px;">
            <i class="fa-solid fa-calendar-alt fa-4x mb-3 opacity-75"></i>
@@ -171,7 +241,7 @@
     </div>
 
     <!-- Study at Night -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-4 blog-card-col">
       <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
         <div class="bg-primary pt-5 text-center text-white" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); height: 180px;">
            <i class="fa-solid fa-moon fa-4x mb-3 opacity-75"></i>
@@ -185,6 +255,60 @@
       </div>
     </div>
   </div>
+
+  <div id="blogNoResults" class="text-center py-5">
+    <i class="fa-solid fa-book-open-reader fa-2x text-muted mb-3"></i>
+    <p class="mb-0 text-muted">No study page found. Try another search or sort option.</p>
+  </div>
 </main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('blogSearchInput');
+    const sortSelect = document.getElementById('blogSortSelect');
+    const resultCount = document.getElementById('blogResultCount');
+    const noResults = document.getElementById('blogNoResults');
+    const cards = Array.from(document.querySelectorAll('.blog-card-col'));
+
+    const cardMeta = cards.map((card, index) => {
+      const title = (card.querySelector('.card-title')?.textContent || '').trim();
+      const desc = (card.querySelector('.card-text')?.textContent || '').trim();
+      const category = (card.querySelector('.badge')?.textContent || '').trim();
+      return { card, index, title, desc, category };
+    });
+
+    function applyBlogFilters() {
+      const query = (searchInput?.value || '').toLowerCase().trim();
+      const sortMode = sortSelect?.value || 'default';
+
+      let visible = cardMeta.filter(item => {
+        const text = `${item.title} ${item.desc} ${item.category}`.toLowerCase();
+        const matched = !query || text.includes(query);
+        item.card.style.display = matched ? '' : 'none';
+        return matched;
+      });
+
+      if (sortMode === 'title-asc') visible.sort((a, b) => a.title.localeCompare(b.title));
+      if (sortMode === 'title-desc') visible.sort((a, b) => b.title.localeCompare(a.title));
+      if (sortMode === 'category-asc') visible.sort((a, b) => a.category.localeCompare(b.category));
+      if (sortMode === 'default') visible.sort((a, b) => a.index - b.index);
+
+      visible.forEach(item => {
+        item.card.parentNode.appendChild(item.card);
+      });
+
+      if (resultCount) {
+        resultCount.textContent = `${visible.length} article${visible.length !== 1 ? 's' : ''} found`;
+      }
+      if (noResults) {
+        noResults.style.display = visible.length ? 'none' : 'block';
+      }
+    }
+
+    searchInput?.addEventListener('input', applyBlogFilters);
+    sortSelect?.addEventListener('change', applyBlogFilters);
+    applyBlogFilters();
+  });
+</script>
 
 <%- include('../partials/footer') %>
