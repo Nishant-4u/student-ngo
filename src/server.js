@@ -34,10 +34,11 @@ const STORE_PRODUCTS = [
   { id:415, cat:'essentials', emoji:'🖼️', badge:null, badgeLabel:'', name:'Motivational Wall Poster', desc:'Inspirational wall poster to keep your study space energetic.', price:199, orig:299 },
   { id:416, cat:'essentials', emoji:'🧰', badge:'top', badgeLabel:'Best Value', name:'Compact Study Essentials Kit', desc:'All-in-one compact essentials kit from 2 AM Study for school, college, and self-study.', price:899, orig:1299 },
 ];
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || '',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || '',
-});
+const razorpay = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET ? 
+  new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  }) : null;
 
 // Enable Compression for all responses
 app.use(compression());
@@ -524,7 +525,7 @@ app.post('/send-email', async (req, res) => {
 
 app.post('/api/store/create-order', async (req, res) => {
   try {
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    if (!razorpay) {
       return res.status(500).json({ error: 'Razorpay is not configured on server.' });
     }
 

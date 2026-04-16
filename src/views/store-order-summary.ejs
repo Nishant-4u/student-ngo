@@ -1,0 +1,384 @@
+<%- include('partials/header') %>
+
+<style>
+/* Order Summary Page Styles */
+:root {
+  --order-bg: #0b1220;
+  --order-card: #0f172a;
+  --order-border: rgba(255,255,255,0.07);
+  --order-accent: #6366f1;
+  --order-accent-hover: #4f46e5;
+  --order-orange: #fb641b;
+  --order-orange-hover: #ff7531;
+  --order-green: #388e3c;
+  --order-text: #f8fafc;
+  --order-text-muted: #94a3b8;
+}
+
+body {
+  background-color: var(--order-bg);
+  color: var(--order-text);
+  font-family: 'Inter', sans-serif;
+}
+
+.order-main {
+  padding-top: 100px;
+  padding-bottom: 60px;
+  min-height: 100vh;
+}
+
+.order-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.order-section {
+  background: var(--order-card);
+  border: 1px solid var(--order-border);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.order-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--order-text);
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--order-border);
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.cart-item-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cart-item-title {
+  font-weight: 600;
+  color: var(--order-text);
+  margin-bottom: 0.25rem;
+}
+
+.cart-item-desc {
+  font-size: 0.9rem;
+  color: var(--order-text-muted);
+}
+
+.cart-item-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.cart-item-current {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--order-green);
+}
+
+.cart-item-original {
+  font-size: 0.9rem;
+  color: var(--order-text-muted);
+  text-decoration: line-through;
+}
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.quantity-btn {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--order-border);
+  background: transparent;
+  color: var(--order-text);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-btn:hover {
+  background: var(--order-accent);
+  border-color: var(--order-accent);
+}
+
+.quantity-value {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.order-summary {
+  position: sticky;
+  top: 100px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--order-border);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+  padding-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--order-green);
+}
+
+.summary-label {
+  color: var(--order-text-muted);
+}
+
+.summary-value {
+  color: var(--order-text);
+  font-weight: 600;
+}
+
+.promo-code {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.promo-input {
+  padding: 0.75rem;
+  border: 1px solid var(--order-border);
+  background: var(--order-bg);
+  color: var(--order-text);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.promo-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--order-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.promo-btn:hover {
+  background: var(--order-accent-hover);
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--order-orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.checkout-btn:hover {
+  background: var(--order-orange-hover);
+}
+
+.continue-shopping {
+  width: 100%;
+  padding: 0.75rem;
+  background: transparent;
+  color: var(--order-text);
+  border: 1px solid var(--order-border);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.continue-shopping:hover {
+  background: var(--order-card);
+  border-color: var(--order-accent);
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 3rem;
+  color: var(--order-text-muted);
+}
+
+.empty-cart-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .order-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .order-summary {
+    position: static;
+  }
+}
+</style>
+
+<div class="order-main">
+  <div class="container">
+    <div class="order-container">
+      <div class="order-section">
+        <h2>Shopping Cart</h2>
+        <div id="cartItems">
+          <!-- Cart items will be dynamically loaded here -->
+        </div>
+      </div>
+      
+      <div class="order-section order-summary">
+        <h2>Order Summary</h2>
+        
+        <div class="promo-code">
+          <input type="text" class="promo-input" placeholder="Enter promo code" id="promoCode">
+          <button class="promo-btn" onclick="applyPromo()">Apply</button>
+        </div>
+        
+        <div class="summary-row">
+          <span class="summary-label">Subtotal</span>
+          <span class="summary-value" id="subtotal">Rs. 0</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Discount</span>
+          <span class="summary-value" id="discount">-Rs. 0</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Shipping</span>
+          <span class="summary-value">FREE</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Total</span>
+          <span class="summary-value" id="total">Rs. 0</span>
+        </div>
+        
+        <button class="checkout-btn" onclick="proceedToCheckout()">
+          Proceed to Checkout
+        </button>
+        <button class="continue-shopping" onclick="window.location.href='/store'">
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Sample cart data - in real app this would come from session/localStorage
+let cartItems = [
+  // This would be populated from actual cart data
+];
+
+function renderCart() {
+  const cartContainer = document.getElementById('cartItems');
+  
+  if (cartItems.length === 0) {
+    cartContainer.innerHTML = `
+      <div class="empty-cart">
+        <div class="empty-cart-icon">\ud83d\uded2</div>
+        <h3>Your cart is empty</h3>
+        <p>Add some products from our store to get started!</p>
+        <button class="btn-primary" onclick="window.location.href='/store'">
+          Browse Store
+        </button>
+      </div>
+    `;
+    updateSummary();
+    return;
+  }
+  
+  cartContainer.innerHTML = cartItems.map((item, index) => `
+    <div class="cart-item">
+      <div class="cart-item-image">${item.emoji}</div>
+      <div class="cart-item-details">
+        <div class="cart-item-title">${item.name}</div>
+        <div class="cart-item-desc">${item.desc}</div>
+        <div class="cart-item-quantity">
+          <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+          <span class="quantity-value">${item.quantity || 1}</span>
+          <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+        </div>
+      </div>
+      <div class="cart-item-price">
+        <span class="cart-item-current">Rs. ${item.price * (item.quantity || 1)}</span>
+        <span class="cart-item-original">Rs. ${item.orig * (item.quantity || 1)}</span>
+      </div>
+    </div>
+  `).join('');
+  
+  updateSummary();
+}
+
+function updateQuantity(index, change) {
+  cartItems[index].quantity = Math.max(1, (cartItems[index].quantity || 1) + change);
+  renderCart();
+}
+
+function updateSummary() {
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+  const discount = 0; // Calculate discount based on promo code
+  
+  document.getElementById('subtotal').textContent = `Rs. ${subtotal}`;
+  document.getElementById('discount').textContent = `-Rs. ${discount}`;
+  document.getElementById('total').textContent = `Rs. ${subtotal - discount}`;
+}
+
+function applyPromo() {
+  const promoCode = document.getElementById('promoCode').value.trim();
+  if (promoCode) {
+    // Apply promo logic here
+    alert('Promo code applied!');
+    updateSummary();
+  }
+}
+
+function proceedToCheckout() {
+  if (cartItems.length === 0) {
+    alert('Your cart is empty!');
+    return;
+  }
+  window.location.href = '/store/payment';
+}
+
+// Initialize cart
+renderCart();
+</script>
+
+<%- include('partials/footer') %>

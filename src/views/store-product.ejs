@@ -1,0 +1,359 @@
+<%- include('partials/header') %>
+
+<style>
+/* Store Product Page Styles */
+:root {
+  --product-bg: #0b1220;
+  --product-card: #0f172a;
+  --product-border: rgba(255,255,255,0.07);
+  --product-accent: #6366f1;
+  --product-accent-hover: #4f46e5;
+  --product-orange: #fb641b;
+  --product-orange-hover: #ff7531;
+  --product-green: #388e3c;
+  --product-text: #f8fafc;
+  --product-text-muted: #94a3b8;
+}
+
+body {
+  background-color: var(--product-bg);
+  color: var(--product-text);
+  font-family: 'Inter', sans-serif;
+}
+
+.product-main {
+  padding-top: 100px;
+  padding-bottom: 60px;
+  min-height: 100vh;
+}
+
+.product-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.product-image-section {
+  background: var(--product-card);
+  border: 1px solid var(--product-border);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+}
+
+.product-emoji {
+  font-size: 8rem;
+}
+
+.product-details-section {
+  background: var(--product-card);
+  border: 1px solid var(--product-border);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.product-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.badge-top {
+  background: var(--product-accent);
+  color: white;
+}
+
+.badge-hot {
+  background: #ef4444;
+  color: white;
+}
+
+.badge-new {
+  background: #10b981;
+  color: white;
+}
+
+.badge-sale {
+  background: #f59e0b;
+  color: white;
+}
+
+.product-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--product-text);
+}
+
+.product-description {
+  font-size: 1.1rem;
+  color: var(--product-text-muted);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.product-price-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.price-current {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--product-green);
+}
+
+.price-original {
+  font-size: 1.25rem;
+  color: var(--product-text-muted);
+  text-decoration: line-through;
+}
+
+.product-discount {
+  background: #ef4444;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.product-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 1rem;
+  background: var(--product-orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.btn-primary:hover {
+  background: var(--product-orange-hover);
+}
+
+.btn-secondary {
+  padding: 1rem 2rem;
+  background: transparent;
+  color: var(--product-text);
+  border: 1px solid var(--product-border);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--product-card);
+  border-color: var(--product-accent);
+}
+
+.product-features {
+  margin-bottom: 2rem;
+}
+
+.product-features h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--product-text);
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feature-list li {
+  padding: 0.5rem 0;
+  color: var(--product-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feature-list li::before {
+  content: "â";
+  color: var(--product-green);
+  font-weight: bold;
+}
+
+.related-products {
+  margin-top: 3rem;
+}
+
+.related-products h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: var(--product-text);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.related-card {
+  background: var(--product-card);
+  border: 1px solid var(--product-border);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.related-card:hover {
+  border-color: var(--product-accent);
+  transform: translateY(-2px);
+}
+
+.related-card-emoji {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.related-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--product-text);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.related-card-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--product-green);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .product-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .product-image-section {
+    height: 300px;
+  }
+  
+  .product-emoji {
+    font-size: 6rem;
+  }
+  
+  .product-title {
+    font-size: 1.5rem;
+  }
+  
+  .product-actions {
+    flex-direction: column;
+  }
+}
+</style>
+
+<div class="product-main">
+  <div class="container">
+    <% if (product) { %>
+    <div class="product-container">
+      <div class="product-image-section">
+        <div class="product-emoji"><%= product.emoji %></div>
+      </div>
+      
+      <div class="product-details-section">
+        <% if (product.badge) { %>
+        <span class="product-badge badge-<%= product.badge %>"><%= product.badgeLabel %></span>
+        <% } %>
+        
+        <h1 class="product-title"><%= product.name %></h1>
+        
+        <p class="product-description"><%= product.desc %></p>
+        
+        <div class="product-price-section">
+          <span class="price-current">Rs. <%= product.price %></span>
+          <span class="price-original">Rs. <%= product.orig %></span>
+          <% const discount = Math.round(((product.orig - product.price) / product.orig) * 100); %>
+          <span class="product-discount"><%= discount %>% OFF</span>
+        </div>
+        
+        <div class="product-actions">
+          <button class="btn-primary" onclick="addToCart(<%= product.id %>)">
+            Add to Cart
+          </button>
+          <button class="btn-secondary" onclick="goBack()">
+            Back to Store
+          </button>
+        </div>
+        
+        <div class="product-features">
+          <h3>Product Features</h3>
+          <ul class="feature-list">
+            <li>Premium quality materials</li>
+            <li>Designed for students</li>
+            <li>Fast shipping available</li>
+            <li>7-day return policy</li>
+            <li>24/7 customer support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="related-products">
+      <h2>Related Products</h2>
+      <div class="related-grid">
+        <% storeProducts.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 4).forEach(relatedProduct => { %>
+        <div class="related-card" onclick="viewProduct(<%= relatedProduct.id %>)">
+          <div class="related-card-emoji"><%= relatedProduct.emoji %></div>
+          <div class="related-card-title"><%= relatedProduct.name %></div>
+          <div class="related-card-price">Rs. <%= relatedProduct.price %></div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } else { %>
+    <div style="text-align: center; padding: 3rem;">
+      <h2>Product Not Found</h2>
+      <p>The requested product is not available.</p>
+      <button class="btn-primary" onclick="window.location.href='/store'">
+        Back to Store
+      </button>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+function addToCart(productId) {
+  // Add to cart logic here
+  window.location.href = '/store/order-summary';
+}
+
+function viewProduct(productId) {
+  window.location.href = '/store/product/' + productId;
+}
+
+function goBack() {
+  window.location.href = '/store';
+}
+</script>
+
+<%- include('partials/footer') %>

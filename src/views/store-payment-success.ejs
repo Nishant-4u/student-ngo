@@ -1,0 +1,197 @@
+<%- include('partials/header') %>
+
+<style>
+/* Payment Success Page Styles */
+:root {
+  --success-bg: #0b1220;
+  --success-card: #0f172a;
+  --success-border: rgba(255,255,255,0.07);
+  --success-accent: #6366f1;
+  --success-green: #10b981;
+  --success-text: #f8fafc;
+  --success-text-muted: #94a3b8;
+}
+
+body {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  font-family: 'Inter', sans-serif;
+}
+
+.success-main {
+  padding-top: 100px;
+  padding-bottom: 60px;
+  min-height: 100vh;
+}
+
+.success-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.success-card {
+  background: var(--success-card);
+  border: 1px solid var(--success-border);
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.success-icon {
+  font-size: 5rem;
+  color: var(--success-green);
+  margin-bottom: 2rem;
+  animation: successPulse 2s ease-in-out infinite;
+}
+
+@keyframes successPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.success-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--success-text);
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  font-size: 1.1rem;
+  color: var(--success-text-muted);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.success-details {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--success-border);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--success-text-muted);
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--success-text);
+  font-weight: 600;
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  padding: 0.75rem 2rem;
+  background: var(--success-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  padding: 0.75rem 2rem;
+  background: transparent;
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-secondary:hover {
+  background: var(--success-card);
+  border-color: var(--success-accent);
+}
+
+@media (max-width: 768px) {
+  .success-card {
+    padding: 2rem;
+    margin: 1rem;
+  }
+  
+  .success-actions {
+    flex-direction: column;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
+</style>
+
+<div class="success-main">
+  <div class="container">
+    <div class="success-container">
+      <div class="success-card">
+        <div class="success-icon">â</div>
+        
+        <h1 class="success-title">Payment Successful!</h1>
+        
+        <p class="success-message">
+          Thank you for your purchase! Your order has been successfully processed and we're preparing it for shipment.
+        </p>
+        
+        <% if (paymentId || orderId) { %>
+        <div class="success-details">
+          <% if (paymentId) { %>
+          <div class="detail-row">
+            <span class="detail-label">Payment ID:</span>
+            <span class="detail-value"><%= paymentId %></span>
+          </div>
+          <% } %>
+          <% if (orderId) { %>
+          <div class="detail-row">
+            <span class="detail-label">Order ID:</span>
+            <span class="detail-value"><%= orderId %></span>
+          </div>
+          <% } %>
+          <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value" style="color: var(--success-green);">Confirmed</span>
+          </div>
+        </div>
+        <% } %>
+        
+        <div class="success-actions">
+          <a href="/store" class="btn-primary">Continue Shopping</a>
+          <a href="/" class="btn-secondary">Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

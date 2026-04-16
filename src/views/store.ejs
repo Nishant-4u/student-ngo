@@ -1,0 +1,321 @@
+<%- include('partials/header') %>
+
+<style>
+/* Store Page Styles */
+:root {
+  --store-bg: #0b1220;
+  --store-card: #0f172a;
+  --store-border: rgba(255,255,255,0.07);
+  --store-accent: #6366f1;
+  --store-accent-hover: #4f46e5;
+  --store-orange: #fb641b;
+  --store-orange-hover: #ff7531;
+  --store-green: #388e3c;
+  --store-text: #f8fafc;
+  --store-text-muted: #94a3b8;
+}
+
+body {
+  background-color: var(--store-bg);
+  color: var(--store-text);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Remove custom store-main styles to use Bootstrap layout */
+
+.store-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.store-hero h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.store-hero p {
+  font-size: 1.25rem;
+  color: var(--store-text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.store-filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.5rem 1.5rem;
+  border: 1px solid var(--store-border);
+  background: var(--store-card);
+  color: var(--store-text-muted);
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: var(--store-accent);
+  color: white;
+  border-color: var(--store-accent);
+}
+
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.store-card {
+  background: var(--store-card);
+  border: 1px solid var(--store-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.store-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--store-accent);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.store-card-image {
+  height: 200px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  position: relative;
+}
+
+.store-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-top {
+  background: var(--store-accent);
+  color: white;
+}
+
+.badge-hot {
+  background: #ef4444;
+  color: white;
+}
+
+.badge-new {
+  background: #10b981;
+  color: white;
+}
+
+.badge-sale {
+  background: #f59e0b;
+  color: white;
+}
+
+.store-card-content {
+  padding: 1.5rem;
+}
+
+.store-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--store-text);
+}
+
+.store-card-desc {
+  font-size: 0.9rem;
+  color: var(--store-text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.store-card-price {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.price-current {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--store-green);
+}
+
+.price-original {
+  font-size: 1rem;
+  color: var(--store-text-muted);
+  text-decoration: line-through;
+}
+
+.store-card-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--store-orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.store-card-btn:hover {
+  background: var(--store-orange-hover);
+}
+
+.store-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--store-text-muted);
+}
+
+@media (max-width: 768px) {
+  .store-hero h1 {
+    font-size: 2rem;
+  }
+  
+  .store-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+</style>
+
+<main class="container py-5 my-0">
+  <div class="row justify-content-center">
+    <div class="col-12">
+    <div class="store-hero">
+      <h1>2AM Study Store</h1>
+      <p>Curated study essentials, digital tools, and accessories designed for students who want to excel</p>
+    </div>
+
+    <div class="store-filters">
+      <button class="filter-btn active" data-category="all">All Products</button>
+      <button class="filter-btn" data-category="notebooks">Notebooks</button>
+      <button class="filter-btn" data-category="bottles">Bottles</button>
+
+      <div class="store-grid" id="storeGrid">
+        <!-- Products will be dynamically loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="store-empty" id="storeEmpty" style="display: none;">
+  <h3>No products found</h3>
+  <p>Try selecting a different category</p>
+</div>
+</main>
+
+<script>
+// Store products data
+const storeProducts = [
+  { id:101, cat:'notebooks', emoji:'\ud83d\udcd3', badge:'top', badgeLabel:'2 AM Edition', name:'Notebook', desc:'Signature everyday notebook from 2 AM Study with smooth ruled pages for focused class notes.', price:199, orig:299 },
+  { id:102, cat:'notebooks', emoji:'\ud83d\udcd4', badge:'hot', badgeLabel:'Hot', name:'Diary', desc:'Premium diary by 2 AM Study for journaling goals, daily reflection, and planning your productivity streak.', price:249, orig:399 },
+  { id:103, cat:'notebooks', emoji:'\ud83d\udcd2', badge:'new', badgeLabel:'New', name:'Spiral Notebook Set', desc:'Spiral notebook combo pack for multiple subjects and long study sessions.', price:399, orig:599 },
+  { id:201, cat:'bottles', emoji:'\ud83d\udca7', badge:'top', badgeLabel:'Best Seller', name:'Insulated Water Bottle', desc:'Double-wall insulated bottle to keep water cool and support all-day hydration.', price:449, orig:699 },
+  { id:202, cat:'bottles', emoji:'\ud83c\udf71', badge:'new', badgeLabel:'New', name:'Insulated Lunch Box', desc:'Compact insulated lunch box for students on campus and coaching days.', price:549, orig:799 },
+  { id:203, cat:'bottles', emoji:'\u2615', badge:'hot', badgeLabel:'2 AM Study', name:'Coffee Mug', desc:'Aesthetic mug for chai or coffee during late-night focus hours.', price:299, orig:449 },
+  { id:301, cat:'bags', emoji:'\ud83c\udf92', badge:'top', badgeLabel:'Top Pick', name:'College Backpack', desc:'Spacious and durable backpack for books, laptop, and daily student essentials.', price:1299, orig:1899 },
+  { id:302, cat:'bags', emoji:'\ud83e\uddf3', badge:'sale', badgeLabel:'Sale', name:'Travel Backpack', desc:'Multi-purpose travel backpack designed for short trips, classes, and weekend plans. Co-branded by 2 AM Study.', price:1499, orig:2299 },
+  { id:401, cat:'essentials', emoji:'\ud83d\udd8a\ufe0f', badge:'top', badgeLabel:'Best Seller', name:'Premium Pen Set', desc:'Smooth-flow premium pens for clean handwriting and exam-ready notes.', price:199, orig:299 },
+  { id:402, cat:'essentials', emoji:'\ud83d\udd8d\ufe0f', badge:'hot', badgeLabel:'Hot', name:'Highlighter Set', desc:'Bright and pastel highlighters to mark key concepts quickly.', price:179, orig:279 },
+  { id:403, cat:'essentials', emoji:'\ud83d\udccc', badge:null, badgeLabel:'', name:'Sticky Notes Pack', desc:'Sticky notes pack for reminders, formulas, and revision tags.', price:149, orig:229 },
+  { id:404, cat:'essentials', emoji:'\ud83d\udcc2', badge:'new', badgeLabel:'New', name:'Desk Organizer Kit', desc:'Desk organizer kit to keep pens, notes, and supplies neatly arranged.', price:499, orig:749 },
+  { id:405, cat:'essentials', emoji:'\ud83d\udca1', badge:'top', badgeLabel:'Top Pick', name:'LED Study Lamp', desc:'Adjustable LED lamp with eye-comfort lighting for long study routines.', price:699, orig:999 },
+  { id:406, cat:'essentials', emoji:'\ud83d\udd26', badge:'new', badgeLabel:'New', name:'Compact Study Lamp', desc:'Portable compact lamp for hostel desks and bedside study corners.', price:549, orig:799 },
+  { id:407, cat:'essentials', emoji:'\u23f0', badge:null, badgeLabel:'', name:'Aesthetic Desk Clock', desc:'Minimal desk clock to manage pomodoro cycles and class schedules.', price:399, orig:599 },
+  { id:408, cat:'essentials', emoji:'\ud83d\udc55', badge:'hot', badgeLabel:'2 AM Edition', name:'T-Shirt (Unisex)', desc:'Soft, comfortable unisex T-shirt with 2 AM Study brand print.', price:599, orig:899 },
+  { id:409, cat:'essentials', emoji:'\ud83e\udde5', badge:'sale', badgeLabel:'Sale', name:'Hoodie (Unisex)', desc:'Warm and stylish hoodie perfect for winter classes and late-night study, by 2 AM Study.', price:1199, orig:1699 },
+  { id:410, cat:'essentials', emoji:'\ud83c\udf80', badge:null, badgeLabel:'', name:'Hair Scrunchie Set', desc:'Aesthetic scrunchie set with comfortable hold for daily use.', price:149, orig:249 },
+  { id:411, cat:'essentials', emoji:'\ud83d\udea8', badge:'new', badgeLabel:'New', name:'Safety Alarm Keychain', desc:'Personal alarm keychain for added confidence during commute.', price:299, orig:449 },
+  { id:412, cat:'essentials', emoji:'\ud83d\udd26', badge:null, badgeLabel:'', name:'Night Safety Flashlight', desc:'Compact flashlight for hostels, travel, and emergency use.', price:249, orig:379 },
+  { id:413, cat:'essentials', emoji:'\ud83c\udf81', badge:'hot', badgeLabel:'Gift', name:'Birthday Surprise Box', desc:'Curated birthday gift box with 2 AM Study goodies and notes.', price:999, orig:1499 },
+  { id:414, cat:'essentials', emoji:'\ud83d\udc9d', badge:'new', badgeLabel:'2 AM Study', name:'Birthday Memory Kit', desc:'Memory kit to preserve photos, messages, and celebration moments.', price:799, orig:1199 },
+  { id:415, cat:'essentials', emoji:'\ud83d\uddbc\ufe0f', badge:null, badgeLabel:'', name:'Motivational Wall Poster', desc:'Inspirational wall poster to keep your study space energetic.', price:199, orig:299 },
+  { id:416, cat:'essentials', emoji:'\ud83e\uddf0', badge:'top', badgeLabel:'Best Value', name:'Compact Study Essentials Kit', desc:'All-in-one compact essentials kit from 2 AM Study for school, college, and self-study.', price:899, orig:1299 }
+];
+
+let currentCategory = 'all';
+
+function renderProducts(category = 'all') {
+  const grid = document.getElementById('storeGrid');
+  const empty = document.getElementById('storeEmpty');
+  
+  const filteredProducts = category === 'all' 
+    ? storeProducts 
+    : storeProducts.filter(p => p.cat === category);
+  
+  if (filteredProducts.length === 0) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  grid.style.display = 'grid';
+  empty.style.display = 'none';
+  
+  grid.innerHTML = filteredProducts.map(product => `
+    <div class="store-card" onclick="viewProduct(${product.id})">
+      <div class="store-card-image">
+        ${product.emoji}
+        ${product.badge ? `<span class="store-badge badge-${product.badge}">${product.badgeLabel}</span>` : ''}
+      </div>
+      <div class="store-card-content">
+        <h3 class="store-card-title">${product.name}</h3>
+        <p class="store-card-desc">${product.desc}</p>
+        <div class="store-card-price">
+          <span class="price-current">Rs. ${product.price}</span>
+          <span class="price-original">Rs. ${product.orig}</span>
+        </div>
+        <button class="store-card-btn" onclick="event.stopPropagation(); viewProduct(${product.id})">
+          View Details
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function viewProduct(productId) {
+  window.location.href = `/store/product/${productId}`;
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    currentCategory = this.dataset.category;
+    renderProducts(currentCategory);
+  });
+});
+
+// Initial render
+renderProducts();
+</script>
+
+<%- include('partials/footer') %>
