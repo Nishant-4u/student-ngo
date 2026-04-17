@@ -4,16 +4,25 @@
   "description": "Node.js + Nodemailer backend for the NGO website",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
   "dependencies": {
     "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "ejs": "^5.0.1",
     "express": "^4.18.4",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "multer": "^1.4.5-lts.2",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.4",
-    "razorpay": "^2.9.6"
+    "razorpay": "^2.9.6",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

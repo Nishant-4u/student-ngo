@@ -1,0 +1,280 @@
+<%- include('partials/header') %>
+
+<style>
+:root {
+  --cart-bg: #0b1220;
+  --cart-card: #0f172a;
+  --cart-border: rgba(255,255,255,0.07);
+  --cart-accent: #2874f0;
+  --cart-text: #f8fafc;
+  --cart-text-muted: #94a3b8;
+  --cart-green: #388e3c;
+}
+
+body {
+  background-color: var(--cart-bg);
+  color: var(--cart-text);
+  font-family: 'Inter', sans-serif;
+}
+
+.cart-main {
+  padding-top: 120px;
+  padding-bottom: 60px;
+  min-height: 80vh;
+}
+
+.cart-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cart-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+.cart-left {
+  background: var(--cart-card);
+  border: 1px solid var(--cart-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--cart-border);
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-img {
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-item-img img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.cart-item-details h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.cart-qty-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--cart-border);
+  background: transparent;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cart-item-price {
+  text-align: right;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--cart-green);
+}
+
+.cart-right {
+  position: sticky;
+  top: 120px;
+}
+
+.price-summary {
+  background: var(--cart-card);
+  border: 1px solid var(--cart-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.summary-total {
+  border-top: 1px dashed var(--cart-border);
+  padding-top: 15px;
+  margin-top: 15px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--cart-green);
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 16px;
+  background: #fb641b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: transform 0.2s;
+}
+
+.checkout-btn:hover {
+  transform: translateY(-2px);
+  background: #ff7531;
+}
+
+.empty-cart-state {
+  text-align: center;
+  padding: 60px 0;
+}
+
+@media (max-width: 991px) {
+  .cart-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="cart-main">
+  <div class="container">
+    <h1 class="cart-title">🛒 Your Shopping Cart</h1>
+    
+    <div id="cartContent" class="cart-grid">
+      <!-- Loading... -->
+    </div>
+  </div>
+</div>
+
+<script>
+let cartItems = [];
+
+async function loadCart() {
+  const res = await fetch('/api/store/cart');
+  const data = await res.json();
+  if (data.success) {
+    cartItems = data.items;
+    renderCart();
+  }
+}
+
+async function updateQty(productId, delta) {
+  const res = await fetch('/api/store/cart/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productId, qty: delta })
+  });
+  const data = await res.json();
+  if (data.success) {
+    cartItems = data.items;
+    renderCart();
+  }
+}
+
+async function removeItem(productId) {
+  const res = await fetch('/api/store/cart/remove', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productId })
+  });
+  const data = await res.json();
+  if (data.success) {
+    cartItems = data.items;
+    renderCart();
+  }
+}
+
+function renderCart() {
+  const container = document.getElementById('cartContent');
+  
+  if (cartItems.length === 0) {
+    container.innerHTML = `
+      <div class="empty-cart-state" style="grid-column: span 2;">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🛍️</div>
+        <h2>Your cart is empty</h2>
+        <p style="color: var(--cart-text-muted); margin-bottom: 24px;">Add some amazing products from our store!</p>
+        <a href="/store" class="checkout-btn" style="text-decoration: none; display: inline-block; width: auto; padding: 12px 30px;">Browse Store</a>
+      </div>
+    `;
+    return;
+  }
+
+  const itemsHtml = cartItems.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">
+        <img src="${item.image}" alt="${item.name}">
+      </div>
+      <div class="cart-item-details">
+        <h3>${item.name}</h3>
+        <div class="cart-qty-control">
+          <button class="qty-btn" onclick="updateQty(${item.productId}, -1)">-</button>
+          <span>${item.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${item.productId}, 1)">+</button>
+          <button onclick="removeItem(${item.productId})" style="background:none; border:none; color:#ff4d4d; margin-left:15px; cursor:pointer; font-size:0.85rem;">Remove</button>
+        </div>
+      </div>
+      <div class="cart-item-price">
+        ₹${(item.price * item.qty).toLocaleString()}
+      </div>
+    </div>
+  `).join('');
+
+  const total = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+  container.innerHTML = `
+    <div class="cart-left">
+      ${itemsHtml}
+    </div>
+    <div class="cart-right">
+      <div class="price-summary">
+        <h2 style="font-size: 1.25rem; margin-bottom: 20px;">Price Details</h2>
+        <div class="summary-row">
+          <span>Price (${cartItems.length} items)</span>
+          <span>₹${total.toLocaleString()}</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery Charges</span>
+          <span style="color: var(--cart-green);">FREE</span>
+        </div>
+        <div class="summary-total">
+          <span>Total Amount</span>
+          <span>₹${total.toLocaleString()}</span>
+        </div>
+        <button class="checkout-btn" onclick="window.location.href='/store/order-summary'">PROCEED TO CHECKOUT</button>
+      </div>
+      <div style="margin-top: 15px; color: var(--cart-text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-shield-halved"></i> 100% Safe and Secure Payments
+      </div>
+    </div>
+  `;
+}
+
+loadCart();
+</script>
+
+<%- include('partials/footer') %>

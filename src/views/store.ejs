@@ -1,316 +1,1260 @@
 <%- include('partials/header') %>
 
 <style>
-/* Store Page Styles */
+/* Flipkart-Inspired Store Styles */
 :root {
-  --store-bg: #0b1220;
-  --store-card: #0f172a;
-  --store-border: rgba(255,255,255,0.07);
-  --store-accent: #6366f1;
-  --store-accent-hover: #4f46e5;
-  --store-orange: #fb641b;
-  --store-orange-hover: #ff7531;
-  --store-green: #388e3c;
-  --store-text: #f8fafc;
-  --store-text-muted: #94a3b8;
+  --flipkart-blue: #2874f0;
+  --flipkart-orange: #ff6f61;
+  --flipkart-dark-blue: #1c3a5e;
+  --flipkart-light-gray: #f1f3f6;
+  --flipkart-white: #ffffff;
+  --flipkart-black: #212121;
+  --flipkart-gray: #878787;
+  --flipkart-border: #e0e0e0;
+  --flipkart-shadow: rgba(0,0,0,0.2);
 }
 
 body {
-  background-color: var(--store-bg);
-  color: var(--store-text);
-  font-family: 'Inter', sans-serif;
+  background-color: var(--flipkart-light-gray);
+  color: var(--flipkart-black);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Remove custom store-main styles to use Bootstrap layout */
-
+/* Store Hero Banner */
 .store-hero {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.store-hero h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 1rem;
-}
-
-.store-hero p {
-  font-size: 1.25rem;
-  color: var(--store-text-muted);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.store-filters {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 0.5rem 1.5rem;
-  border: 1px solid var(--store-border);
-  background: var(--store-card);
-  color: var(--store-text-muted);
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.filter-btn.active,
-.filter-btn:hover {
-  background: var(--store-accent);
-  color: white;
-  border-color: var(--store-accent);
-}
-
-.store-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.store-card {
-  background: var(--store-card);
-  border: 1px solid var(--store-border);
-  border-radius: 12px;
+  background: linear-gradient(135deg, #090919 0%, #16163d 50%, #282866 100%);
+  padding: 80px 0;
+  min-height: 320px;
+  position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.store-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--store-accent);
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
-}
-
-.store-card-image {
-  height: 200px;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 4rem;
+}
+
+.store-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(100, 100, 255, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(160, 100, 255, 0.1) 0%, transparent 40%);
+  z-index: 1;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow: 0 0 40px rgba(161, 140, 255, 0.6);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.hero-tagline {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 600px;
+  margin: 0 auto 32px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffc107;
+  margin-bottom: 24px;
+}
+
+/* Floating Elements */
+.floating-icon {
+  position: absolute;
+  font-size: 3rem;
+  opacity: 0.3;
+  z-index: 2;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+.icon-1 { top: 20%; left: 10%; animation-delay: 0s; }
+.icon-2 { top: 60%; right: 15%; animation-delay: 2s; }
+.icon-3 { bottom: 15%; left: 20%; animation-delay: 4s; }
+
+/* Store Navigation Bar */
+.store-nav-bar {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.store-search-container {
+  max-width: 600px;
+  margin: 0 auto 16px;
   position: relative;
 }
 
-.store-badge {
+.store-search-input {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f0f5ff;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.store-search-input:focus {
+  background: #fff;
+  border-color: #2874f0;
+  box-shadow: 0 0 0 4px rgba(40,116,240,0.1);
+}
+
+.store-search-icon {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2874f0;
+  font-size: 18px;
+}
+
+.store-category-pills {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.store-cat-pill {
+  padding: 8px 18px;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 100px;
+  font-size: 14px;
   font-weight: 600;
-  text-transform: uppercase;
+  color: #444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.badge-top {
-  background: var(--store-accent);
-  color: white;
+.store-cat-pill:hover {
+  border-color: #2874f0;
+  color: #2874f0;
+  background: #f0f4ff;
 }
 
-.badge-hot {
-  background: #ef4444;
-  color: white;
+.store-cat-pill.active {
+  background: #2874f0;
+  color: #fff;
+  border-color: #2874f0;
+  box-shadow: 0 4px 10px rgba(40,116,240,0.25);
 }
 
-.badge-new {
-  background: #10b981;
-  color: white;
+/* Enhanced Sidebar */
+.flipkart-sidebar {
+  width: 260px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
+  height: fit-content;
 }
 
-.badge-sale {
-  background: #f59e0b;
-  color: white;
+.filter-group-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #212121;
 }
 
-.store-card-content {
-  padding: 1.5rem;
-}
-
-.store-card-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--store-text);
-}
-
-.store-card-desc {
-  font-size: 0.9rem;
-  color: var(--store-text-muted);
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
-
-.store-card-price {
+.filter-option {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #212121;
+}
+
+.filter-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #878787;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.filter-option:hover { color: #2874f0; }
+
+/* Main Store Container */
+.flipkart-store-container {
+  display: flex;
+  gap: 24px;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Content Wrapper Adjustments */
+.store-content-wrapper {
+  background-color: #f1f3f6;
+  padding-bottom: 60px;
+}
+
+/* Sidebar Filters */
+.flipkart-sidebar {
+  width: 200px;
+  background-color: var(--flipkart-white);
+  padding: 16px;
+  border-radius: 4px;
+  height: fit-content;
+}
+
+.flipkart-filter-section {
+  margin-bottom: 24px;
+}
+
+.flipkart-filter-title {
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--flipkart-black);
+  font-size: 14px;
+}
+
+.flipkart-filter-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.flipkart-filter-option input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.flipkart-filter-option label {
+  font-size: 14px;
+  color: var(--flipkart-black);
+  cursor: pointer;
+  margin: 0;
+}
+
+/* Product Grid */
+.flipkart-product-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  min-height: 400px; /* Prevent layout collapse */
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-anim-entry {
+  animation: slideUpFade 0.4s ease forwards;
+}
+
+.flipkart-product-card {
+  background-color: var(--flipkart-white);
+  border: 1px solid var(--flipkart-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.flipkart-product-card:hover {
+  border-color: #2874f0;
+  box-shadow: 0 4px 16px rgba(40,116,240,0.15);
+  transform: translateY(-4px);
+}
+
+.flipkart-product-card:hover .flipkart-product-title {
+  color: #2874f0;
+}
+
+.flipkart-product-image {
+  height: 240px;
+  background: #f8f9fa;
+  position: relative;
+  overflow: hidden;
+}
+
+.flipkart-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s ease;
+}
+
+.flipkart-product-image .img-secondary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.flipkart-product-card:hover .img-primary {
+  opacity: 0;
+}
+
+.flipkart-product-card:hover .img-secondary {
+  opacity: 1;
+}
+
+.flipkart-product-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.flipkart-product-content {
+  padding: 14px 16px 16px;
+}
+
+.flipkart-product-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212121;
+  margin-bottom: 6px;
+  line-height: 1.4;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.flipkart-product-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.flipkart-rating-pill {
+  background: #388e3c;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.flipkart-stock-tag {
+  color: #ff6161;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.flipkart-product-price {
+  margin-bottom: 12px;
+}
+
+.flipkart-price-current {
+  font-size: 17px;
+  font-weight: 700;
+  color: #212121;
+}
+
+.flipkart-price-original {
+  font-size: 12px;
+  color: #878787;
+  text-decoration: line-through;
+  margin-left: 8px;
+}
+
+.flipkart-price-discount {
+  font-size: 13px;
+  color: #388e3c;
+  margin-left: 8px;
+  font-weight: 600;
+}
+
+
+/* ── FLIPKART-STYLE TOOLBAR ─────────────────────── */
+.store-toolbar {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+/* Search Row */
+.toolbar-search-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+}
+
+.toolbar-search {
+  flex: 1;
+  position: relative;
+}
+
+.toolbar-search i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2874f0;
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.toolbar-search input {
+  width: 100%;
+  padding: 10px 40px 10px 42px;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #212121;
+  background: #f9f9f9;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.toolbar-search input::placeholder {
+  color: #9e9e9e;
+}
+
+.toolbar-search input:focus {
+  background: #fff;
+  border-color: #2874f0;
+  box-shadow: 0 0 0 3px rgba(40, 116, 240, 0.08);
+}
+
+.toolbar-results {
+  font-size: 13px;
+  color: #878787;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.toolbar-results strong {
+  color: #212121;
+  font-weight: 700;
+}
+
+/* Sort Row */
+.toolbar-sort-row {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 0;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.toolbar-sort-row::-webkit-scrollbar { display: none; }
+
+.sort-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #212121;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 14px 16px 14px 0;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+}
+
+.sort-tab {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212121;
+  padding: 14px 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.sort-tab:hover {
+  color: #2874f0;
+}
+
+.sort-tab.active {
+  color: #2874f0;
+  font-weight: 600;
+  border-bottom-color: #2874f0;
+}
+
+/* Price sort with arrow indicator */
+.sort-tab .sort-arrow {
+  font-size: 10px;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
+/* Custom Colors for Badges */
+.flipkart-badge-top {
+  background: linear-gradient(135deg, #2874f0, #1a5dc8);
+}
+
+.flipkart-badge-hot {
+  background: linear-gradient(135deg, #ff6161, #e53935);
+}
+
+.flipkart-badge-new {
+  background: linear-gradient(135deg, #00bfa5, #009688);
+}
+
+.flipkart-badge-sale {
+  background: linear-gradient(135deg, #ff6348, #e65100);
+}
+
+/* Product Card Detail Upgrade */
+.flipkart-product-brand {
+  font-size: 14px;
+  font-weight: 600;
+  color: #212121;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block;
+  line-height: 1.2;
+}
+
+.flipkart-product-title {
+  font-size: 14px;
+  color: #212121;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: 400;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.flipkart-product-specs {
+  font-size: 12px;
+  color: #878787;
+  margin: 2px 0 6px 0 !important;
+  padding: 0 !important;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.flipkart-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.flipkart-rating-pill {
+  background: #388e3c;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.flipkart-review-count {
+  color: #878787;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.flipkart-price-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .price-current {
-  font-size: 1.5rem;
+  font-size: 16px;
   font-weight: 700;
-  color: var(--store-green);
+  color: #212121;
 }
 
 .price-original {
-  font-size: 1rem;
-  color: var(--store-text-muted);
+  font-size: 14px;
+  color: #878787;
   text-decoration: line-through;
 }
 
-.store-card-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background: var(--store-orange);
-  color: white;
-  border: none;
-  border-radius: 8px;
+.price-discount {
+  font-size: 14px;
   font-weight: 600;
+  color: #388e3c;
+}
+
+/* Wishlist Button */
+.flipkart-wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  color: #c2c2c2;
   cursor: pointer;
-  transition: all 0.3s ease;
+  z-index: 5;
+  transition: all 0.2s ease;
 }
 
-.store-card-btn:hover {
-  background: var(--store-orange-hover);
+.flipkart-wishlist-btn:hover {
+  transform: scale(1.05);
 }
 
-.store-empty {
-  text-align: center;
-  padding: 3rem;
-  color: var(--store-text-muted);
+.flipkart-wishlist-btn.active {
+  color: #ff4343;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-  .store-hero h1 {
-    font-size: 2rem;
+  .flipkart-store-container {
+    flex-direction: column;
+    padding: 0;
   }
   
-  .store-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* Mobile Sidebar as Bottom Sheet */
+  .flipkart-sidebar {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    height: 75vh;
+    overflow-y: auto;
+    z-index: 1060;
+    transition: bottom 0.3s ease-in-out;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.15);
+    background: #fff;
+    padding: 20px 20px 80px 20px;
+    margin: 0;
   }
+  .flipkart-sidebar.show {
+    bottom: 0;
+  }
+  
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1055;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .sidebar-overlay.show {
+    display: block;
+    opacity: 1;
+  }
+
+  .mobile-filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .mobile-filter-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .close-filter-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #444;
+  }
+
+  /* 2-Column Grid */
+  .flipkart-product-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  .flipkart-product-image { height: 180px; }
+  .flipkart-product-content { padding: 10px; }
+  .flipkart-product-title { font-size: 13px; }
+  .price-current { font-size: 15px; }
+  .price-discount { font-size: 12px; }
+
+  /* Bottom Action Bar -> Below Search Bar */
+  .mobile-action-bar {
+    display: flex;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    width: 100%;
+  }
+  .mobile-action-bar button {
+    flex: 1;
+    padding: 14px;
+    background: #fff;
+    border: none;
+    border-right: 1px solid #f0f0f0;
+    font-weight: 600;
+    color: #212121;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+  }
+  .mobile-action-bar button:last-child { border-right: none; }
+  
+  .store-content-wrapper { padding-bottom: 20px; }
+  .store-toolbar {
+    margin-bottom: 10px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  .toolbar-search-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar-results { text-align: center; }
+  .toolbar-sort-row { display: none; }
+  
+  /* Hide the horizontal sort bar to manage it differently if needed, or keep it. Let's keep it but also allow click from bottom bar */
 }
 
+@media (min-width: 769px) {
+  .mobile-action-bar, .sidebar-overlay, .mobile-filter-header, #flipkartSortSidebar {
+    display: none !important;
+  }
+}
 </style>
 
-<main class="container py-5 my-0">
-  <div class="row justify-content-center">
-    <div class="col-12">
-    <div class="store-hero">
-      <h1>2AM Study Store</h1>
-      <p>Curated study essentials, digital tools, and accessories designed for students who want to excel</p>
+<div class="store-main">
+<!-- Store Hero -->
+<section class="store-hero">
+  <div class="hero-grid"></div>
+  <i class="fa-solid fa-graduation-cap floating-icon icon-1"></i>
+  <i class="fa-solid fa-book-open floating-icon icon-2"></i>
+  <i class="fa-solid fa-lightbulb floating-icon icon-3"></i>
+  
+  <div class="container hero-content">
+    <div class="hero-badge">
+      <i class="fa-solid fa-star"></i> 2 AM Signature Collection
     </div>
+    <h1 class="hero-title">Everything a Student Needs</h1>
+    <p class="hero-tagline">Premium study essentials designed for deep focus and late-night productivity.</p>
+  </div>
+</section>
 
-    <div class="store-filters">
-      <button class="filter-btn active" data-category="all">All Products</button>
-      <button class="filter-btn" data-category="notebooks">Notebooks</button>
-      <button class="filter-btn" data-category="bottles">Bottles</button>
+<!-- Main Store Content -->
+<div class="store-content-wrapper pt-4">
+  <main class="container py-0">
+    <div class="flipkart-store-container">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Sidebar Filters -->
+    <aside class="flipkart-sidebar" id="flipkartSidebar">
+      <div class="mobile-filter-header">
+        <h3>Filters</h3>
+        <button class="close-filter-btn" id="closeFilterBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="filter-group">
+        <h4 class="filter-group-title">Categories</h4>
+        <label class="filter-option">
+          <input type="checkbox" class="category-filter" value="notebooks">
+          <span>Notebooks</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" class="category-filter" value="bottles">
+          <span>Bottles</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" class="category-filter" value="bags">
+          <span>Bags</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" class="category-filter" value="essentials">
+          <span>Essentials</span>
+        </label>
+      </div>
 
-      <div class="store-grid" id="storeGrid">
+      <div class="filter-group mt-4">
+        <h4 class="filter-group-title">Price Range</h4>
+        <label class="filter-option">
+          <input type="checkbox" class="price-filter" value="0-500">
+          <span>Under ₹500</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" class="price-filter" value="500-1000">
+          <span>₹500 - ₹1000</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" class="price-filter" value="1000-plus">
+          <span>₹1000 & Above</span>
+        </label>
+      </div>
+      
+      <div class="filter-group mt-4">
+        <h4 class="filter-group-title">Special Offers</h4>
+        <label class="filter-option">
+          <input type="checkbox" id="filterDiscount">
+          <span>Discounted Items</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" id="filterNew">
+          <span>New Arrivals</span>
+        </label>
+      </div>
+
+      <div class="filter-group mt-4">
+        <h4 class="filter-group-title">Ratings</h4>
+        <label class="filter-option">
+          <input type="checkbox" class="rating-filter" value="4">
+          <span>4★ & Above</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" class="rating-filter" value="3">
+          <span>3★ & Above</span>
+        </label>
+      </div>
+
+      <div class="filter-group mt-4">
+        <h4 class="filter-group-title">Availability</h4>
+        <label class="filter-option">
+          <input type="checkbox" id="filterOutOfStock">
+          <span>Include Out of Stock</span>
+        </label>
+      </div>
+    </aside>
+
+    <!-- Sort Bottom Sheet -->
+    <aside class="flipkart-sidebar" id="flipkartSortSidebar" style="height: auto; padding-bottom: 20px;">
+      <div class="mobile-filter-header">
+        <h3>Sort By</h3>
+        <button class="close-filter-btn" id="closeSortBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="filter-group">
+        <label class="filter-option" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+          <input type="radio" name="mobile_sort" value="Popularity" class="mobile-sort-radio" checked>
+          <span>Popularity</span>
+        </label>
+        <label class="filter-option" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+          <input type="radio" name="mobile_sort" value="Price -- Low to High" class="mobile-sort-radio">
+          <span>Price — Low to High</span>
+        </label>
+        <label class="filter-option" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+          <input type="radio" name="mobile_sort" value="Price -- High to Low" class="mobile-sort-radio">
+          <span>Price — High to Low</span>
+        </label>
+        <label class="filter-option" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+          <input type="radio" name="mobile_sort" value="Newest First" class="mobile-sort-radio">
+          <span>Newest First</span>
+        </label>
+    </aside>
+
+    <!-- Product Grid -->
+    <div class="flex-grow-1">
+      <!-- Flipkart-Style Toolbar -->
+      <div class="store-toolbar">
+        <!-- Search Row -->
+        <div class="toolbar-search-row">
+          <div class="toolbar-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="storeSearchInput" placeholder="Search for products, brands and more...">
+          </div>
+          <div class="toolbar-results">
+            Showing <strong id="resultsCount">24</strong> of <strong id="totalCount">24</strong> products
+          </div>
+        </div>
+        
+        <!-- Mobile Action Bar (Sort / Filter split) -->
+        <div class="mobile-action-bar">
+          <button id="mobileSortBtn"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort</button>
+          <button id="mobileFilterBtn"><i class="fa-solid fa-filter"></i> Filter</button>
+        </div>
+
+        <!-- Sort Row -->
+        <div class="toolbar-sort-row">
+          <span class="sort-label">Sort By</span>
+          <button class="sort-tab active" data-sort="Popularity">Popularity</button>
+          <button class="sort-tab" data-sort="Price -- Low to High">Price — Low to High</button>
+          <button class="sort-tab" data-sort="Price -- High to Low">Price — High to Low</button>
+          <button class="sort-tab" data-sort="Newest First">Newest First</button>
+          <button class="sort-tab" data-sort="Discount">Discount</button>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="flipkart-product-grid" id="storeGrid">
         <!-- Products will be dynamically loaded here -->
       </div>
+      </div>
     </div>
-  </div>
+  </main>
 </div>
 
-<div class="store-empty" id="storeEmpty" style="display: none;">
-  <h3>No products found</h3>
-  <p>Try selecting a different category</p>
 </div>
-</main>
+
+<div class="flipkart-empty text-center py-5" id="storeEmpty" style="display: none;">
+  <h4>No products found</h4>
+  <p>Try adjusting your filters or search terms</p>
+</div>
 
 <script>
 // Store products data
 const storeProducts = [
-  { id:101, cat:'notebooks', emoji:'\ud83d\udcd3', badge:'top', badgeLabel:'2 AM Edition', name:'Notebook', desc:'Signature everyday notebook from 2 AM Study with smooth ruled pages for focused class notes.', price:199, orig:299 },
-  { id:102, cat:'notebooks', emoji:'\ud83d\udcd4', badge:'hot', badgeLabel:'Hot', name:'Diary', desc:'Premium diary by 2 AM Study for journaling goals, daily reflection, and planning your productivity streak.', price:249, orig:399 },
-  { id:103, cat:'notebooks', emoji:'\ud83d\udcd2', badge:'new', badgeLabel:'New', name:'Spiral Notebook Set', desc:'Spiral notebook combo pack for multiple subjects and long study sessions.', price:399, orig:599 },
-  { id:201, cat:'bottles', emoji:'\ud83d\udca7', badge:'top', badgeLabel:'Best Seller', name:'Insulated Water Bottle', desc:'Double-wall insulated bottle to keep water cool and support all-day hydration.', price:449, orig:699 },
-  { id:202, cat:'bottles', emoji:'\ud83c\udf71', badge:'new', badgeLabel:'New', name:'Insulated Lunch Box', desc:'Compact insulated lunch box for students on campus and coaching days.', price:549, orig:799 },
-  { id:203, cat:'bottles', emoji:'\u2615', badge:'hot', badgeLabel:'2 AM Study', name:'Coffee Mug', desc:'Aesthetic mug for chai or coffee during late-night focus hours.', price:299, orig:449 },
-  { id:301, cat:'bags', emoji:'\ud83c\udf92', badge:'top', badgeLabel:'Top Pick', name:'College Backpack', desc:'Spacious and durable backpack for books, laptop, and daily student essentials.', price:1299, orig:1899 },
-  { id:302, cat:'bags', emoji:'\ud83e\uddf3', badge:'sale', badgeLabel:'Sale', name:'Travel Backpack', desc:'Multi-purpose travel backpack designed for short trips, classes, and weekend plans. Co-branded by 2 AM Study.', price:1499, orig:2299 },
-  { id:401, cat:'essentials', emoji:'\ud83d\udd8a\ufe0f', badge:'top', badgeLabel:'Best Seller', name:'Premium Pen Set', desc:'Smooth-flow premium pens for clean handwriting and exam-ready notes.', price:199, orig:299 },
-  { id:402, cat:'essentials', emoji:'\ud83d\udd8d\ufe0f', badge:'hot', badgeLabel:'Hot', name:'Highlighter Set', desc:'Bright and pastel highlighters to mark key concepts quickly.', price:179, orig:279 },
-  { id:403, cat:'essentials', emoji:'\ud83d\udccc', badge:null, badgeLabel:'', name:'Sticky Notes Pack', desc:'Sticky notes pack for reminders, formulas, and revision tags.', price:149, orig:229 },
-  { id:404, cat:'essentials', emoji:'\ud83d\udcc2', badge:'new', badgeLabel:'New', name:'Desk Organizer Kit', desc:'Desk organizer kit to keep pens, notes, and supplies neatly arranged.', price:499, orig:749 },
-  { id:405, cat:'essentials', emoji:'\ud83d\udca1', badge:'top', badgeLabel:'Top Pick', name:'LED Study Lamp', desc:'Adjustable LED lamp with eye-comfort lighting for long study routines.', price:699, orig:999 },
-  { id:406, cat:'essentials', emoji:'\ud83d\udd26', badge:'new', badgeLabel:'New', name:'Compact Study Lamp', desc:'Portable compact lamp for hostel desks and bedside study corners.', price:549, orig:799 },
-  { id:407, cat:'essentials', emoji:'\u23f0', badge:null, badgeLabel:'', name:'Aesthetic Desk Clock', desc:'Minimal desk clock to manage pomodoro cycles and class schedules.', price:399, orig:599 },
-  { id:408, cat:'essentials', emoji:'\ud83d\udc55', badge:'hot', badgeLabel:'2 AM Edition', name:'T-Shirt (Unisex)', desc:'Soft, comfortable unisex T-shirt with 2 AM Study brand print.', price:599, orig:899 },
-  { id:409, cat:'essentials', emoji:'\ud83e\udde5', badge:'sale', badgeLabel:'Sale', name:'Hoodie (Unisex)', desc:'Warm and stylish hoodie perfect for winter classes and late-night study, by 2 AM Study.', price:1199, orig:1699 },
-  { id:410, cat:'essentials', emoji:'\ud83c\udf80', badge:null, badgeLabel:'', name:'Hair Scrunchie Set', desc:'Aesthetic scrunchie set with comfortable hold for daily use.', price:149, orig:249 },
-  { id:411, cat:'essentials', emoji:'\ud83d\udea8', badge:'new', badgeLabel:'New', name:'Safety Alarm Keychain', desc:'Personal alarm keychain for added confidence during commute.', price:299, orig:449 },
-  { id:412, cat:'essentials', emoji:'\ud83d\udd26', badge:null, badgeLabel:'', name:'Night Safety Flashlight', desc:'Compact flashlight for hostels, travel, and emergency use.', price:249, orig:379 },
-  { id:413, cat:'essentials', emoji:'\ud83c\udf81', badge:'hot', badgeLabel:'Gift', name:'Birthday Surprise Box', desc:'Curated birthday gift box with 2 AM Study goodies and notes.', price:999, orig:1499 },
-  { id:414, cat:'essentials', emoji:'\ud83d\udc9d', badge:'new', badgeLabel:'2 AM Study', name:'Birthday Memory Kit', desc:'Memory kit to preserve photos, messages, and celebration moments.', price:799, orig:1199 },
-  { id:415, cat:'essentials', emoji:'\ud83d\uddbc\ufe0f', badge:null, badgeLabel:'', name:'Motivational Wall Poster', desc:'Inspirational wall poster to keep your study space energetic.', price:199, orig:299 },
-  { id:416, cat:'essentials', emoji:'\ud83e\uddf0', badge:'top', badgeLabel:'Best Value', name:'Compact Study Essentials Kit', desc:'All-in-one compact essentials kit from 2 AM Study for school, college, and self-study.', price:899, orig:1299 }
+  { id:101, cat:'notebooks', badge:'top', badgeLabel:'2 AM Edition', brand:'Uniqstock', name:'Notebook A4', specs:'Unruled | 200 Pages | Pack of 6', price:417, orig:999, rating:4.5, reviews:1200, stock:18, images: ['https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&q=80&w=800'] },
+  { id:102, cat:'notebooks', badge:'hot', badgeLabel:'Hot', brand:'2 AM Study', name:'Premium Hardcover Diary', specs:'B5 | 160 Pages | Dot Grid', price:249, orig:399, rating:4.7, reviews:850, stock:12, images: ['https://images.unsplash.com/photo-1531346878377-a5ec20888e43?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1519791883288-dc8bd696e637?auto=format&fit=crop&q=80&w=800'] },
+  { id:103, cat:'notebooks', badge:'new', badgeLabel:'New', brand:'Uniqstock', name:'Spiral Notebook Set', specs:'A5 | 300 Pages | Subjects Combo', price:399, orig:599, rating:4.2, reviews:420, stock:8, images: ['https://images.unsplash.com/photo-1544816153-12ad5d7133a1?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1558021211-1da3d5084992?auto=format&fit=crop&q=80&w=800'] },
+  { id:201, cat:'bottles', badge:'top', badgeLabel:'Best Seller', brand:'HydraFocus', name:'Insulated Water Bottle', specs:'750ml | 24h Cold | Matte Black', price:449, orig:699, rating:4.6, reviews:2100, stock:22, images: ['https://images.unsplash.com/photo-1602143399064-711f598503e9?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1523362628744-0c144cae24b4?auto=format&fit=crop&q=80&w=800'] },
+  { id:202, cat:'bottles', badge:'new', badgeLabel:'New', brand:'2 AM Study', name:'Campus Lunch Box', specs:'3-Tier | Stainless Steel | Leak Proof', price:549, orig:799, rating:4.4, reviews:310, stock:15, images: ['https://images.unsplash.com/photo-1584286595398-a59f21d313f5?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1543362906-acac767a9919?auto=format&fit=crop&q=80&w=800'] },
+  { id:203, cat:'bottles', badge:'hot', badgeLabel:'Hot', brand:'FocusFuel', name:'Ceramic Coffee Mug', specs:'350ml | Ergonomic | Midnight Blue', price:299, orig:449, rating:4.7, reviews:560, stock:30, images: ['https://images.unsplash.com/photo-1517142089942-ba376ce32a2e?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=800'] },
+  { id:301, cat:'bags', badge:'top', badgeLabel:'Top Pick', brand:'NomadGear', name:'College Backpack Pro', specs:'25L | 15.6" Laptop | Rain Cover', price:1299, orig:1899, rating:4.4, reviews:890, stock:6, images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1575844444493-f1dcba61a33b?auto=format&fit=crop&q=80&w=800'] },
+  { id:302, cat:'bags', badge:'sale', badgeLabel:'Sale', brand:'NomadGear', name:'Weekend Traveler', specs:'35L | Expandable | Padded Straps', price:1499, orig:2299, rating:4.5, reviews:340, stock:4, images: ['https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?auto=format&fit=crop&q=80&w=800'] },
+  { id:401, cat:'essentials', badge:'top', badgeLabel:'Best Seller', brand:'Lumina', name:'Premium Ball Pen Set', specs:'Pack of 10 | 0.5mm | Blue Ink', price:199, orig:299, rating:4.3, reviews:1800, stock:45, images: ['https://images.unsplash.com/photo-1511556889441-7f3633034237?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=800'] },
+  { id:402, cat:'essentials', badge:'hot', badgeLabel:'Hot', brand:'Lumina', name:'Pastel Highlighter Set', specs:'Pack of 6 | Chisel Tip | Anti-Smudge', price:179, orig:279, rating:4.1, reviews:920, stock:35, images: ['https://images.unsplash.com/photo-1596401057633-5310da1d9ead?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1511116460269-ec582410a544?auto=format&fit=crop&q=80&w=800'] },
+  { id:403, cat:'essentials', brand:'StickyNotes Pro', name:'Color Sticky Notes Pack', specs:'400 Sheets | 3x3 Inch | Multi-color', price:149, orig:229, rating:4.0, reviews:510, stock:50, images: ['https://images.unsplash.com/photo-1582213708522-faba8208479e?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1515224526905-51c7d77c7bb8?auto=format&fit=crop&q=80&w=800'] },
+  { id:404, cat:'essentials', badge:'new', badgeLabel:'New', brand:'DeskElite', name:'Mesh Desk Organizer', specs:'6 Compartments | Metal | Anti-Slip', price:499, orig:749, rating:4.2, reviews:280, stock:10, images: ['https://images.unsplash.com/photo-1519337265831-281ec6cc8514?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&q=80&w=800'] },
+  { id:405, cat:'essentials', badge:'top', badgeLabel:'Top Pick', brand:'LuxBright', name:'LED Eye-Care Lamp', specs:'3 Modes | USB Charging | Foldable', price:699, orig:999, rating:4.5, reviews:1100, stock:9, images: ['https://images.unsplash.com/photo-1534073828943-f801091bb270?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1507473885765-e6ed241274ed?auto=format&fit=crop&q=80&w=800'] },
+  { id:406, cat:'essentials', badge:'new', badgeLabel:'New', brand:'LuxBright', name:'Clip-on Reading Light', specs:'Warm Glow | Rechargeable | 360° Neck', price:549, orig:799, rating:4.3, reviews:180, stock:14, images: ['https://images.unsplash.com/photo-1517520287167-4bbf64ac2f3e?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=800'] },
+  { id:407, cat:'essentials', brand:'FocusTime', name:'Modern Desktop Clock', specs:'Digital | Temperature | Silent Mode', price:399, orig:599, rating:4.1, reviews:440, stock:20, images: ['https://images.unsplash.com/photo-1509048191080-d2984bad6ad5?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1512036667332-28a3f9ef7aa4?auto=format&fit=crop&q=80&w=800'] },
+  { id:408, cat:'essentials', badge:'hot', badgeLabel:'2 AM Edition', brand:'2 AM Study', name:'Focus T-Shirt', specs:'100% Cotton | Oversized Fit | Black', price:599, orig:899, rating:4.6, reviews:670, stock:25, images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1562157873-840cf81a6773?auto=format&fit=crop&q=80&w=800'] },
+  { id:409, cat:'essentials', badge:'sale', badgeLabel:'Sale', brand:'2 AM Study', name:'Night Focus Hoodie', specs:'Heavy Cotton | Fleece Lined | Unisex', price:1199, orig:1699, rating:4.7, reviews:320, stock:7, images: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1578587018872-d914bb7f0ea1?auto=format&fit=crop&q=80&w=800'] },
+  { id:410, cat:'essentials', brand:'AuraStyle', name:'Satin Scrunchie Set', specs:'Pack of 6 | No-snag | Velvet Touch', price:149, orig:249, rating:4.0, reviews:210, stock:40, images: ['https://images.unsplash.com/photo-1582234032230-08703770f3f2?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1534067783941-51c9c23eccfd?auto=format&fit=crop&q=80&w=800'] },
+  { id:411, cat:'essentials', brand:'GuardX', name:'Personal Safety Alarm', specs:'140dB | LED Light | Keychain Design', price:249, orig:499, rating:4.6, reviews:110, stock:30, images: ['https://images.unsplash.com/photo-1588691350645-03719b45610a?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1520110120835-c96534a4c984?auto=format&fit=crop&q=80&w=800'] },
+  { id:412, cat:'essentials', brand:'SafeKnight', name:'Night Safety Flashlight', specs:'Zoomable | 5 Modes | Rechargeable', price:399, orig:749, rating:4.5, reviews:85, stock:25, images: ['https://images.unsplash.com/photo-1550418162-83b16d54832b?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1506450983270-d790d451a012?auto=format&fit=crop&q=80&w=800'] },
+  { id:413, cat:'essentials', badge:'hot', badgeLabel:'Gift', brand:'2 AM Study', name:'Birthday Surprise Box', specs:'Curated Goods | Gift Wrapped | Festive', price:699, orig:1499, rating:4.8, reviews:150, stock:5, images: ['https://images.unsplash.com/photo-1549465220-1d8c9d9c4709?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&q=80&w=800'] },
+  { id:414, cat:'essentials', brand:'MemoryLane', name:'Birthday Memory Kit', specs:'Scrapbook | Pens | Stickers Combo', price:449, orig:899, rating:4.4, reviews:70, stock:10, images: ['https://images.unsplash.com/photo-1512418490979-92798ccc13a0?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&q=80&w=800'] },
+  { id:415, cat:'essentials', brand:'InspoWall', name:'Motivational Poster Set', specs:'Pack of 10 | A4 Size | High Gloss', price:199, orig:299, rating:4.0, reviews:410, stock:35, images: ['https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1554048612-b6a482bc67e5?auto=format&fit=crop&q=80&w=800'] },
+  { id:416, cat:'essentials', badge:'top', badgeLabel:'Best Value', brand:'2 AM Study', name:'Study Essentials Kit', specs:'Complete Stationary | 12 Items', price:899, orig:1299, rating:4.6, reviews:320, stock:11, images: ['https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&q=80&w=800'] }
 ];
 
-let currentCategory = 'all';
+let currentCategories = [];
+let currentSearch = '';
+let currentPriceFilters = []; // Changed to store array of strings
+let currentOfferFilters = { discount: false, new: false };
+let currentRatingFilters = [];
+let includeOutOfStock = false;
+let currentSort = 'Popularity';
 
-function renderProducts(category = 'all') {
-  const grid = document.getElementById('storeGrid');
-  const empty = document.getElementById('storeEmpty');
-  
-  const filteredProducts = category === 'all' 
-    ? storeProducts 
-    : storeProducts.filter(p => p.cat === category);
-  
-  if (filteredProducts.length === 0) {
+const grid = document.getElementById('storeGrid');
+const empty = document.getElementById('storeEmpty');
+const resultsCount = document.getElementById('resultsCount');
+
+// Debounce helper
+function debounce(func, timeout = 300) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
+function renderProducts(skipAnimation = false) {
+  let filtered = [...storeProducts];
+
+  // 1. Search Filter
+  if (currentSearch) {
+    const term = currentSearch.toLowerCase();
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(term) || 
+      p.cat.toLowerCase().includes(term) ||
+      p.brand.toLowerCase().includes(term) ||
+      p.specs.toLowerCase().includes(term)
+    );
+  }
+
+  // 2. Category Filter (Multi-select)
+  if (currentCategories.length > 0) {
+    filtered = filtered.filter(p => currentCategories.includes(p.cat));
+  }
+
+  // 3. Price Filter (Multi-select)
+  if (currentPriceFilters.length > 0) {
+    filtered = filtered.filter(p => {
+      return currentPriceFilters.some(range => {
+        if (range === '0-500') return p.price < 500;
+        if (range === '500-1000') return p.price >= 500 && p.price <= 1000;
+        if (range === '1000-plus') return p.price > 1000;
+        return false;
+      });
+    });
+  }
+
+  // 4. Special Offers Filter
+  if (currentOfferFilters.discount) {
+    filtered = filtered.filter(p => p.orig > p.price);
+  }
+  if (currentOfferFilters.new) {
+    filtered = filtered.filter(p => p.badge === 'new');
+  }
+
+  // 5. Ratings Filter
+  if (currentRatingFilters.length > 0) {
+    const minRating = Math.min(...currentRatingFilters);
+    filtered = filtered.filter(p => p.rating >= minRating);
+  }
+
+  // 6. Availability Filter
+  if (!includeOutOfStock) {
+    filtered = filtered.filter(p => p.stock > 0);
+  }
+
+  // 6. Sort Logic (Inside renderProducts)
+  switch(currentSort) {
+    case 'Price -- Low to High': filtered.sort((a, b) => a.price - b.price); break;
+    case 'Price -- High to Low': filtered.sort((a, b) => b.price - a.price); break;
+    case 'Newest First': filtered.sort((a, b) => b.id - a.id); break;
+    case 'Discount': filtered.sort((a, b) => {
+      const discA = (a.orig - a.price) / a.orig;
+      const discB = (b.orig - b.price) / b.orig;
+      return discB - discA;
+    }); break;
+    // Default is Popularity (stable sort by reviews/rating)
+    default: filtered.sort((a, b) => (b.rating * b.reviews) - (a.rating * a.reviews)); break;
+  }
+
+  // Update UI
+  if (filtered.length === 0) {
     grid.style.display = 'none';
     empty.style.display = 'block';
+    resultsCount.textContent = '0';
     return;
   }
-  
+
   grid.style.display = 'grid';
   empty.style.display = 'none';
-  
-  grid.innerHTML = filteredProducts.map(product => `
-    <div class="store-card" onclick="viewProduct(${product.id})">
-      <div class="store-card-image">
-        ${product.emoji}
-        ${product.badge ? `<span class="store-badge badge-${product.badge}">${product.badgeLabel}</span>` : ''}
-      </div>
-      <div class="store-card-content">
-        <h3 class="store-card-title">${product.name}</h3>
-        <p class="store-card-desc">${product.desc}</p>
-        <div class="store-card-price">
-          <span class="price-current">Rs. ${product.price}</span>
-          <span class="price-original">Rs. ${product.orig}</span>
-        </div>
-        <button class="store-card-btn" onclick="event.stopPropagation(); viewProduct(${product.id})">
-          View Details
+  resultsCount.textContent = filtered.length;
+
+  grid.innerHTML = filtered.map((product, index) => {
+    const discount = Math.round(((product.orig - product.price) / product.orig) * 100);
+    const stockHtml = product.stock <= 10 ? `<span class="flipkart-stock-tag" style="position:relative; margin-left:10px;">Only ${product.stock} left</span>` : '';
+    const img1 = product.images ? product.images[0] : 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&q=80&w=800';
+    const img2 = product.images && product.images[1] ? product.images[1] : img1;
+
+    return `
+    <div class="flipkart-product-card ${skipAnimation ? '' : 'product-anim-entry'}" onclick="viewProduct(${product.id})" style="animation-delay: ${index * 0.05}s">
+      <div class="flipkart-product-image">
+        <img src="${img1}" class="img-primary" alt="${product.name}">
+        <img src="${img2}" class="img-secondary" alt="${product.name}">
+        ${product.badge ? `<span class="flipkart-product-badge flipkart-badge-${product.badge}">${product.badgeLabel}</span>` : ''}
+        <button class="flipkart-wishlist-btn" onclick="toggleWishlist(event, this)">
+          <i class="fa-solid fa-heart"></i>
         </button>
       </div>
+      <div class="flipkart-product-content">
+        <span class="flipkart-product-brand">${product.brand}</span>
+        <h3 class="flipkart-product-title">${product.name}</h3>
+        <span class="flipkart-product-specs">${product.specs}</span>
+        
+        <div class="flipkart-rating-row">
+          <span class="flipkart-rating-pill">${product.rating} ★</span>
+          <span class="flipkart-review-count">(${product.reviews.toLocaleString()})</span>
+          ${stockHtml}
+        </div>
+        
+        <div class="flipkart-price-row">
+          <span class="price-current">₹${product.price}</span>
+          <span class="price-original">₹${product.orig}</span>
+          <span class="price-discount">${discount}% off</span>
+        </div>
+      </div>
     </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function viewProduct(productId) {
   window.location.href = `/store/product/${productId}`;
 }
 
-// Filter buttons
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+function toggleWishlist(event, btn) {
+  event.stopPropagation(); // prevent opening the product page
+  btn.classList.toggle('active');
+  const icon = btn.querySelector('i');
+  // Optional animation effect
+  icon.style.transform = 'scale(1.2)';
+  setTimeout(() => icon.style.transform = 'scale(1)', 150);
+}
+
+// Event Listeners
+// Search handled below with clear button logic
+
+document.querySelectorAll('.category-filter').forEach(checkbox => {
+  checkbox.addEventListener('change', () => {
+    currentCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+    renderProducts();
+  });
+});
+
+document.querySelectorAll('.price-filter').forEach(checkbox => {
+  checkbox.addEventListener('change', () => {
+    currentPriceFilters = Array.from(document.querySelectorAll('.price-filter:checked')).map(cb => cb.value);
+    renderProducts();
+  });
+});
+
+document.getElementById('filterDiscount')?.addEventListener('change', (e) => {
+  currentOfferFilters.discount = e.target.checked;
+  renderProducts();
+});
+
+document.getElementById('filterNew')?.addEventListener('change', (e) => {
+  currentOfferFilters.new = e.target.checked;
+  renderProducts();
+});
+
+document.querySelectorAll('.rating-filter').forEach(checkbox => {
+  checkbox.addEventListener('change', () => {
+    currentRatingFilters = Array.from(document.querySelectorAll('.rating-filter:checked')).map(cb => parseFloat(cb.value));
+    renderProducts();
+  });
+});
+
+document.getElementById('filterOutOfStock')?.addEventListener('change', (e) => {
+  includeOutOfStock = e.target.checked;
+  renderProducts();
+});
+
+// Sort tabs
+document.querySelectorAll('.sort-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
-    currentCategory = this.dataset.category;
-    renderProducts(currentCategory);
+    currentSort = this.dataset.sort;
+    renderProducts();
+  });
+});
+
+// Search functionality
+const searchInput = document.getElementById('storeSearchInput');
+const debouncedRender = debounce(() => renderProducts(), 250);
+
+searchInput?.addEventListener('input', (e) => {
+  currentSearch = e.target.value;
+  debouncedRender();
+});
+
+// Total count element
+const totalCount = document.getElementById('totalCount');
+if (totalCount) totalCount.textContent = storeProducts.length;
+
+// Mobile UX logic
+const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+const mobileSortBtn = document.getElementById('mobileSortBtn');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const flipkartSidebar = document.getElementById('flipkartSidebar');
+const closeFilterBtn = document.getElementById('closeFilterBtn');
+
+const flipkartSortSidebar = document.getElementById('flipkartSortSidebar');
+const closeSortBtn = document.getElementById('closeSortBtn');
+
+function toggleFilter() {
+  flipkartSidebar.classList.toggle('show');
+  sidebarOverlay.classList.toggle('show');
+  document.body.style.overflow = flipkartSidebar.classList.contains('show') ? 'hidden' : '';
+}
+
+function toggleSort() {
+  flipkartSortSidebar.classList.toggle('show');
+  sidebarOverlay.classList.toggle('show');
+  document.body.style.overflow = flipkartSortSidebar.classList.contains('show') ? 'hidden' : '';
+}
+
+mobileFilterBtn?.addEventListener('click', toggleFilter);
+closeFilterBtn?.addEventListener('click', toggleFilter);
+
+mobileSortBtn?.addEventListener('click', toggleSort);
+closeSortBtn?.addEventListener('click', toggleSort);
+
+sidebarOverlay?.addEventListener('click', () => {
+  flipkartSidebar.classList.remove('show');
+  flipkartSortSidebar.classList.remove('show');
+  sidebarOverlay.classList.remove('show');
+  document.body.style.overflow = '';
+});
+
+// Mobile Sort logic
+document.querySelectorAll('.mobile-sort-radio').forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    // update desktop tabs sync
+    document.querySelectorAll('.sort-tab').forEach(t => {
+      if(t.dataset.sort === currentSort) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+    toggleSort();
+    renderProducts();
   });
 });
 

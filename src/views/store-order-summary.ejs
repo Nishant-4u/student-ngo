@@ -256,44 +256,119 @@ body {
 
 <div class="order-main">
   <div class="container">
+    <!-- Header -->
+    <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 24px; color: var(--order-text);">Secure Checkout</h1>
+
     <div class="order-container">
-      <div class="order-section">
-        <h2>Shopping Cart</h2>
-        <div id="cartItems">
-          <!-- Cart items will be dynamically loaded here -->
+      <!-- Left Column: Checkout Forms & Order Summary -->
+      <div class="checkout-forms">
+        <!-- 1. Delivery Address -->
+        <div class="order-section" style="margin-bottom: 24px;">
+          <h2 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-location-dot" style="color: var(--order-accent);"></i> 1. Delivery Address
+          </h2>
+          <div class="address-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
+            <div style="grid-column: span 2;">
+              <input type="text" id="checkout-name" class="promo-input" style="width: 100%;" placeholder="Full Name *" required>
+            </div>
+            <div style="grid-column: span 2;">
+              <input type="email" id="checkout-email" class="promo-input" style="width: 100%;" placeholder="Email Address *" required>
+            </div>
+            <input type="tel" id="checkout-phone" class="promo-input" placeholder="Phone Number *" required>
+            <input type="text" id="checkout-pincode" class="promo-input" placeholder="Pincode (6 digits) *" maxlength="6" required>
+            <div style="grid-column: span 2;">
+              <textarea id="checkout-address" class="promo-input" style="width: 100%;" placeholder="Complete Address (House No, Street, Landmark) *" rows="3" required></textarea>
+            </div>
+            <div style="grid-column: span 2;">
+              <input type="text" id="checkout-city" class="promo-input" style="width: 100%;" placeholder="City / Town *" required>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 2. Order Summary -->
+        <div class="order-section" style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; margin: 0;">
+              <i class="fa-solid fa-box" style="color: var(--order-accent);"></i> 2. Order Summary
+            </h2>
+            <a href="/store/cart" style="font-size: 0.85rem; color: var(--order-accent); font-weight: 700; text-decoration: none; text-transform: uppercase; padding: 4px 12px; border: 1px solid var(--order-border); border-radius: 6px;">Modify Cart</a>
+          </div>
+          <div id="cartItems">
+            <!-- Items load here -->
+          </div>
+        </div>
+
+        <!-- 3. Payment Method -->
+        <div class="order-section">
+          <h2 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-credit-card" style="color: var(--order-accent);"></i> 3. Payment Method
+          </h2>
+          <div class="payment-options" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+            <label style="display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 2px solid var(--order-accent); border-radius: 12px; background: rgba(99, 102, 241, 0.05); cursor: pointer; transition: all 0.2s;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <input type="radio" name="payment_method" value="upi" checked style="accent-color: var(--order-accent); transform: scale(1.2);">
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-weight: 700;">UPI</span>
+                  <span style="font-size: 0.8rem; color: var(--order-text-muted);">Google Pay, PhonePe, Paytm</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; opacity: 0.8;">
+                <i class="fa-brands fa-google-pay" style="font-size: 24px;"></i>
+                <i class="fa-solid fa-mobile-screen-button" style="font-size: 18px;"></i>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--order-border); border-radius: 12px; cursor: pointer; transition: all 0.2s; opacity: 0.6;">
+              <input type="radio" name="payment_method" value="card" style="accent-color: var(--order-accent); transform: scale(1.2);">
+              <span style="font-weight: 600;">Credit / Debit Card</span>
+            </label>
+          </div>
         </div>
       </div>
       
-      <div class="order-section order-summary">
-        <h2>Order Summary</h2>
+      <!-- Right Column: Price Details -->
+      <div class="order-section order-summary" style="border: 2px solid var(--order-accent); height: max-content;">
+        <h2 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+          <i class="fa-solid fa-receipt" style="color: var(--order-accent);"></i> Price Details
+        </h2>
         
-        <div class="promo-code">
-          <input type="text" class="promo-input" placeholder="Enter promo code" id="promoCode">
-          <button class="promo-btn" onclick="applyPromo()">Apply</button>
+        <div style="border-top: 1px solid var(--order-border); padding-top: 16px;">
+          <div class="summary-row" style="padding: 8px 0;">
+            <span class="summary-label" id="priceLabel">Price (1 item)</span>
+            <span class="summary-value" id="mrpTotal">₹0</span>
+          </div>
+          <div class="summary-row" style="padding: 8px 0;">
+            <span class="summary-label">Product Discount</span>
+            <span class="summary-value" id="discountTotal" style="color: var(--order-green);">-₹0</span>
+          </div>
+          <div class="summary-row" id="couponRow" style="padding: 8px 0; display: none;">
+            <span class="summary-label">Coupon Savings</span>
+            <span class="summary-value" id="couponDiscount" style="color: var(--order-green);">-₹0</span>
+          </div>
+          <div class="summary-row" style="padding: 8px 0;">
+            <span class="summary-label">Delivery Charges</span>
+            <span class="summary-value" style="color: var(--order-green); font-weight: 700;">FREE</span>
+          </div>
+          <div class="summary-row" style="margin-top: 12px; border-top: 2px dashed var(--order-border); padding-top: 16px;">
+            <span class="summary-label" style="font-size: 1.2rem; color: var(--order-text); font-weight: 700;">Total Amount</span>
+            <span class="summary-value" id="total" style="font-size: 1.5rem; color: var(--order-green); font-weight: 800;">₹0</span>
+          </div>
+
+          <!-- Coupon Code moved below total amount -->
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--order-border);">
+            <div class="promo-code" style="margin-bottom: 5px;">
+              <input type="text" class="promo-input" id="couponInput" placeholder="Enter Coupon Code">
+              <button class="promo-btn" onclick="applyCoupon()">Apply</button>
+            </div>
+            <div id="couponMessage" style="font-size: 0.85rem; margin-top: 0px; margin-bottom: 10px; display: none;"></div>
+          </div>
+          
+          <div style="margin-top: 12px; font-size: 0.9rem; color: var(--order-green); font-weight: 600; text-align: right;" id="savingsText">
+            You will save ₹0 on this order
+          </div>
         </div>
         
-        <div class="summary-row">
-          <span class="summary-label">Subtotal</span>
-          <span class="summary-value" id="subtotal">Rs. 0</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Discount</span>
-          <span class="summary-value" id="discount">-Rs. 0</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Shipping</span>
-          <span class="summary-value">FREE</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Total</span>
-          <span class="summary-value" id="total">Rs. 0</span>
-        </div>
-        
-        <button class="checkout-btn" onclick="proceedToCheckout()">
-          Proceed to Checkout
-        </button>
-        <button class="continue-shopping" onclick="window.location.href='/store'">
-          Continue Shopping
+        <button class="checkout-btn" style="margin-top: 24px; font-size: 1.2rem; padding: 1.2rem; display: flex; justify-content: center; align-items: center; gap: 12px; border-radius: 12px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);" onclick="proceedToCheckout()">
+          <i class="fa-solid fa-shield-check"></i> PAY SECURELY
         </button>
       </div>
     </div>
@@ -301,23 +376,81 @@ body {
 </div>
 
 <script>
-// Sample cart data - in real app this would come from session/localStorage
-let cartItems = [
-  // This would be populated from actual cart data
-];
+let cartItems = [];
+
+async function initializeCart() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const buyNowId = urlParams.get('buyNow');
+
+  if (buyNowId) {
+    // Direct Purchase Mode
+    try {
+      const res = await fetch(`/api/store/products/${buyNowId}`);
+      const data = await res.json();
+      if (data.success && data.product) {
+        const p = data.product;
+        cartItems = [{
+          productId: p.id,
+          name: p.name,
+          image: p.images[0],
+          price: p.price,
+          orig: p.orig,
+          qty: 1
+        }];
+      }
+    } catch (err) {
+      console.error('Failed to load buy now product', err);
+    }
+  } else {
+    // Standard Cart Mode
+    try {
+      const res = await fetch('/api/store/cart');
+      const data = await res.json();
+      if (data.success && data.items) {
+        cartItems = data.items;
+      }
+    } catch (err) {
+      console.error('Failed to load cart', err);
+    }
+  }
+
+  // Pre-fill address if available
+  const savedCustomer = JSON.parse(localStorage.getItem('2am_checkout_customer') || 'null');
+  if (savedCustomer) {
+    if (document.getElementById('checkout-name')) document.getElementById('checkout-name').value = savedCustomer.name || '';
+    if (document.getElementById('checkout-email')) document.getElementById('checkout-email').value = savedCustomer.email || '';
+    if (document.getElementById('checkout-phone')) document.getElementById('checkout-phone').value = savedCustomer.phone || '';
+    if (document.getElementById('checkout-pincode')) document.getElementById('checkout-pincode').value = savedCustomer.pincode || '';
+    if (document.getElementById('checkout-address')) document.getElementById('checkout-address').value = savedCustomer.address || '';
+    if (document.getElementById('checkout-city')) document.getElementById('checkout-city').value = savedCustomer.city || '';
+  }
+
+  // Auto-save address as user types
+  const addressFields = ['checkout-name', 'checkout-email', 'checkout-phone', 'checkout-pincode', 'checkout-address', 'checkout-city'];
+  addressFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => {
+        const currentData = JSON.parse(localStorage.getItem('2am_checkout_customer') || '{}');
+        const key = id.replace('checkout-', '');
+        currentData[key] = el.value.trim();
+        localStorage.setItem('2am_checkout_customer', JSON.stringify(currentData));
+      });
+    }
+  });
+
+  renderCart();
+}
 
 function renderCart() {
   const cartContainer = document.getElementById('cartItems');
   
   if (cartItems.length === 0) {
     cartContainer.innerHTML = `
-      <div class="empty-cart">
-        <div class="empty-cart-icon">\ud83d\uded2</div>
-        <h3>Your cart is empty</h3>
-        <p>Add some products from our store to get started!</p>
-        <button class="btn-primary" onclick="window.location.href='/store'">
-          Browse Store
-        </button>
+      <div class="empty-cart" style="text-align: center; padding: 40px 0;">
+        <div class="empty-cart-icon" style="font-size: 3rem; margin-bottom: 16px;">🛒</div>
+        <h3 style="color: var(--order-text);">Your cart is empty</h3>
+        <p style="color: var(--order-text-muted);">Add items to your cart to see them here.</p>
       </div>
     `;
     updateSummary();
@@ -325,20 +458,19 @@ function renderCart() {
   }
   
   cartContainer.innerHTML = cartItems.map((item, index) => `
-    <div class="cart-item">
-      <div class="cart-item-image">${item.emoji}</div>
-      <div class="cart-item-details">
-        <div class="cart-item-title">${item.name}</div>
-        <div class="cart-item-desc">${item.desc}</div>
-        <div class="cart-item-quantity">
-          <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
-          <span class="quantity-value">${item.quantity || 1}</span>
-          <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
-        </div>
+    <div class="cart-item" style="display: grid; grid-template-columns: 70px 1fr; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--order-border);">
+      <div class="cart-item-image" style="width: 70px; height: 70px; border-radius: 6px; overflow: hidden; background: #fff;">
+        <img src="${item.image || item.images?.[0] || 'https://via.placeholder.com/70'}" style="width: 100%; height: 100%; object-fit: contain;" alt="${item.name}">
       </div>
-      <div class="cart-item-price">
-        <span class="cart-item-current">Rs. ${item.price * (item.quantity || 1)}</span>
-        <span class="cart-item-original">Rs. ${item.orig * (item.quantity || 1)}</span>
+      <div class="cart-item-details">
+        <div class="cart-item-title" style="font-weight: 700; color: var(--order-text); font-size: 0.95rem;">${item.name}</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+          <span style="color: var(--order-text-muted); font-size: 0.85rem;">Qty: ${item.qty || 1}</span>
+          <div style="text-align: right;">
+            <span style="color: var(--order-text-muted); text-decoration: line-through; font-size: 0.85rem; margin-right: 6px;">₹${((item.orig || Math.round(item.price * 1.2)) * (item.qty || 1)).toLocaleString()}</span>
+            <span style="color: var(--order-green); font-weight: 700; font-size: 1rem;">₹${(item.price * (item.qty || 1)).toLocaleString()}</span>
+          </div>
+        </div>
       </div>
     </div>
   `).join('');
@@ -346,27 +478,59 @@ function renderCart() {
   updateSummary();
 }
 
-function updateQuantity(index, change) {
-  cartItems[index].quantity = Math.max(1, (cartItems[index].quantity || 1) + change);
-  renderCart();
-}
+let appliedCouponAmount = 0;
 
 function updateSummary() {
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-  const discount = 0; // Calculate discount based on promo code
+  let mrpTotal = 0;
+  let priceTotal = 0;
+  let totalItems = 0;
   
-  document.getElementById('subtotal').textContent = `Rs. ${subtotal}`;
-  document.getElementById('discount').textContent = `-Rs. ${discount}`;
-  document.getElementById('total').textContent = `Rs. ${subtotal - discount}`;
+  cartItems.forEach(item => {
+    let itemPrice = item.price;
+    let itemMrp = item.orig || Math.round(itemPrice * 1.2); // Fallback MRP if not provided
+    let qty = item.qty || 1;
+    mrpTotal += itemMrp * qty;
+    priceTotal += itemPrice * qty;
+    totalItems += qty;
+  });
+  
+  const discount = mrpTotal - priceTotal;
+  const finalTotal = priceTotal - appliedCouponAmount;
+  const totalSavings = discount + appliedCouponAmount;
+  
+  const itemText = totalItems === 1 ? '1 item' : `${totalItems} items`;
+  const priceLabel = document.getElementById('priceLabel');
+  if(priceLabel) priceLabel.textContent = `Price (${itemText})`;
+  
+  document.getElementById('mrpTotal').textContent = `₹${mrpTotal.toLocaleString()}`;
+  document.getElementById('discountTotal').textContent = `-₹${discount.toLocaleString()}`;
+  document.getElementById('total').textContent = `₹${finalTotal.toLocaleString()}`;
+  document.getElementById('savingsText').textContent = `You will save ₹${totalSavings.toLocaleString()} on this order`;
 }
 
-function applyPromo() {
-  const promoCode = document.getElementById('promoCode').value.trim();
-  if (promoCode) {
-    // Apply promo logic here
-    alert('Promo code applied!');
-    updateSummary();
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const msg = document.getElementById('couponMessage');
+  const couponRow = document.getElementById('couponRow');
+  const couponDiscount = document.getElementById('couponDiscount');
+  
+  if (code === 'STUDY10') {
+    appliedCouponAmount = 50; // Flat ₹50 off for example
+    msg.textContent = 'Coupon applied successfully!';
+    msg.style.color = 'var(--order-green)';
+    msg.style.display = 'block';
+    
+    couponRow.style.display = 'flex';
+    couponDiscount.textContent = `-₹${appliedCouponAmount}`;
+  } else {
+    appliedCouponAmount = 0;
+    msg.textContent = 'Invalid or expired coupon code.';
+    msg.style.color = '#ff6161';
+    msg.style.display = 'block';
+    
+    couponRow.style.display = 'none';
   }
+  updateSummary();
 }
 
 function proceedToCheckout() {
@@ -374,11 +538,70 @@ function proceedToCheckout() {
     alert('Your cart is empty!');
     return;
   }
+
+  // Address Validation
+  const name = document.getElementById('checkout-name').value.trim();
+  const email = document.getElementById('checkout-email').value.trim();
+  const phone = document.getElementById('checkout-phone').value.trim();
+  const pincode = document.getElementById('checkout-pincode').value.trim();
+  const address = document.getElementById('checkout-address').value.trim();
+  const city = document.getElementById('checkout-city').value.trim();
+
+  if (!name || !email || !phone || !pincode || !address || !city) {
+    alert('Please fill in all mandatory address details (marked with *) before proceeding.');
+    const fields = ['checkout-name', 'checkout-email', 'checkout-phone', 'checkout-pincode', 'checkout-address', 'checkout-city'];
+    fields.forEach(f => {
+      const el = document.getElementById(f);
+      if (!el.value.trim()) {
+        el.style.borderColor = '#ff6161';
+      } else {
+        el.style.borderColor = 'var(--order-border)';
+      }
+    });
+    return;
+  }
+
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert('Please enter a valid Email Address.');
+    document.getElementById('checkout-email').style.borderColor = '#ff6161';
+    return;
+  }
+
+  if (pincode.length !== 6 || isNaN(pincode)) {
+    alert('Please enter a valid 6-digit Pincode.');
+    document.getElementById('checkout-pincode').style.borderColor = '#ff6161';
+    return;
+  }
+
+  if (phone.length < 10 || isNaN(phone.replace(/\D/g,''))) {
+    alert('Please enter a valid Phone Number.');
+    document.getElementById('checkout-phone').style.borderColor = '#ff6161';
+    return;
+  }
+
+  // Save to localStorage so payment page can read it
+  localStorage.setItem('2am_checkout_customer', JSON.stringify({
+    name, email, phone, pincode, address, city
+  }));
+  
+  // Sync cart to localStorage for payment page
+  localStorage.setItem('2am_cart', JSON.stringify(cartItems));
+  
+  // Save coupon if applied
+  if (appliedCouponAmount > 0) {
+    const code = document.getElementById('couponInput').value.trim().toUpperCase();
+    localStorage.setItem('2am_coupon', JSON.stringify({ code, amount: appliedCouponAmount }));
+  } else {
+    localStorage.removeItem('2am_coupon');
+  }
+
   window.location.href = '/store/payment';
 }
 
-// Initialize cart
-renderCart();
+// Initialize
+initializeCart();
 </script>
 
 <%- include('partials/footer') %>

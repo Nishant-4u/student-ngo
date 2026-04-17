@@ -1,359 +1,582 @@
 <%- include('partials/header') %>
 
 <style>
-/* Store Product Page Styles */
-:root {
-  --product-bg: #0b1220;
-  --product-card: #0f172a;
-  --product-border: rgba(255,255,255,0.07);
-  --product-accent: #6366f1;
-  --product-accent-hover: #4f46e5;
-  --product-orange: #fb641b;
-  --product-orange-hover: #ff7531;
-  --product-green: #388e3c;
-  --product-text: #f8fafc;
-  --product-text-muted: #94a3b8;
-}
-
-body {
-  background-color: var(--product-bg);
-  color: var(--product-text);
-  font-family: 'Inter', sans-serif;
-}
-
-.product-main {
-  padding-top: 100px;
-  padding-bottom: 60px;
-  min-height: 100vh;
-}
-
-.product-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  margin-bottom: 3rem;
-}
-
-.product-image-section {
-  background: var(--product-card);
-  border: 1px solid var(--product-border);
-  border-radius: 12px;
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 400px;
-}
-
-.product-emoji {
-  font-size: 8rem;
-}
-
-.product-details-section {
-  background: var(--product-card);
-  border: 1px solid var(--product-border);
-  border-radius: 12px;
-  padding: 2rem;
-}
-
-.product-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-}
-
-.badge-top {
-  background: var(--product-accent);
-  color: white;
-}
-
-.badge-hot {
-  background: #ef4444;
-  color: white;
-}
-
-.badge-new {
-  background: #10b981;
-  color: white;
-}
-
-.badge-sale {
-  background: #f59e0b;
-  color: white;
-}
-
-.product-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--product-text);
-}
-
-.product-description {
-  font-size: 1.1rem;
-  color: var(--product-text-muted);
-  line-height: 1.6;
-  margin-bottom: 2rem;
-}
-
-.product-price-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.price-current {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--product-green);
-}
-
-.price-original {
-  font-size: 1.25rem;
-  color: var(--product-text-muted);
-  text-decoration: line-through;
-}
-
-.product-discount {
-  background: #ef4444;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.product-actions {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.btn-primary {
-  flex: 1;
-  padding: 1rem;
-  background: var(--product-orange);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1.1rem;
-}
-
-.btn-primary:hover {
-  background: var(--product-orange-hover);
-}
-
-.btn-secondary {
-  padding: 1rem 2rem;
-  background: transparent;
-  color: var(--product-text);
-  border: 1px solid var(--product-border);
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--product-card);
-  border-color: var(--product-accent);
-}
-
-.product-features {
-  margin-bottom: 2rem;
-}
-
-.product-features h3 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  color: var(--product-text);
-}
-
-.feature-list {
-  list-style: none;
-  padding: 0;
-}
-
-.feature-list li {
-  padding: 0.5rem 0;
-  color: var(--product-text-muted);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.feature-list li::before {
-  content: "â";
-  color: var(--product-green);
-  font-weight: bold;
-}
-
-.related-products {
-  margin-top: 3rem;
-}
-
-.related-products h2 {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  color: var(--product-text);
-}
-
-.related-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.related-card {
-  background: var(--product-card);
-  border: 1px solid var(--product-border);
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.related-card:hover {
-  border-color: var(--product-accent);
-  transform: translateY(-2px);
-}
-
-.related-card-emoji {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-.related-card-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--product-text);
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-.related-card-price {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--product-green);
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .product-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+:root{--fk-blue:#2874f0;--fk-orange:#ff9f00;--fk-green:#388e3c;--fk-red:#ff6161;--fk-bg:#f1f3f6;--fk-card:#fff;--fk-text:#212121;--fk-text2:#878787;--fk-border:#f0f0f0}
+body{background:var(--fk-bg);color:var(--fk-text);font-family:'Inter',sans-serif}
+.fk-breadcrumb{padding:8px 0;font-size:12px;color:var(--fk-text2)}.fk-breadcrumb a{color:var(--fk-blue);text-decoration:none}.fk-breadcrumb span{margin:0 4px}
+.fk-product-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:16px;align-items:start}
+.fk-image-section{background:var(--fk-card);padding:16px;position:sticky;top:80px;border-radius:4px}
+.fk-main-image{width:100%;height:420px;display:flex;align-items:center;justify-content:center;background:#fafafa;border-radius:4px;margin-bottom:12px;position:relative}
+.fk-main-image .fk-emoji{font-size:10rem}
+.fk-main-image .fk-stock-badge{position:absolute;top:12px;left:12px;background:var(--fk-red);color:#fff;padding:4px 10px;border-radius:2px;font-size:12px;font-weight:600}
+.fk-image-thumbs{display:flex;gap:8px;overflow-x:auto}
+.fk-thumb{width:64px;height:64px;min-width:64px;border:2px solid transparent;border-radius:2px;display:flex;align-items:center;justify-content:center;background:#fafafa;cursor:pointer;font-size:2rem;transition:border-color .2s}
+.fk-thumb.active,.fk-thumb:hover{border-color:var(--fk-blue)}
+.fk-image-actions{display:flex;gap:12px;margin-top:16px}
+.fk-image-actions button{flex:1;padding:14px;border:none;border-radius:2px;font-weight:600;font-size:16px;cursor:pointer;transition:opacity .2s}
+.fk-image-actions button:hover{opacity:.9}
+.fk-btn-cart{background:var(--fk-orange);color:#fff}.fk-btn-buy{background:var(--fk-green);color:#fff}
+.fk-details-section{background:var(--fk-card);padding:24px;border-radius:4px}
+.fk-product-badge{display:inline-block;padding:3px 10px;border-radius:2px;font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:8px;color:#fff}
+.fk-badge-top{background:var(--fk-blue)}.fk-badge-hot{background:#e53935}.fk-badge-new{background:#00bfa5}.fk-badge-sale{background:#ff6d00}
+.fk-product-name{font-size:18px;font-weight:500;margin-bottom:8px}
+.fk-product-rating{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.fk-rating-badge{background:var(--fk-green);color:#fff;padding:2px 8px;border-radius:2px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:3px}
+.fk-rating-count{font-size:13px;color:var(--fk-text2)}
+.fk-special-price{font-size:13px;color:var(--fk-green);font-weight:600;margin-bottom:4px}
+.fk-price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.fk-price-current{font-size:28px;font-weight:700}.fk-price-original{font-size:16px;color:var(--fk-text2);text-decoration:line-through}.fk-price-discount{font-size:16px;color:var(--fk-green);font-weight:600}
+.fk-offers{background:#fff9e6;border:1px solid #ffe082;border-radius:4px;padding:12px;margin-bottom:16px}
+.fk-offers-title{font-size:13px;font-weight:600;margin-bottom:6px}
+.fk-offer-item{font-size:12px;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.fk-offer-tag{background:#388e3c;color:#fff;padding:1px 6px;border-radius:2px;font-size:10px;font-weight:600}
+.fk-delivery{border:1px solid var(--fk-border);border-radius:4px;padding:16px;margin-bottom:16px}
+.fk-delivery-title{font-size:13px;font-weight:600;margin-bottom:10px}
+.fk-pincode-row{display:flex;gap:8px;margin-bottom:12px}
+.fk-pincode-input{flex:1;padding:8px 12px;border:1px solid #c2c2c2;border-radius:2px;font-size:14px;outline:none}
+.fk-pincode-input:focus{border-color:var(--fk-blue)}
+.fk-pincode-btn{padding:8px 16px;background:var(--fk-blue);color:#fff;border:none;border-radius:2px;font-weight:600;cursor:pointer;font-size:13px}
+.fk-delivery-result{font-size:13px;padding:8px 0}.fk-delivery-result .fk-date{font-weight:600;color:var(--fk-green)}.fk-delivery-result .fk-charge{color:var(--fk-text2)}
+.fk-trust{display:flex;gap:16px;margin-bottom:24px;padding:12px 0;border-top:1px dashed var(--fk-border);border-bottom:1px dashed var(--fk-border)}
+.fk-trust-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:11px;flex:1;color:#666;font-weight:500;}
+.fk-trust-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;background:#f5faff;color:var(--fk-blue);border-radius:50%;margin-bottom:2px}
+.fk-payment-info{border:1px solid var(--fk-border);border-radius:4px;padding:16px;margin-bottom:16px}
+.fk-payment-title{font-size:13px;font-weight:600;margin-bottom:8px}
+.fk-payment-item{font-size:12px;color:var(--fk-text2);padding:3px 0;display:flex;align-items:center;gap:6px}
+.fk-desc-section,.fk-specs-section,.fk-reviews-section,.fk-related-section{background:var(--fk-card);padding:24px;border-radius:4px;margin-bottom:16px}
+.fk-section-title{font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--fk-border)}
+.fk-desc-text{font-size:14px;line-height:1.7;color:#4a4a4a;margin-bottom:16px}
+.fk-features-list{list-style:none;padding:0}.fk-features-list li{padding:6px 0;font-size:14px;display:flex;align-items:flex-start;gap:8px;color:#4a4a4a}.fk-features-list li::before{content:"\2713";color:var(--fk-green);font-weight:700;flex-shrink:0;margin-top:2px}
+.fk-specs-table{width:100%;border-collapse:collapse}.fk-specs-table tr:nth-child(even){background:#fafafa}.fk-specs-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--fk-border)}.fk-specs-table td:first-child{color:var(--fk-text2);width:40%;font-weight:500}
+.fk-reviews-header{display:flex;gap:32px;margin-bottom:20px}
+.fk-rating-summary{text-align:center;min-width:120px}
+.fk-rating-big{font-size:48px;font-weight:700;line-height:1}
+.fk-rating-stars{color:var(--fk-green);font-size:16px;margin-bottom:4px}
+.fk-rating-total{font-size:12px;color:var(--fk-text2)}
+.fk-rating-bars{flex:1}
+.fk-rating-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.fk-rating-bar-label{font-size:13px;width:16px;text-align:center}
+.fk-rating-bar-track{flex:1;height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
+.fk-rating-bar-fill{height:100%;background:var(--fk-green);border-radius:3px;transition:width .3s}
+.fk-rating-bar-count{font-size:12px;color:var(--fk-text2);width:24px}
+.fk-review-card{border-bottom:1px solid var(--fk-border);padding:16px 0}.fk-review-card:last-child{border-bottom:none}
+.fk-review-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fk-review-avatar{width:28px;height:28px;background:#c8e6c9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#2e7d32}
+.fk-review-user{font-size:13px;font-weight:600}
+.fk-review-rating{background:var(--fk-green);color:#fff;padding:1px 6px;border-radius:2px;font-size:11px;font-weight:600}
+.fk-review-date{font-size:11px;color:var(--fk-text2)}
+.fk-review-comment{font-size:14px;line-height:1.5;color:#4a4a4a}
+.fk-write-review{border:1px dashed var(--fk-border);border-radius:4px;padding:16px;margin-top:16px}
+.fk-write-review h4{font-size:14px;margin-bottom:10px}
+.fk-review-form input,.fk-review-form textarea{width:100%;padding:8px 12px;border:1px solid #c2c2c2;border-radius:2px;margin-bottom:8px;font-size:13px;font-family:inherit}
+.fk-review-form textarea{height:60px;resize:vertical}
+.fk-star-select{display:flex;gap:4px;margin-bottom:8px}.fk-star-select span{font-size:24px;cursor:pointer;color:#ddd;transition:color .2s}.fk-star-select span.active{color:#ffc107}
+.fk-review-submit{padding:8px 20px;background:var(--fk-blue);color:#fff;border:none;border-radius:2px;font-weight:600;cursor:pointer;font-size:13px}
+.fk-related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.fk-related-card{border:1px solid var(--fk-border);border-radius:4px;padding:12px;text-align:center;cursor:pointer;transition:box-shadow .2s}
+.fk-related-card:hover{
+    border-color: #2874f0;
+    box-shadow: 0 0 0 4px rgba(40,116,240,0.1);
   }
-  
-  .product-image-section {
-    height: 300px;
+
+  /* Toast Notification Styling */
+  #storeToast {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #2874f0;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    bottom: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: visibility 0s, opacity 0.5s linear, bottom 0.5s ease;
+    opacity: 0;
   }
-  
-  .product-emoji {
-    font-size: 6rem;
+
+  #storeToast.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 70px;
   }
-  
-  .product-title {
-    font-size: 1.5rem;
+  /* Sticky Bottom Bar for Mobile (Fitted Flipkart Style) */
+  #bottomBar, .fk-sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: none; /* Desktop hidden */
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    box-sizing: border-box;
   }
-  
-  .product-actions {
-    flex-direction: column;
+
+  .fk-sticky-inner {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
   }
-}
+
+  /* Shared button styles for sticky bar */
+  .fk-sticky-actions {
+    display: flex;
+    width: 100%;
+    gap: 0;
+  }
+
+  .fk-sticky-actions button {
+    flex: 1;
+    padding: 18px 0; /* Slightly taller for better touch target */
+    border: none;
+    border-radius: 0;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 1 !important; /* Ensure no transparency */
+  }
+
+  .fk-sticky-actions .fk-btn-cart {
+    background-color: #ff9f00 !important; /* Solid Flipkart Yellow/Orange */
+    color: #fff !important;
+  }
+
+  .fk-sticky-actions .fk-btn-buy {
+    background-color: #fb641b !important; /* Solid Flipkart Orange */
+    color: #fff !important;
+  }
+  .fk-sticky-info {
+    display: none; /* Hide product info in the bar on mobile to save space */
+  }
+
+  @media (max-width: 576px) {
+    .store-cart-container {
+      right: 20px;
+      bottom: 100px;
+    }
+  }
+
+  /* Adjustments when sticky product bar is present */
+  @media (max-width: 768px) {
+    body.is-product-page .help-bot-container {
+      bottom: 85px !important;
+    }
+    body.is-product-page .store-cart-container {
+      bottom: 165px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .fk-sticky-bar {
+      display: block; /* Show on mobile */
+      background-color: #ffffff !important; /* Solid background */
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    /* Offset main content so sticky bar doesn't cover footer or last content */
+    .fk-product-page {
+      padding-bottom: 100px !important;
+    }
+    
+    /* Hide the non-sticky buttons in the layout to avoid redundancy */
+    .fk-image-actions.fk-sticky-desktop {
+      display: none;
+    }
+  }
+
+  /* Desktop Sticky (Optional side sticky) */
+  @media (min-width: 769px) {
+    .fk-image-actions.fk-sticky-desktop {
+      position: sticky;
+      bottom: 0;
+      z-index: 100;
+      background: #fff;
+      padding: 15px;
+      border-top: 1px solid #f0f0f0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+      border-radius: 4px 4px 0 0;
+      margin-top: 24px;
+    }
+  }
 </style>
 
-<div class="product-main">
-  <div class="container">
-    <% if (product) { %>
-    <div class="product-container">
-      <div class="product-image-section">
-        <div class="product-emoji"><%= product.emoji %></div>
-      </div>
-      
-      <div class="product-details-section">
-        <% if (product.badge) { %>
-        <span class="product-badge badge-<%= product.badge %>"><%= product.badgeLabel %></span>
+<!-- Global Toast for Store -->
+<div id="storeToast"></div>
+
+<% if (product) { %>
+<% const discount = Math.round(((product.orig - product.price) / product.orig) * 100); %>
+
+<div class="fk-product-page">
+  <div class="container" style="padding-top:80px;">
+    <div class="fk-breadcrumb">
+      <a href="/store">Home</a> <span>></span>
+      <a href="/store"><%= product.cat.charAt(0).toUpperCase() + product.cat.slice(1) %></a> <span>></span>
+      <span><%= product.name %></span>
+    </div>
+  </div>
+
+  <main class="container py-3 my-0">
+    <div class="fk-product-layout">
+      <!-- Left: Image Section -->
+      <div class="fk-image-section">
+        <div class="fk-main-image" id="mainImage">
+          <span class="fk-emoji"><%= product.emoji %></span>
+          <% if (product.stock <= 10) { %>
+          <span class="fk-stock-badge">Only <%= product.stock %> left</span>
+          <% } %>
+        </div>
+        <% if (product.images && product.images.length > 1) { %>
+        <div class="fk-image-thumbs">
+          <div class="fk-thumb active"><%= product.emoji %></div>
+          <% product.images.forEach(function(img, i) { %>
+          <div class="fk-thumb" data-img="<%= img %>"><%= product.emoji %></div>
+          <% }); %>
+        </div>
         <% } %>
-        
-        <h1 class="product-title"><%= product.name %></h1>
-        
-        <p class="product-description"><%= product.desc %></p>
-        
-        <div class="product-price-section">
-          <span class="price-current">Rs. <%= product.price %></span>
-          <span class="price-original">Rs. <%= product.orig %></span>
-          <% const discount = Math.round(((product.orig - product.price) / product.orig) * 100); %>
-          <span class="product-discount"><%= discount %>% OFF</span>
+      </div>
+
+    <!-- Right: Details Section -->
+    <div class="fk-details-section">
+      <% if (product.badge) { %>
+      <span class="fk-product-badge fk-badge-<%= product.badge %>"><%= product.badgeLabel %></span>
+      <% } %>
+
+      <h1 class="fk-product-name"><%= product.name %></h1>
+
+      <div class="fk-product-rating">
+        <span class="fk-rating-badge"><%= product.rating %> <i class="fa-solid fa-star" style="font-size:10px"></i></span>
+        <span class="fk-rating-count"><%= product.ratingCount ? product.ratingCount.toLocaleString() : '0' %> Ratings & <%= product.reviews ? product.reviews.length : 0 %> Reviews</span>
+      </div>
+
+      <div class="fk-special-price">Special Price</div>
+      <div class="fk-price-row">
+        <span class="fk-price-current">Rs. <%= product.price %></span>
+        <span class="fk-price-original">Rs. <%= product.orig %></span>
+        <span class="fk-price-discount"><%= discount %>% off</span>
+      </div>
+
+      <!-- Delivery Section -->
+      <div class="fk-delivery">
+        <div class="fk-delivery-title">Delivery</div>
+        <div class="fk-pincode-row">
+          <input type="text" class="fk-pincode-input" id="pincodeInput" maxlength="6" placeholder="Enter Pincode">
+          <button class="fk-pincode-btn" onclick="checkDelivery()">Check</button>
         </div>
+        <div class="fk-delivery-result" id="deliveryResult"></div>
+      </div>
+
+      <!-- Offers Section -->
+      <div class="fk-offers" style="margin-bottom: 24px;">
+        <div class="fk-offers-title" style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Available Offers</div>
+        <div class="fk-offer-item" style="font-size: 13px; line-height: 1.5; margin-bottom: 8px; display: flex; align-items: flex-start;"><span class="fk-offer-tag" style="background:#2874f0; color:#fff; padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: 600; margin-right: 8px; margin-top: 2px; white-space: nowrap;">Bank Offer</span> <span>10% off on SBI Credit Cards, up to ₹1,500.</span></div>
+        <div class="fk-offer-item" style="font-size: 13px; line-height: 1.5; margin-bottom: 8px; display: flex; align-items: flex-start;"><span class="fk-offer-tag" style="background:#2874f0; color:#fff; padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: 600; margin-right: 8px; margin-top: 2px; white-space: nowrap;">Bank Offer</span> <span>5% Cashback on Flipkart Axis Bank Card.</span></div>
+        <div class="fk-offer-item" style="font-size: 13px; line-height: 1.5; margin-bottom: 8px; display: flex; align-items: flex-start;"><span class="fk-offer-tag" style="background:#388e3c; color:#fff; padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: 600; margin-right: 8px; margin-top: 2px; white-space: nowrap;">Special Price</span> <span>Get extra 10% off (price inclusive of cashback/coupon).</span></div>
+      </div>
+
+      <!-- Trust Badges (Horizontal) -->
+      <div class="fk-trust">
+        <div class="fk-trust-item"><span class="fk-trust-icon"><i class="fa-solid fa-rotate-left"></i></span> 7 Day<br>Replacement</div>
+        <div class="fk-trust-item"><span class="fk-trust-icon"><i class="fa-solid fa-award"></i></span> Genuine<br>Products</div>
+        <div class="fk-trust-item"><span class="fk-trust-icon"><i class="fa-solid fa-shield-halved"></i></span> Secure<br>Payment</div>
+        <div class="fk-trust-item"><span class="fk-trust-icon"><i class="fa-solid fa-heart"></i></span> 2000+<br>Students</div>
+      </div>
+
+      <!-- Product Description / Highlights -->
+      <div class="fk-desc-inline" style="margin-bottom: 24px;">
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Product Details</div>
+        <p style="font-size: 14px; line-height: 1.5; color: #212121; margin-bottom: 12px; white-space: pre-line;"><%= product.desc %></p>
         
-        <div class="product-actions">
-          <button class="btn-primary" onclick="addToCart(<%= product.id %>)">
-            Add to Cart
-          </button>
-          <button class="btn-secondary" onclick="goBack()">
-            Back to Store
-          </button>
+        <% if (product.features && product.features.length) { %>
+        <ul class="fk-features-list">
+          <% product.features.forEach(function(f) { %>
+          <li><%= f %></li>
+          <% }); %>
+        </ul>
+        <% } %>
+
+        <% if (product.specs && Object.keys(product.specs).length > 0) { %>
+        <div id="extendedProductDetails" style="display: none; margin-top: 16px;">
+          <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #212121;">Specifications</div>
+          <table class="fk-specs-table" style="border: 1px solid var(--fk-border); border-bottom: none; width: 100%;">
+            <% Object.entries(product.specs).forEach(function(entry) { %>
+            <tr>
+              <td style="width: 40%; color: var(--fk-text2);"><%= entry[0].charAt(0).toUpperCase() + entry[0].slice(1).replace(/([A-Z])/g, ' $1') %></td>
+              <td style="color: #212121;"><%= entry[1] %></td>
+            </tr>
+            <% }); %>
+          </table>
         </div>
-        
-        <div class="product-features">
-          <h3>Product Features</h3>
-          <ul class="feature-list">
-            <li>Premium quality materials</li>
-            <li>Designed for students</li>
-            <li>Fast shipping available</li>
-            <li>7-day return policy</li>
-            <li>24/7 customer support</li>
-          </ul>
+        <button id="readMoreBtn" onclick="toggleExtendedDetails()" style="background: none; border: none; color: var(--fk-blue); font-weight: 600; font-size: 14px; padding: 0; cursor: pointer; margin-top: 12px; display: inline-flex; align-items: center; gap: 4px;">
+          Read More <i class="fa-solid fa-angle-down" style="font-size: 12px; transition: transform 0.2s;"></i>
+        </button>
+        <% } %>
+      </div>
+
+      <!-- Ratings & Reviews (Inline) -->
+      <div class="fk-reviews-inline" style="border-top: 1px solid var(--fk-border); padding-top: 24px;">
+        <h2 class="fk-section-title" style="border: none; padding: 0; margin-bottom: 16px;">Ratings & Reviews</h2>
+        <div class="fk-reviews-header">
+          <div class="fk-rating-summary">
+            <div class="fk-rating-big"><%= product.rating %></div>
+            <div class="fk-rating-stars">
+              <% for (let s = 1; s <= 5; s++) { %><i class="fa-solid fa-star" style="color:<%= s <= Math.round(product.rating) ? '#ffc107' : '#ddd' %>"></i><% } %>
+            </div>
+            <div class="fk-rating-total"><%= product.ratingCount ? product.ratingCount.toLocaleString() : '0' %> Ratings</div>
+          </div>
+          <div class="fk-rating-bars">
+            <% const rc = [0,0,0,0,0]; %>
+            <% if (product.reviews) { product.reviews.forEach(function(r) { if (r.rating >= 1 && r.rating <= 5) rc[r.rating - 1]++; }); } %>
+            <% for (let s = 5; s >= 1; s--) { %>
+            <div class="fk-rating-bar-row">
+              <span class="fk-rating-bar-label"><%= s %></span>
+              <div class="fk-rating-bar-track"><div class="fk-rating-bar-fill" style="width:<%= product.reviews && product.reviews.length > 0 ? Math.round((rc[s-1] / product.reviews.length) * 100) : 0 %>%"></div></div>
+              <span class="fk-rating-bar-count"><%= rc[s-1] %></span>
+            </div>
+            <% } %>
+          </div>
+        </div>
+
+        <div id="reviewsList">
+          <% if (product.reviews && product.reviews.length) { %>
+          <% product.reviews.forEach(function(r, idx) { %>
+          <div class="fk-review-card review-item-card" style="<%= idx >= 2 ? 'display: none;' : '' %>">
+            <div class="fk-review-header">
+              <div class="fk-review-avatar"><%= r.user.charAt(0) %></div>
+              <span class="fk-review-user"><%= r.user %></span>
+              <span class="fk-review-rating"><%= r.rating %> <i class="fa-solid fa-star" style="font-size:8px"></i></span>
+              <span class="fk-review-date"><%= r.date %></span>
+            </div>
+            <div class="fk-review-comment"><%= r.comment %></div>
+          </div>
+          <% }); %>
+          
+          <% if (product.reviews.length > 2) { %>
+          <button id="readAllReviewsBtn" onclick="showAllReviews()" style="display: block; width: 100%; border: none; background: transparent; padding: 12px; margin-top: 8px; color: var(--fk-blue); font-weight: 600; font-size: 14px; text-align: left; cursor: pointer; transition: background 0.2s; border-radius: 4px;">
+            Read all <%= product.reviews.length %> reviews <i class="fa-solid fa-angle-right" style="margin-left: 4px; font-size: 12px;"></i>
+          </button>
+          <% } %>
+          
+          <% } else { %>
+          <p style="color:var(--fk-text2);font-size:14px; padding-bottom: 16px;">No reviews yet.</p>
+          <% } %>
         </div>
       </div>
-    </div>
-    
-    <div class="related-products">
-      <h2>Related Products</h2>
-      <div class="related-grid">
-        <% storeProducts.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 4).forEach(relatedProduct => { %>
-        <div class="related-card" onclick="viewProduct(<%= relatedProduct.id %>)">
-          <div class="related-card-emoji"><%= relatedProduct.emoji %></div>
-          <div class="related-card-title"><%= relatedProduct.name %></div>
-          <div class="related-card-price">Rs. <%= relatedProduct.price %></div>
-        </div>
-        <% }); %>
+
+      <!-- Action Buttons (Sticky Right Bottom) -->
+      <div class="fk-image-actions fk-sticky-desktop">
+        <button class="fk-btn-cart" onclick="addToCart(<%= product.id %>)">
+          <i class="fa-solid fa-cart-shopping"></i> ADD TO CART
+        </button>
+        <button class="fk-btn-buy" onclick="buyNow(<%= product.id %>)">
+          <i class="fa-solid fa-bolt"></i> BUY NOW
+        </button>
       </div>
+
     </div>
-    <% } else { %>
-    <div style="text-align: center; padding: 3rem;">
-      <h2>Product Not Found</h2>
-      <p>The requested product is not available.</p>
-      <button class="btn-primary" onclick="window.location.href='/store'">
-        Back to Store
+  </div>
+
+
+
+
+
+
+  <!-- Related Products -->
+  <div class="fk-related-section">
+    <h2 class="fk-section-title">Related Products</h2>
+    <div class="fk-related-grid">
+      <% storeProducts.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 4).forEach(function(rp) { %>
+      <% const rd = Math.round(((rp.orig - rp.price) / rp.orig) * 100); %>
+      <div class="fk-related-card" onclick="viewProduct(<%= rp.id %>)">
+        <div class="fk-related-emoji"><%= rp.emoji %></div>
+        <div class="fk-related-name"><%= rp.name %></div>
+        <div class="fk-related-price">Rs. <%= rp.price %></div>
+        <div class="fk-related-discount"><%= rd %>% off</div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</main>
+
+<!-- Sticky Bar -->
+<div class="fk-sticky-bar" id="bottomBar">
+  <div class="fk-sticky-inner">
+    <div class="fk-sticky-info">
+      <span class="fk-sticky-emoji"><%= product.emoji %></span>
+      <span class="fk-sticky-name"><%= product.name %></span>
+      <span class="fk-sticky-price">Rs. <%= product.price %></span>
+    </div>
+    <div class="fk-sticky-actions">
+      <button class="fk-btn-cart" onclick="addToCart(<%= product.id %>)">
+        <i class="fa-solid fa-cart-shopping"></i> ADD TO CART
+      </button>
+      <button class="fk-btn-buy" onclick="buyNow(<%= product.id %>)">
+        <i class="fa-solid fa-bolt"></i> BUY NOW
       </button>
     </div>
-    <% } %>
   </div>
 </div>
 
+</div>
+
+<% } else { %>
+<div class="container" style="padding-top:100px;text-align:center;padding-bottom:60px;">
+  <h2>Product Not Found</h2>
+  <p style="color:#878787;margin:16px 0;">The requested product is not available.</p>
+  <button class="fk-btn-cart" style="padding:12px 32px;border:none;border-radius:2px;font-weight:600;cursor:pointer;font-size:14px;" onclick="window.location.href='/store'">Back to Store</button>
+</div>
+<% } %>
+
 <script>
-function addToCart(productId) {
-  // Add to cart logic here
-  window.location.href = '/store/order-summary';
+const PRODUCT_ID = <%= product ? product.id : 0 %>;
+let selectedRating = 0;
+
+// CSS handles sticky bar completely now
+
+// Delivery check
+function checkDelivery() {
+  const pincode = document.getElementById('pincodeInput').value.trim();
+  const resultDiv = document.getElementById('deliveryResult');
+  if (!pincode || pincode.length !== 6) {
+    resultDiv.innerHTML = '<span style="color:var(--fk-red)">Please enter a valid 6-digit pincode</span>';
+    return;
+  }
+  resultDiv.innerHTML = '<span style="color:var(--fk-text2)">Checking...</span>';
+  fetch('/api/store/check-delivery', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pincode, productId: PRODUCT_ID })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      const chargeText = data.deliveryCharge === 0 ? '<span class="fk-date">FREE Delivery</span>' : 'Delivery: Rs.' + data.deliveryCharge;
+      resultDiv.innerHTML = 'Delivery by <span class="fk-date">' + data.deliveryDate + '</span> | ' + chargeText + '<br><span class="fk-charge">Free delivery on orders above Rs.' + data.freeDeliveryAbove + '</span>';
+    } else {
+      resultDiv.innerHTML = '<span style="color:var(--fk-red)">' + data.error + '</span>';
+    }
+  })
+  .catch(() => { resultDiv.innerHTML = '<span style="color:var(--fk-red)">Something went wrong. Try again.</span>'; });
 }
 
+// Add to cart
+function addToCart(productId) {
+  fetch('/api/store/cart/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productId, qty: 1 })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      showToast('Added to cart ✅');
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+    } else {
+      showToast('Error: ' + data.error, true);
+    }
+  })
+  .catch(() => { showToast('Something went wrong.', true); });
+}
+
+// Buy now
+function buyNow(productId) {
+  // Directly go to checkout with only this product
+  window.location.href = `/store/order-summary?buyNow=${productId}`;
+}
+
+// Toast Notification
+function showToast(message, isError = false) {
+  const toast = document.getElementById('storeToast');
+  toast.textContent = message;
+  toast.style.background = isError ? '#f44336' : '#2874f0';
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// View product
 function viewProduct(productId) {
   window.location.href = '/store/product/' + productId;
 }
 
-function goBack() {
-  window.location.href = '/store';
+// Star rating select
+function setRating(star) {
+  selectedRating = star;
+  document.querySelectorAll('#starSelect span').forEach(function(s, i) {
+    s.classList.toggle('active', i < star);
+  });
 }
+
+// Submit review
+function submitReview(productId) {
+  const user = document.getElementById('reviewUser').value.trim();
+  const comment = document.getElementById('reviewComment').value.trim();
+  if (!user || !comment || !selectedRating) {
+    alert('Please fill all fields and select a rating.');
+    return;
+  }
+  fetch('/api/store/products/' + productId + '/reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user, rating: selectedRating, comment })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      alert('Review submitted successfully!');
+      location.reload();
+    } else {
+      alert('Error: ' + data.error);
+    }
+  })
+  .catch(() => { alert('Something went wrong.'); });
+}
+
+// Image thumbnail click
+document.querySelectorAll('.fk-thumb').forEach(function(thumb) {
+  thumb.addEventListener('click', function() {
+    document.querySelectorAll('.fk-thumb').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+  // Read More Toggle
+  function toggleExtendedDetails() {
+    const details = document.getElementById('extendedProductDetails');
+    const btn = document.getElementById('readMoreBtn');
+    
+    if (details.style.display === 'none') {
+      details.style.display = 'block';
+      btn.innerHTML = 'Read Less <i class="fa-solid fa-angle-up" style="font-size: 12px; transition: transform 0.2s;"></i>';
+    } else {
+      details.style.display = 'none';
+      btn.innerHTML = 'Read More <i class="fa-solid fa-angle-down" style="font-size: 12px; transition: transform 0.2s;"></i>';
+    }
+  }
+
+  // Show all reviews toggle
+  function showAllReviews() {
+    document.querySelectorAll('.review-item-card').forEach(card => card.style.display = 'block');
+    const btn = document.getElementById('readAllReviewsBtn');
+    if (btn) btn.style.display = 'none';
+  }
+
+  // Mark as product page for bubble positioning
+  document.body.classList.add('is-product-page');
 </script>
+
 
 <%- include('partials/footer') %>

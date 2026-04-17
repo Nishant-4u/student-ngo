@@ -4,35 +4,183 @@ const compression = require('compression');
 const path = require('path');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const { v4: uuidv4 } = require('uuid');
+const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 const STORE_PRODUCTS = [
-  { id:101, cat:'notebooks', emoji:'📓', badge:'top', badgeLabel:'2 AM Edition', name:'Notebook', desc:'Signature everyday notebook from 2 AM Study with smooth ruled pages for focused class notes.', price:199, orig:299 },
-  { id:102, cat:'notebooks', emoji:'📔', badge:'hot', badgeLabel:'Hot', name:'Diary', desc:'Premium diary by 2 AM Study for journaling goals, daily reflection, and planning your productivity streak.', price:249, orig:399 },
-  { id:103, cat:'notebooks', emoji:'🗒️', badge:'new', badgeLabel:'New', name:'Spiral Notebook Set', desc:'Spiral notebook combo pack for multiple subjects and long study sessions.', price:399, orig:599 },
-  { id:201, cat:'bottles', emoji:'💧', badge:'top', badgeLabel:'Best Seller', name:'Insulated Water Bottle', desc:'Double-wall insulated bottle to keep water cool and support all-day hydration.', price:449, orig:699 },
-  { id:202, cat:'bottles', emoji:'🍱', badge:'new', badgeLabel:'New', name:'Insulated Lunch Box', desc:'Compact insulated lunch box for students on campus and coaching days.', price:549, orig:799 },
-  { id:203, cat:'bottles', emoji:'☕', badge:'hot', badgeLabel:'2 AM Study', name:'Coffee Mug', desc:'Aesthetic mug for chai or coffee during late-night focus hours.', price:299, orig:449 },
-  { id:301, cat:'bags', emoji:'🎒', badge:'top', badgeLabel:'Top Pick', name:'College Backpack', desc:'Spacious and durable backpack for books, laptop, and daily student essentials.', price:1299, orig:1899 },
-  { id:302, cat:'bags', emoji:'🧳', badge:'sale', badgeLabel:'Sale', name:'Travel Backpack', desc:'Multi-purpose travel backpack designed for short trips, classes, and weekend plans. Co-branded by 2 AM Study.', price:1499, orig:2299 },
-  { id:401, cat:'essentials', emoji:'🖊️', badge:'top', badgeLabel:'Best Seller', name:'Premium Pen Set', desc:'Smooth-flow premium pens for clean handwriting and exam-ready notes.', price:199, orig:299 },
-  { id:402, cat:'essentials', emoji:'🖍️', badge:'hot', badgeLabel:'Hot', name:'Highlighter Set', desc:'Bright and pastel highlighters to mark key concepts quickly.', price:179, orig:279 },
-  { id:403, cat:'essentials', emoji:'📌', badge:null, badgeLabel:'', name:'Sticky Notes Pack', desc:'Sticky notes pack for reminders, formulas, and revision tags.', price:149, orig:229 },
-  { id:404, cat:'essentials', emoji:'🗂️', badge:'new', badgeLabel:'New', name:'Desk Organizer Kit', desc:'Desk organizer kit to keep pens, notes, and supplies neatly arranged.', price:499, orig:749 },
-  { id:405, cat:'essentials', emoji:'💡', badge:'top', badgeLabel:'Top Pick', name:'LED Study Lamp', desc:'Adjustable LED lamp with eye-comfort lighting for long study routines.', price:699, orig:999 },
-  { id:406, cat:'essentials', emoji:'🔦', badge:'new', badgeLabel:'New', name:'Compact Study Lamp', desc:'Portable compact lamp for hostel desks and bedside study corners.', price:549, orig:799 },
-  { id:407, cat:'essentials', emoji:'⏰', badge:null, badgeLabel:'', name:'Aesthetic Desk Clock', desc:'Minimal desk clock to manage pomodoro cycles and class schedules.', price:399, orig:599 },
-  { id:408, cat:'essentials', emoji:'👕', badge:'hot', badgeLabel:'2 AM Edition', name:'T-Shirt (Unisex)', desc:'Soft, comfortable unisex T-shirt with 2 AM Study brand print.', price:599, orig:899 },
-  { id:409, cat:'essentials', emoji:'🧥', badge:'sale', badgeLabel:'Sale', name:'Hoodie (Unisex)', desc:'Warm and stylish hoodie perfect for winter classes and late-night study, by 2 AM Study.', price:1199, orig:1699 },
-  { id:410, cat:'essentials', emoji:'🎀', badge:null, badgeLabel:'', name:'Hair Scrunchie Set', desc:'Aesthetic scrunchie set with comfortable hold for daily use.', price:149, orig:249 },
-  { id:411, cat:'essentials', emoji:'🚨', badge:'new', badgeLabel:'New', name:'Safety Alarm Keychain', desc:'Personal alarm keychain for added confidence during commute.', price:299, orig:449 },
-  { id:412, cat:'essentials', emoji:'🔦', badge:null, badgeLabel:'', name:'Night Safety Flashlight', desc:'Compact flashlight for hostels, travel, and emergency use.', price:249, orig:379 },
-  { id:413, cat:'essentials', emoji:'🎁', badge:'hot', badgeLabel:'Gift', name:'Birthday Surprise Box', desc:'Curated birthday gift box with 2 AM Study goodies and notes.', price:999, orig:1499 },
-  { id:414, cat:'essentials', emoji:'💝', badge:'new', badgeLabel:'2 AM Study', name:'Birthday Memory Kit', desc:'Memory kit to preserve photos, messages, and celebration moments.', price:799, orig:1199 },
-  { id:415, cat:'essentials', emoji:'🖼️', badge:null, badgeLabel:'', name:'Motivational Wall Poster', desc:'Inspirational wall poster to keep your study space energetic.', price:199, orig:299 },
-  { id:416, cat:'essentials', emoji:'🧰', badge:'top', badgeLabel:'Best Value', name:'Compact Study Essentials Kit', desc:'All-in-one compact essentials kit from 2 AM Study for school, college, and self-study.', price:899, orig:1299 },
+  { id:101, cat:'notebooks', emoji:'📓', badge:'top', badgeLabel:'2 AM Edition', name:'Notebook', desc:'Signature everyday notebook from 2 AM Study with smooth ruled pages for focused class notes.', price:199, orig:299,
+    images:['/assets/images/store/notebook-1.jpg','/assets/images/store/notebook-2.jpg','/assets/images/store/notebook-3.jpg'],
+    stock:18, rating:4.3, ratingCount:1247,
+    features:['Premium 80 GSM smooth ruled pages','2 AM Study branded cover design','Lay-flat binding for comfortable writing','200 pages — lasts full semester','Acid-free paper for long-lasting notes'],
+    specs:{ brand:'2 AM Study', type:'Ruled Notebook', pages:'200', size:'A5', cover:'Soft Cover', paper:'80 GSM Acid-Free', binding:'Perfect Binding' },
+    reviews:[{user:'Priya M.',rating:5,comment:'Best notebook! Paper quality is amazing and ink doesn\'t bleed.',date:'2026-03-15'},{user:'Rahul K.',rating:4,comment:'Good quality pages. Wish it came in more colors.',date:'2026-03-10'},{user:'Ananya S.',rating:5,comment:'Perfect for class notes. Lay-flat binding is a game changer.',date:'2026-02-28'}]
+  },
+  { id:102, cat:'notebooks', emoji:'📔', badge:'hot', badgeLabel:'Hot', name:'Diary', desc:'Premium diary by 2 AM Study for journaling goals, daily reflection, and planning your productivity streak.', price:249, orig:399,
+    images:['/assets/images/store/diary-1.jpg','/assets/images/store/diary-2.jpg'],
+    stock:12, rating:4.5, ratingCount:892,
+    features:['Hardbound premium diary','Daily reflection prompts included','Goal-setting templates','Bookmark ribbon included','Elastic band closure'],
+    specs:{ brand:'2 AM Study', type:'Diary', pages:'180', size:'A5', cover:'Hardbound', paper:'90 GSM', closure:'Elastic Band' },
+    reviews:[{user:'Meera J.',rating:5,comment:'The reflection prompts are so helpful. I use it every night.',date:'2026-03-12'},{user:'Vikram T.',rating:4,comment:'Great quality diary. Prompts help me stay consistent.',date:'2026-03-05'}]
+  },
+  { id:103, cat:'notebooks', emoji:'🗒️', badge:'new', badgeLabel:'New', name:'Spiral Notebook Set', desc:'Spiral notebook combo pack for multiple subjects and long study sessions.', price:399, orig:599,
+    images:['/assets/images/store/spiral-set-1.jpg','/assets/images/store/spiral-set-2.jpg'],
+    stock:8, rating:4.2, ratingCount:534,
+    features:['Pack of 3 subject notebooks','Spiral binding for easy page turning','Different color covers per subject','Perforated pages for clean tear-out','Micro-perforated sheets'],
+    specs:{ brand:'2 AM Study', type:'Spiral Notebook Set', pages:'160 each', size:'B5', cover:'Spiral Bound', paper:'70 GSM', quantity:'3 Pack' },
+    reviews:[{user:'Sneha R.',rating:4,comment:'Perfect for organizing different subjects. Good value.',date:'2026-03-08'},{user:'Arjun P.',rating:5,comment:'Perforated pages are so convenient. Love the color coding!',date:'2026-02-25'}]
+  },
+  { id:201, cat:'bottles', emoji:'💧', badge:'top', badgeLabel:'Best Seller', name:'Insulated Water Bottle', desc:'Double-wall insulated bottle to keep water cool and support all-day hydration.', price:449, orig:699,
+    images:['/assets/images/store/bottle-1.jpg','/assets/images/store/bottle-2.jpg','/assets/images/store/bottle-3.jpg'],
+    stock:22, rating:4.6, ratingCount:2103,
+    features:['Double-wall vacuum insulation','Keeps water cool for 24 hours','BPA-free food-grade stainless steel','Leak-proof flip lid','750ml capacity — perfect for campus'],
+    specs:{ brand:'2 AM Study', type:'Insulated Bottle', capacity:'750ml', material:'Stainless Steel 304', insulation:'Double-wall Vacuum', lid:'Flip Lid', weight:'350g' },
+    reviews:[{user:'Kavitha N.',rating:5,comment:'Water stays cold all day even in summer. Best bottle I have owned!',date:'2026-03-14'},{user:'Deepak S.',rating:5,comment:'No leaks at all. I carry it everywhere.',date:'2026-03-02'},{user:'Ishita G.',rating:4,comment:'Great insulation. Slightly heavy but worth it.',date:'2026-02-20'}]
+  },
+  { id:202, cat:'bottles', emoji:'🍱', badge:'new', badgeLabel:'New', name:'Insulated Lunch Box', desc:'Compact insulated lunch box for students on campus and coaching days.', price:549, orig:799,
+    images:['/assets/images/store/lunchbox-1.jpg','/assets/images/store/lunchbox-2.jpg'],
+    stock:15, rating:4.4, ratingCount:678,
+    features:['Double-wall insulation keeps food warm','2-compartment design for meal separation','Leak-proof silicone seal','Compact size fits in backpack','Microwave-safe inner container'],
+    specs:{ brand:'2 AM Study', type:'Insulated Lunch Box', capacity:'600ml', material:'Stainless Steel Inner / BPA-Free Outer', compartments:'2', dimensions:'15x10x8 cm', weight:'400g' },
+    reviews:[{user:'Nisha A.',rating:5,comment:'Food stays warm for 4-5 hours. Perfect for long college days.',date:'2026-03-11'},{user:'Rohan M.',rating:4,comment:'Good size for one person. The compartments are really useful.',date:'2026-02-28'}]
+  },
+  { id:203, cat:'bottles', emoji:'☕', badge:'hot', badgeLabel:'2 AM Study', name:'Coffee Mug', desc:'Aesthetic mug for chai or coffee during late-night focus hours.', price:299, orig:449,
+    images:['/assets/images/store/mug-1.jpg','/assets/images/store/mug-2.jpg'],
+    stock:30, rating:4.7, ratingCount:1856,
+    features:['Ceramic construction retains heat','2 AM Study motivational print','Comfortable grip handle','Microwave and dishwasher safe','300ml capacity — ideal for chai/coffee'],
+    specs:{ brand:'2 AM Study', type:'Coffee Mug', capacity:'300ml', material:'Ceramic', print:'Sublimation Print', microwaveSafe:'Yes', dishwasherSafe:'Yes' },
+    reviews:[{user:'Aditya K.',rating:5,comment:'The motivational print gets me through late-night study sessions. Love it!',date:'2026-03-13'},{user:'Simran B.',rating:5,comment:'Perfect size for my morning chai. Print quality is excellent.',date:'2026-03-01'},{user:'Karan V.',rating:4,comment:'Great mug. Wish it was slightly bigger.',date:'2026-02-18'}]
+  },
+  { id:301, cat:'bags', emoji:'🎒', badge:'top', badgeLabel:'Top Pick', name:'College Backpack', desc:'Spacious and durable backpack for books, laptop, and daily student essentials.', price:1299, orig:1899,
+    images:['/assets/images/store/backpack-1.jpg','/assets/images/store/backpack-2.jpg','/assets/images/store/backpack-3.jpg'],
+    stock:6, rating:4.4, ratingCount:967,
+    features:['Padded 15.6" laptop compartment','Water-resistant 900D polyester','Ergonomic padded shoulder straps','Multiple organizer pockets','USB charging port built-in'],
+    specs:{ brand:'2 AM Study', type:'College Backpack', material:'900D Polyester', laptopFit:'Up to 15.6 inches', capacity:'30L', waterResistant:'Yes', dimensions:'45x30x15 cm', weight:'650g' },
+    reviews:[{user:'Tanvi S.',rating:5,comment:'Fits my laptop, books, and lunch perfectly. The USB port is a lifesaver!',date:'2026-03-09'},{user:'Amit R.',rating:4,comment:'Very comfortable straps. Good quality material.',date:'2026-02-27'}]
+  },
+  { id:302, cat:'bags', emoji:'🧳', badge:'sale', badgeLabel:'Sale', name:'Travel Backpack', desc:'Multi-purpose travel backpack designed for short trips, classes, and weekend plans. Co-branded by 2 AM Study.', price:1499, orig:2299,
+    images:['/assets/images/store/travel-bag-1.jpg','/assets/images/store/travel-bag-2.jpg'],
+    stock:4, rating:4.5, ratingCount:412,
+    features:['Expandable 35L to 45L capacity','TSA-friendly laptop compartment','Hidden anti-theft pocket','Rain cover included','Shoe compartment at bottom'],
+    specs:{ brand:'2 AM Study', type:'Travel Backpack', material:'Ripstop Nylon', laptopFit:'Up to 17 inches', capacity:'35-45L Expandable', waterResistant:'Yes (Rain Cover)', dimensions:'50x32x20 cm', weight:'800g' },
+    reviews:[{user:'Divya L.',rating:5,comment:'Used it for a 3-day trip. The shoe compartment is genius!',date:'2026-03-07'},{user:'Nikhil J.',rating:4,comment:'Great for weekend trips. The expandable feature is really useful.',date:'2026-02-22'}]
+  },
+  { id:401, cat:'essentials', emoji:'🖊️', badge:'top', badgeLabel:'Best Seller', name:'Premium Pen Set', desc:'Smooth-flow premium pens for clean handwriting and exam-ready notes.', price:199, orig:299,
+    images:['/assets/images/store/pen-set-1.jpg','/assets/images/store/pen-set-2.jpg'],
+    stock:45, rating:4.3, ratingCount:1567,
+    features:['Set of 5 premium ball pens','0.5mm fine tip for precise writing','Smooth ink flow — no skipping','Comfortable rubber grip','Quick-dry smudge-free ink'],
+    specs:{ brand:'2 AM Study', type:'Ball Pen Set', tipSize:'0.5mm', inkColor:'Blue', quantity:'5 Pens', grip:'Rubber Grip', refillable:'Yes' },
+    reviews:[{user:'Pooja D.',rating:5,comment:'Smoothest pens I have used. No smudging at all during exams!',date:'2026-03-10'},{user:'Siddharth G.',rating:4,comment:'Great grip and ink flow. Good value for 5 pens.',date:'2026-02-26'}]
+  },
+  { id:402, cat:'essentials', emoji:'🖍️', badge:'hot', badgeLabel:'Hot', name:'Highlighter Set', desc:'Bright and pastel highlighters to mark key concepts quickly.', price:179, orig:279,
+    images:['/assets/images/store/highlighter-1.jpg','/assets/images/store/highlighter-2.jpg'],
+    stock:35, rating:4.1, ratingCount:923,
+    features:['Set of 6 vibrant highlighters','Chisel tip for broad and fine lines','Quick-drying fluorescent ink','Comfortable barrel grip','Ideal for textbooks and notes'],
+    specs:{ brand:'2 AM Study', type:'Highlighter Set', tipType:'Chisel Tip', colors:'6 (Yellow, Green, Pink, Orange, Blue, Purple)', inkType:'Fluorescent', quantity:'6 Pack', barrel:'Comfort Grip' },
+    reviews:[{user:'Ritu A.',rating:4,comment:'Nice colors and they don\'t bleed through thin pages.',date:'2026-03-06'},{user:'Manish K.',rating:5,comment:'Perfect for marking key points in my textbooks!',date:'2026-02-20'}]
+  },
+  { id:403, cat:'essentials', emoji:'📌', badge:null, badgeLabel:'', name:'Sticky Notes Pack', desc:'Sticky notes pack for reminders, formulas, and revision tags.', price:149, orig:229,
+    images:['/assets/images/store/sticky-notes-1.jpg'],
+    stock:50, rating:4.0, ratingCount:445,
+    features:['Pack of 8 pads (6 colors)','Strong adhesive that removes cleanly','Perfect for formulas and reminders','Compact size fits in pencil box','Recyclable paper material'],
+    specs:{ brand:'2 AM Study', type:'Sticky Notes', sheetsPerPad:'100', totalSheets:'800', colors:'6 Assorted', size:'3x3 inches', adhesive:'Repositionable' },
+    reviews:[{user:'Neha V.',rating:4,comment:'Good adhesive quality. Stays put but removes cleanly.',date:'2026-03-04'},{user:'Saurabh T.',rating:4,comment:'Perfect for sticking formulas on my study wall.',date:'2026-02-15'}]
+  },
+  { id:404, cat:'essentials', emoji:'🗂️', badge:'new', badgeLabel:'New', name:'Desk Organizer Kit', desc:'Desk organizer kit to keep pens, notes, and supplies neatly arranged.', price:499, orig:749,
+    images:['/assets/images/store/desk-organizer-1.jpg','/assets/images/store/desk-organizer-2.jpg'],
+    stock:10, rating:4.2, ratingCount:312,
+    features:['5-compartment desktop organizer','Pen holder, phone stand, card slot','Non-slip rubber base','Durable ABS plastic build','Compact footprint for small desks'],
+    specs:{ brand:'2 AM Study', type:'Desk Organizer', material:'ABS Plastic', compartments:'5', dimensions:'22x12x10 cm', base:'Non-slip Rubber', color:'Matte Black' },
+    reviews:[{user:'Aisha W.',rating:5,comment:'My desk looks so organized now. The phone stand is super handy!',date:'2026-03-02'},{user:'Varun P.',rating:4,comment:'Good quality. Fits perfectly on my hostel desk.',date:'2026-02-18'}]
+  },
+  { id:405, cat:'essentials', emoji:'💡', badge:'top', badgeLabel:'Top Pick', name:'LED Study Lamp', desc:'Adjustable LED lamp with eye-comfort lighting for long study routines.', price:699, orig:999,
+    images:['/assets/images/store/lamp-1.jpg','/assets/images/store/lamp-2.jpg','/assets/images/store/lamp-3.jpg'],
+    stock:9, rating:4.5, ratingCount:1345,
+    features:['3 color temperatures (warm/cool/white)','5 brightness levels','Flexible gooseneck arm','USB charging port on base','Eye-care flicker-free LED technology'],
+    specs:{ brand:'2 AM Study', type:'LED Study Lamp', wattage:'10W', colorTemps:'3 (3000K/4500K/6000K)', brightnessLevels:'5', powerSource:'USB-C', armType:'Flexible Gooseneck', baseFeatures:'USB Charging Port' },
+    reviews:[{user:'Shreya M.',rating:5,comment:'The eye-care feature is real — no headaches even after 4 hours of study!',date:'2026-03-13'},{user:'Kunal B.',rating:5,comment:'USB port on the base charges my phone. So convenient!',date:'2026-03-01'},{user:'Tanya R.',rating:4,comment:'Great lamp. The gooseneck could be slightly longer.',date:'2026-02-14'}]
+  },
+  { id:406, cat:'essentials', emoji:'🔦', badge:'new', badgeLabel:'New', name:'Compact Study Lamp', desc:'Portable compact lamp for hostel desks and bedside study corners.', price:549, orig:799,
+    images:['/assets/images/store/compact-lamp-1.jpg'],
+    stock:14, rating:4.3, ratingCount:567,
+    features:['Foldable compact design','Touch-sensitive dimmer switch','Rechargeable 1200mAh battery','3 brightness levels','Portable — fits in backpack'],
+    specs:{ brand:'2 AM Study', type:'Compact Study Lamp', wattage:'5W', battery:'1200mAh Rechargeable', brightnessLevels:'3', charging:'USB-C', foldable:'Yes', weight:'220g' },
+    reviews:[{user:'Prachi S.',rating:4,comment:'Perfect for my hostel bedside. Battery lasts 6+ hours on medium.',date:'2026-03-09'},{user:'Arun J.',rating:5,comment:'Folds flat and fits in my bag. Great for library study too!',date:'2026-02-24'}]
+  },
+  { id:407, cat:'essentials', emoji:'⏰', badge:null, badgeLabel:'', name:'Aesthetic Desk Clock', desc:'Minimal desk clock to manage pomodoro cycles and class schedules.', price:399, orig:599,
+    images:['/assets/images/store/clock-1.jpg'],
+    stock:20, rating:4.1, ratingCount:289,
+    features:['Minimalist aesthetic design','Pomodoro timer mode built-in','Large LED display','Alarm with snooze function','USB-C powered'],
+    specs:{ brand:'2 AM Study', type:'Desk Clock', display:'LED', features:'Pomodoro Timer, Alarm, Snooze', power:'USB-C', dimensions:'8x8x4 cm', weight:'150g' },
+    reviews:[{user:'Meghna D.',rating:4,comment:'The pomodoro timer is a nice touch. Display is clear and readable.',date:'2026-03-07'},{user:'Raj K.',rating:4,comment:'Looks great on my desk. Simple and functional.',date:'2026-02-19'}]
+  },
+  { id:408, cat:'essentials', emoji:'👕', badge:'hot', badgeLabel:'2 AM Edition', name:'T-Shirt (Unisex)', desc:'Soft, comfortable unisex T-shirt with 2 AM Study brand print.', price:599, orig:899,
+    images:['/assets/images/store/tshirt-1.jpg','/assets/images/store/tshirt-2.jpg'],
+    stock:25, rating:4.6, ratingCount:1678,
+    features:['100% premium combed cotton','2 AM Study branded chest print','Bio-washed for extra softness','Regular unisex fit','Pre-shrunk fabric'],
+    specs:{ brand:'2 AM Study', type:'T-Shirt', material:'100% Combed Cotton', fit:'Regular Unisex', sizes:'S, M, L, XL, XXL', colors:'Black, Navy, White', print:'Screen Print', care:'Machine Wash Cold' },
+    reviews:[{user:'Riya G.',rating:5,comment:'Super soft cotton! The print quality is amazing even after multiple washes.',date:'2026-03-14'},{user:'Harsh N.',rating:5,comment:'Fits perfectly. I ordered L and it\'s true to size. Love the design!',date:'2026-03-03'},{user:'Ankita P.',rating:4,comment:'Great quality t-shirt. Wish there were more color options.',date:'2026-02-16'}]
+  },
+  { id:409, cat:'essentials', emoji:'🧥', badge:'sale', badgeLabel:'Sale', name:'Hoodie (Unisex)', desc:'Warm and stylish hoodie perfect for winter classes and late-night study, by 2 AM Study.', price:1199, orig:1699,
+    images:['/assets/images/store/hoodie-1.jpg','/assets/images/store/hoodie-2.jpg','/assets/images/store/hoodie-3.jpg'],
+    stock:7, rating:4.7, ratingCount:934,
+    features:['Heavy 320 GSM fleece','2 AM Study embroidered logo','Kangaroo pocket with hidden zip','Adjustable drawstring hood','Ribbed cuffs and hem'],
+    specs:{ brand:'2 AM Study', type:'Hoodie', material:'320 GSM Fleece Blend', fit:'Regular Unisex', sizes:'S, M, L, XL, XXL', colors:'Charcoal, Navy, Burgundy', print:'Embroidered Logo', care:'Machine Wash Cold' },
+    reviews:[{user:'Vivek M.',rating:5,comment:'Warmest hoodie I own. The fleece quality is premium. Worth every rupee!',date:'2026-03-12'},{user:'Sonal R.',rating:5,comment:'The hidden zip pocket is so useful for keys and phone. Love it!',date:'2026-02-28'},{user:'Dev S.',rating:4,comment:'Great hoodie. Only 7 left when I bought — grab it fast!',date:'2026-02-10'}]
+  },
+  { id:410, cat:'essentials', emoji:'🎀', badge:null, badgeLabel:'', name:'Hair Scrunchie Set', desc:'Aesthetic scrunchie set with comfortable hold for daily use.', price:149, orig:249,
+    images:['/assets/images/store/scrunchie-1.jpg'],
+    stock:40, rating:4.0, ratingCount:567,
+    features:['Set of 5 aesthetic scrunchies','Silk-blend fabric — no hair damage','Elastic band for comfortable hold','Machine washable','Assorted pastel colors'],
+    specs:{ brand:'2 AM Study', type:'Scrunchie Set', material:'Silk Blend', quantity:'5 Pack', colors:'Assorted Pastels', elastic:'Premium Elastic Band', care:'Machine Washable' },
+    reviews:[{user:'Nidhi K.',rating:4,comment:'Soft on hair and doesn\'t leave creases. Nice colors!',date:'2026-03-05'},{user:'Preeti L.',rating:5,comment:'Love the pastel shades. Perfect for daily college wear.',date:'2026-02-17'}]
+  },
+  { id:411, cat:'essentials', emoji:'🚨', badge:'new', badgeLabel:'New', name:'Safety Alarm Keychain', desc:'Personal alarm keychain for added confidence during commute.', price:299, orig:449,
+    images:['/assets/images/store/alarm-1.jpg'],
+    stock:30, rating:4.4, ratingCount:423,
+    features:['130dB loud personal alarm','LED flashlight built-in','Keychain attachment','Battery operated (included)','Compact and lightweight'],
+    specs:{ brand:'2 AM Study', type:'Safety Alarm', volume:'130dB', features:'Alarm + LED Flashlight', power:'LR44 Battery (Included)', attachment:'Keychain Ring', weight:'30g' },
+    reviews:[{user:'Swati J.',rating:5,comment:'Loud enough to startle anyone. I feel safer carrying this on late commutes.',date:'2026-03-08'},{user:'Kriti A.',rating:4,comment:'Compact and easy to attach to my bag. The flashlight is a bonus!',date:'2026-02-21'}]
+  },
+  { id:412, cat:'essentials', emoji:'🔦', badge:null, badgeLabel:'', name:'Night Safety Flashlight', desc:'Compact flashlight for hostels, travel, and emergency use.', price:249, orig:379,
+    images:['/assets/images/store/flashlight-1.jpg'],
+    stock:28, rating:4.2, ratingCount:345,
+    features:['200 lumen LED beam','3 modes (high/low/strobe)','Rechargeable via USB-C','Water-resistant IPX4','Compact pen-light design'],
+    specs:{ brand:'2 AM Study', type:'Flashlight', lumens:'200', modes:'3 (High/Low/Strobe)', battery:'Rechargeable Li-ion', charging:'USB-C', waterResistance:'IPX4', weight:'60g' },
+    reviews:[{user:'Geeta M.',rating:4,comment:'Bright enough for walking at night. USB-C charging is convenient.',date:'2026-03-06'},{user:'Rajesh H.',rating:4,comment:'Good build quality. The strobe mode is useful for emergencies.',date:'2026-02-13'}]
+  },
+  { id:413, cat:'essentials', emoji:'🎁', badge:'hot', badgeLabel:'Gift', name:'Birthday Surprise Box', desc:'Curated birthday gift box with 2 AM Study goodies and notes.', price:999, orig:1499,
+    images:['/assets/images/store/gift-box-1.jpg','/assets/images/store/gift-box-2.jpg'],
+    stock:5, rating:4.8, ratingCount:678,
+    features:['Curated gift box with 5+ items','Includes notebook, pen, mug mini, stickers','Handwritten birthday card included','Premium gift wrapping','Personalized message option'],
+    specs:{ brand:'2 AM Study', type:'Gift Box', items:'5+ Curated Items', wrapping:'Premium Gift Wrap', card:'Handwritten Birthday Card', personalization:'Message on Card', box:'Magnetic Closure Box' },
+    reviews:[{user:'Aarti S.',rating:5,comment:'My friend loved it! The packaging was beautiful and the items are high quality.',date:'2026-03-11'},{user:'Rohan D.',rating:5,comment:'Best gift for a student. Everything inside is actually useful!',date:'2026-02-25'},{user:'Pallavi T.',rating:4,comment:'Great value. The handwritten card made it extra special.',date:'2026-02-08'}]
+  },
+  { id:414, cat:'essentials', emoji:'💝', badge:'new', badgeLabel:'2 AM Study', name:'Birthday Memory Kit', desc:'Memory kit to preserve photos, messages, and celebration moments.', price:799, orig:1199,
+    images:['/assets/images/store/memory-kit-1.jpg'],
+    stock:8, rating:4.5, ratingCount:234,
+    features:['Photo album with 30 slip-in pockets','Message cards for friends to write','Decorative stickers and washi tape','Memory journal section','Keepsake box packaging'],
+    specs:{ brand:'2 AM Study', type:'Memory Kit', photoPockets:'30', includes:'Album, Message Cards, Stickers, Washi Tape, Journal', packaging:'Keepsake Box', dimensions:'25x20x5 cm', weight:'450g' },
+    reviews:[{user:'Divya K.',rating:5,comment:'Such a thoughtful gift idea. The message cards from friends made me emotional!',date:'2026-03-09'},{user:'Nikhil T.',rating:4,comment:'Good quality album and accessories. Fun to fill in.',date:'2026-02-22'}]
+  },
+  { id:415, cat:'essentials', emoji:'🖼️', badge:null, badgeLabel:'', name:'Motivational Wall Poster', desc:'Inspirational wall poster to keep your study space energetic.', price:199, orig:299,
+    images:['/assets/images/store/poster-1.jpg'],
+    stock:35, rating:4.0, ratingCount:456,
+    features:['A2 size motivational poster','Matte finish — no glare','Premium 200 GSM paper','2 AM Study exclusive design','Ready to frame'],
+    specs:{ brand:'2 AM Study', type:'Wall Poster', size:'A2 (42x59.4 cm)', paper:'200 GSM Matte', finish:'Matte', frame:'Not Included (Ready to Frame)', design:'2 AM Study Exclusive' },
+    reviews:[{user:'Aman G.',rating:4,comment:'Looks great on my study wall. Good print quality for the price.',date:'2026-03-03'},{user:'Snehal P.',rating:4,comment:'Motivational quotes are well-designed. Matte finish is nice.',date:'2026-02-12'}]
+  },
+  { id:416, cat:'essentials', emoji:'🧰', badge:'top', badgeLabel:'Best Value', name:'Compact Study Essentials Kit', desc:'All-in-one compact essentials kit from 2 AM Study for school, college, and self-study.', price:899, orig:1299,
+    images:['/assets/images/store/essentials-kit-1.jpg','/assets/images/store/essentials-kit-2.jpg'],
+    stock:11, rating:4.6, ratingCount:789,
+    features:['10+ essential items in one kit','Includes pens, highlighters, sticky notes','Ruler, eraser, and pencil included','Compact carrying pouch','Perfect starter kit for students'],
+    specs:{ brand:'2 AM Study', type:'Essentials Kit', items:'10+ (Pens, Highlighters, Sticky Notes, Ruler, Eraser, Pencil, Pouch)', pouch:'Zippered Compact Pouch', totalItems:'12', idealFor:'School, College, Self-Study', weight:'350g' },
+    reviews:[{user:'Kavya R.',rating:5,comment:'Everything I need in one pouch! No more searching for supplies. Best value!',date:'2026-03-13'},{user:'Ishaan M.',rating:5,comment:'Perfect starter kit. The pouch quality is great too.',date:'2026-02-27'},{user:'Pranjal S.',rating:4,comment:'Good variety of items. The pouch keeps everything organized.',date:'2026-02-09'}]
+  },
 ];
 const razorpay = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET ? 
   new Razorpay({
@@ -57,6 +205,41 @@ app.use(express.static(path.join(__dirname, 'public'), {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
+
+// Session middleware for cart & auth
+app.use(session({
+  secret: process.env.SESSION_SECRET || '2am-study-store-secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production'
+  }
+}));
+
+// Multer config for product image uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'public/assets/images/store'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueName = uuidv4() + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  fileFilter: function (req, file, cb) {
+    const allowed = /jpg|jpeg|png|webp|gif/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype.split('/')[1]);
+    if (ext && mime) cb(null, true);
+    else cb(new Error('Only images (jpg, png, webp, gif) allowed'));
+  }
+});
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -242,12 +425,185 @@ app.get('/store/product/:id', (req, res) => {
   });
 });
 
+app.get('/store/cart', (req, res) => {
+  res.render('store-cart', {
+    pageTitle: 'My Cart | 2AM Study Store',
+    metaDescription: 'View and manage your selected items in the Student Store cart before proceeding to checkout.',
+    hideBot: true
+  });
+});
+
 app.get('/store/order-summary', (req, res) => {
   res.render('store-order-summary', {
     pageTitle: 'Order Summary | 2AM Study Store',
     metaDescription: 'Review your cart items, total amount, and proceed to checkout securely.',
     hideBot: true
   });
+});
+
+// --- Store API Endpoints ---
+
+// Get all products (API)
+app.get('/api/store/products', (req, res) => {
+  const { category, sort, search } = req.query;
+  let products = [...STORE_PRODUCTS];
+
+  if (category && category !== 'all') {
+    products = products.filter(p => p.cat === category);
+  }
+  if (search) {
+    const term = search.toLowerCase();
+    products = products.filter(p =>
+      p.name.toLowerCase().includes(term) || p.desc.toLowerCase().includes(term)
+    );
+  }
+  if (sort) {
+    switch (sort) {
+      case 'price-low': products.sort((a, b) => a.price - b.price); break;
+      case 'price-high': products.sort((a, b) => b.price - a.price); break;
+      case 'rating': products.sort((a, b) => b.rating - a.rating); break;
+      case 'discount': products.sort((a, b) => ((b.orig - b.price)/b.orig) - ((a.orig - a.price)/a.orig)); break;
+      case 'newest': products.reverse(); break;
+    }
+  }
+
+  res.json({ success: true, count: products.length, products });
+});
+
+// Get single product (API)
+app.get('/api/store/products/:id', (req, res) => {
+  const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
+  if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+  res.json({ success: true, product });
+});
+
+// Get related products (API)
+app.get('/api/store/products/:id/related', (req, res) => {
+  const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
+  if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+  const related = STORE_PRODUCTS.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 4);
+  res.json({ success: true, count: related.length, products: related });
+});
+
+// Delivery check by pincode (API)
+app.post('/api/store/check-delivery', (req, res) => {
+  const { pincode, productId } = req.body;
+  if (!pincode || !/^\d{6}$/.test(pincode)) {
+    return res.status(400).json({ success: false, error: 'Please enter a valid 6-digit pincode' });
+  }
+  const product = STORE_PRODUCTS.find(p => p.id === Number(productId));
+  if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+
+  // Simulated delivery logic based on pincode ranges
+  const pin = parseInt(pincode);
+  const isMetro = [1100, 4000, 5600, 6000, 7000, 3800, 5000, 30].some(prefix => pin >= prefix * 100 && pin < (prefix + 10) * 100);
+  const isTier2 = [122, 201, 302, 411, 462, 500, 781, 800, 841].some(prefix => String(pin).startsWith(String(prefix)));
+
+  let deliveryDate, deliveryCharge, estimatedDays;
+  if (isMetro) {
+    estimatedDays = 2;
+    deliveryCharge = 0;
+    deliveryDate = new Date(Date.now() + estimatedDays * 86400000).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' });
+  } else if (isTier2) {
+    estimatedDays = 4;
+    deliveryCharge = 49;
+    deliveryDate = new Date(Date.now() + estimatedDays * 86400000).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' });
+  } else {
+    estimatedDays = 6;
+    deliveryCharge = 79;
+    deliveryDate = new Date(Date.now() + estimatedDays * 86400000).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  res.json({
+    success: true,
+    pincode,
+    deliverable: true,
+    deliveryDate,
+    estimatedDays,
+    deliveryCharge,
+    freeDeliveryAbove: 499,
+    codAvailable: false
+  });
+});
+
+// Cart management (session-based)
+app.get('/api/store/cart', (req, res) => {
+  const cart = req.session.cart || [];
+  const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  res.json({ success: true, items: cart, total, itemCount: cart.reduce((s, i) => s + i.qty, 0) });
+});
+
+app.post('/api/store/cart/add', (req, res) => {
+  const { productId, qty } = req.body;
+  const product = STORE_PRODUCTS.find(p => p.id === Number(productId));
+  if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+
+  if (!req.session.cart) req.session.cart = [];
+  const existing = req.session.cart.find(i => i.productId === product.id);
+  if (existing) {
+    existing.qty += (qty || 1);
+  } else {
+    req.session.cart.push({
+      productId: product.id,
+      name: product.name,
+      image: product.images[0],
+      price: product.price,
+      orig: product.orig,
+      qty: qty || 1
+    });
+  }
+  const cart = req.session.cart;
+  res.json({ success: true, items: cart, total: cart.reduce((s, i) => s + i.price * i.qty, 0), itemCount: cart.reduce((s, i) => s + i.qty, 0) });
+});
+
+app.post('/api/store/cart/remove', (req, res) => {
+  const { productId } = req.body;
+  if (!req.session.cart) return res.json({ success: true, items: [], total: 0, itemCount: 0 });
+  req.session.cart = req.session.cart.filter(i => i.productId !== Number(productId));
+  const cart = req.session.cart;
+  res.json({ success: true, items: cart, total: cart.reduce((s, i) => s + i.price * i.qty, 0), itemCount: cart.reduce((s, i) => s + i.qty, 0) });
+});
+
+// Product reviews (API)
+app.get('/api/store/products/:id/reviews', (req, res) => {
+  const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
+  if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+  const reviews = product.reviews || [];
+  const avgRating = reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : product.rating;
+  const ratingBreakdown = [5,4,3,2,1].map(star => ({
+    star,
+    count: reviews.filter(r => r.rating === star).length,
+    percent: reviews.length > 0 ? Math.round((reviews.filter(r => r.rating === star).length / reviews.length) * 100) : 0
+  }));
+  res.json({ success: true, avgRating, totalReviews: reviews.length, ratingBreakdown, reviews });
+});
+
+app.post('/api/store/products/:id/reviews', (req, res) => {
+  const { user, rating, comment } = req.body;
+  if (!user || !rating || !comment) return res.status(400).json({ success: false, error: 'All fields required' });
+  if (rating < 1 || rating > 5) return res.status(400).json({ success: false, error: 'Rating must be 1-5' });
+  const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
+  if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+
+  const newReview = { user, rating: Number(rating), comment, date: new Date().toISOString().split('T')[0] };
+  if (!product.reviews) product.reviews = [];
+  product.reviews.unshift(newReview);
+  product.ratingCount = (product.ratingCount || 0) + 1;
+  product.rating = Number((product.reviews.reduce((s, r) => s + r.rating, 0) / product.reviews.length).toFixed(1));
+
+  res.json({ success: true, message: 'Review added successfully', review: newReview });
+});
+
+// Product image upload (admin use)
+app.post('/api/store/products/:id/images', upload.array('images', 5), (req, res) => {
+  const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
+  if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+  if (!req.files || req.files.length === 0) return res.status(400).json({ success: false, error: 'No images uploaded' });
+
+  const newImages = req.files.map(f => `/assets/images/store/${f.filename}`);
+  if (!product.images) product.images = [];
+  product.images.push(...newImages);
+  res.json({ success: true, message: `${newImages.length} image(s) uploaded`, images: product.images });
 });
 
 app.get('/store/payment', (req, res) => {
@@ -540,7 +896,7 @@ app.post('/api/store/create-order', async (req, res) => {
     const options = {
       amount: Math.round(amount * 100),
       currency: 'INR',
-      receipt: `2am_${Date.now()}`,
+      receipt: `2am_${uuidv4().slice(0,8)}`,
       notes: {
         source: 'student_store',
         coupon: safe(metadata.coupon || 'none', 40),

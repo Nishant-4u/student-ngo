@@ -150,6 +150,112 @@ body {
     width: 100%;
   }
 }
+
+/* Review Section Styles */
+.purchased-items-section {
+  margin-top: 3rem;
+  text-align: left;
+  border-top: 1px solid var(--success-border);
+  padding-top: 2rem;
+}
+
+.purchased-item-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--success-border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.purchased-item-row:hover {
+  border-color: var(--success-accent);
+}
+
+.item-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.write-review-btn {
+  background: var(--success-accent);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.write-review-btn:hover {
+  background: #4f46e5;
+}
+
+.review-form-container {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 8px;
+  border: 1px dashed var(--success-border);
+}
+
+.star-rating {
+  display: flex;
+  gap: 8px;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.star-rating i {
+  cursor: pointer;
+  color: #444;
+  transition: color 0.2s;
+}
+
+.star-rating i.active {
+  color: #ffc107;
+}
+
+.review-textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--success-border);
+  color: white;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.submit-review-btn {
+  background: var(--success-green);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 </style>
 
 <div class="success-main">
@@ -189,9 +295,103 @@ body {
           <a href="/store" class="btn-primary">Continue Shopping</a>
           <a href="/" class="btn-secondary">Back to Home</a>
         </div>
+
+        <!-- Purchased Items & Review Section -->
+        <div id="purchasedItemsList" class="purchased-items-section" style="display: none;">
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem;">Rate Your Purchased Items</h3>
+          <div id="itemsContainer"></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lastOrder = JSON.parse(localStorage.getItem('2am_last_order') || 'null');
+  if (!lastOrder || !lastOrder.items || lastOrder.items.length === 0) return;
+
+  const container = document.getElementById('purchasedItemsList');
+  const itemsContainer = document.getElementById('itemsContainer');
+  container.style.display = 'block';
+
+  itemsContainer.innerHTML = lastOrder.items.map((item, index) => `
+    <div class="purchased-item-row" id="item-row-${item.productId}">
+      <img src="${item.image || 'https://via.placeholder.com/60'}" class="item-img" alt="${item.name}">
+      <div class="item-info">
+        <span class="item-name">${item.name}</span>
+        <button class="write-review-btn" onclick="toggleReviewForm(${item.productId})">Write a Review</button>
+        
+        <div id="review-form-${item.productId}" class="review-form-container">
+          <div class="star-rating" id="stars-${item.productId}">
+            <i class="fa-solid fa-star" onclick="setStarRating(${item.productId}, 1)"></i>
+            <i class="fa-solid fa-star" onclick="setStarRating(${item.productId}, 2)"></i>
+            <i class="fa-solid fa-star" onclick="setStarRating(${item.productId}, 3)"></i>
+            <i class="fa-solid fa-star" onclick="setStarRating(${item.productId}, 4)"></i>
+            <i class="fa-solid fa-star" onclick="setStarRating(${item.productId}, 5)"></i>
+          </div>
+          <textarea id="comment-${item.productId}" class="review-textarea" placeholder="Share your experience with this product..." rows="3"></textarea>
+          <button class="submit-review-btn" onclick="submitItemReview(${item.productId}, '${lastOrder.address?.name || 'Happy Customer'}')">Submit Review</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+});
+
+const ratings = {};
+
+function toggleReviewForm(productId) {
+  const form = document.getElementById(`review-form-${productId}`);
+  form.style.display = form.style.display === 'block' ? 'none' : 'block';
+}
+
+function setStarRating(productId, rating) {
+  ratings[productId] = rating;
+  const stars = document.getElementById(`stars-${productId}`).querySelectorAll('i');
+  stars.forEach((star, index) => {
+    star.classList.toggle('active', index < rating);
+  });
+}
+
+async function submitItemReview(productId, userName) {
+  const rating = ratings[productId];
+  const comment = document.getElementById(`comment-${productId}`).value.trim();
+
+  if (!rating) return alert('Please select a star rating.');
+  if (!comment) return alert('Please write a short comment.');
+
+  const btn = document.querySelector(`#review-form-${productId} .submit-review-btn`);
+  btn.innerText = 'Submitting...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`/api/store/products/${productId}/reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: userName, rating, comment })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById(`review-form-${productId}`).innerHTML = `
+        <div style="color: var(--success-green); font-weight: 600; padding: 1rem 0;">
+          <i class="fa-solid fa-circle-check"></i> Review submitted! Thank you.
+        </div>
+      `;
+      setTimeout(() => {
+        const form = document.getElementById(`review-form-${productId}`);
+        if(form) form.parentElement.querySelector('.write-review-btn').style.display = 'none';
+      }, 2000);
+    } else {
+      alert('Error: ' + (data.error || 'Failed to submit review'));
+      btn.innerText = 'Submit Review';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    alert('Failed to connect to server.');
+    btn.innerText = 'Submit Review';
+    btn.disabled = false;
+  }
+}
+</script>
 
 <%- include('partials/footer') %>

@@ -473,11 +473,15 @@
     min-height: 100vh;
   }
 
-  body>main,
-  body>.main-content,
-  body>.pomo-page,
-  body>.blog-post-page,
-  body>.clock-hub-page {
+  body > main,
+  body > .main-content,
+  body > .pomo-page,
+  body > .blog-post-page,
+  body > .clock-hub-page,
+  body > .order-main,
+  body > .cart-main,
+  body > .store-main,
+  body > .fk-product-page {
     flex: 1 0 auto;
   }
 
@@ -510,9 +514,90 @@
       transform: translateX(-50%);
     }
   }
+  /* ── Store Cart Bubble Styles ── */
+  .store-cart-container {
+    position: fixed;
+    bottom: 110px; /* Elevated above the bot */
+    right: 25px;
+    z-index: 10000;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: none; /* Controlled by JS */
+  }
+
+  .store-cart-bubble {
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #fb641b, #ff7531);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(251, 100, 27, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+
+  .store-cart-bubble:hover {
+    transform: scale(1.1) translateY(-5px) rotate(5deg);
+    box-shadow: 0 15px 35px rgba(251, 100, 27, 0.6);
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #fff;
+    color: #fb641b;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 2px solid #fb641b;
+  }
+
+  .store-cart-bubble .pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #fb641b;
+    opacity: 0.5;
+    animation: cartPulse 2s infinite;
+    z-index: -1;
+  }
+
+  @keyframes cartPulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  @media (max-width: 576px) {
+    .store-cart-container {
+      right: 20px;
+      bottom: 100px;
+    }
+  }
 </style>
 
 
+
+<!-- Store Cart Bubble -->
+<div class="store-cart-container" id="storeCartContainer">
+  <div class="store-cart-bubble" onclick="window.location.href='/store/cart'">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <div class="pulse"></div>
+    <span class="cart-badge" id="floatingCartCount" style="display: none;">0</span>
+  </div>
+</div>
 
 <footer class="site-footer">
   <div class="container pb-5 pt-4">
@@ -2234,6 +2319,38 @@
 <% if (typeof hideBot === 'undefined' || !hideBot) { %>
 <script src="/assets/js/bot.js" defer></script>
 <% } %>
+  <!-- Store Cart Logic -->
+  <script>
+    async function updateFloatingCart() {
+      const container = document.getElementById('storeCartContainer');
+      const badge = document.getElementById('floatingCartCount');
+      
+      // Only show on store pages
+      const isStorePage = window.location.pathname.includes('/store');
+      container.style.display = isStorePage ? 'block' : 'none';
+
+      if (isStorePage) {
+        try {
+          const res = await fetch('/api/store/cart');
+          const data = await res.json();
+          if (data.success && data.itemCount > 0) {
+            badge.textContent = data.itemCount;
+            badge.style.display = 'flex';
+          } else {
+            badge.style.display = 'none';
+          }
+        } catch (err) {
+          console.error('Failed to sync cart', err);
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateFloatingCart);
+    window.addEventListener('cartUpdated', updateFloatingCart);
+    
+    // Also periodically check for cart updates if not triggered by event
+    setInterval(updateFloatingCart, 10000); 
+  </script>
 </body>
 
 </html>
