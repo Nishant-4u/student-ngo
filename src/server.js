@@ -14,15 +14,12 @@ require('dotenv').config();
 const app = express();
 
 // Enable CORS for cross-origin requests (strict validation)
-const allowedOrigins = [process.env.FRONTEND_URL];
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || (origin && origin.includes('vercel.app')) || origin.startsWith('http://localhost')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: [
+    "https://2amstudy.vercel.app",
+    "https://2amstudy.online",
+    "https://2amstudy-rokrnkxpj-nishant-4us-projects.vercel.app"
+  ],
   credentials: true
 }));
 
@@ -253,7 +250,7 @@ app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET || '2am-study-store-secret',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     httpOnly: true,
