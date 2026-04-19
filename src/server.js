@@ -13,11 +13,21 @@ require('dotenv').config();
 
 const app = express();
 
-// Enable CORS for cross-origin requests (e.g. Vercel frontend -> Render backend)
+// Enable CORS for cross-origin requests (strict validation)
+const allowedOrigins = [process.env.FRONTEND_URL];
 app.use(cors({
-  origin: process.env.NEXT_PUBLIC_API_URL || process.env.FRONTEND_URL || true,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || (origin && origin.includes('vercel.app')) || origin.startsWith('http://localhost')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
+// Trust proxy for secure cookies on Render
+app.set('trust proxy', 1);
 
 const port = process.env.PORT || 3000;
 const STORE_PRODUCTS = [
@@ -247,7 +257,8 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
+    secure: true,
+    sameSite: 'none'
   }
 }));
 
