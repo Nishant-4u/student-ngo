@@ -2,19 +2,19 @@
 
 <style>
 :root {
-  --cart-bg: #0b1220;
-  --cart-card: #0f172a;
-  --cart-border: rgba(255,255,255,0.07);
+  --cart-bg: #f1f3f6;
+  --cart-card: #ffffff;
+  --cart-border: #e0e0e0;
   --cart-accent: #2874f0;
-  --cart-text: #f8fafc;
-  --cart-text-muted: #94a3b8;
+  --cart-text: #212121;
+  --cart-text-muted: #878787;
   --cart-green: #388e3c;
 }
 
 body {
   background-color: var(--cart-bg);
   color: var(--cart-text);
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .cart-main {
@@ -91,10 +91,12 @@ body {
   width: 28px;
   height: 28px;
   border: 1px solid var(--cart-border);
-  background: transparent;
-  color: white;
+  background: #f5f5f5;
+  color: var(--cart-text);
   border-radius: 6px;
   cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
 }
 
 .cart-item-price {
@@ -156,10 +158,236 @@ body {
   padding: 60px 0;
 }
 
-@media (max-width: 991px) {
-  .cart-grid { grid-template-columns: 1fr; }
+/* Suggested Products */
+.suggested-section {
+  margin-top: 40px;
+  background: var(--cart-card);
+  border: 1px solid var(--cart-border);
+  border-radius: 12px;
+  padding: 24px;
 }
+.suggested-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+.suggested-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+}
+.suggested-grid::-webkit-scrollbar {
+  height: 8px;
+}
+.suggested-grid::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.suggested-card {
+  min-width: 180px;
+  max-width: 180px;
+  border: 1px solid var(--cart-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+}
+.suggested-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.suggested-img-link {
+  height: 150px;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-decoration: none;
+}
+.suggested-img-link img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.suggested-details {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.s-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--cart-text);
+  text-decoration: none;
+}
+.s-title:hover {
+  color: #2874f0;
+}
+.s-rating {
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.rating-badge {
+  background: var(--cart-green);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+.rating-count {
+  color: var(--cart-text-muted);
+}
+.s-price {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.curr-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.old-price {
+  font-size: 0.8rem;
+  color: var(--cart-text-muted);
+  text-decoration: line-through;
+}
+.disc {
+  font-size: 0.8rem;
+  color: var(--cart-green);
+  font-weight: 700;
+}
+.s-action {
+  margin-top: auto;
+}
+.add-to-cart-btn {
+  width: 100%;
+  padding: 8px;
+  background: var(--cart-card);
+  color: #2874f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+.add-to-cart-btn:hover {
+  background: #f0f5ff;
+  border-color: #2874f0;
+}
+
+/* ========================
+   MOBILE - Cart Page
+   ======================== */
+@media (max-width: 768px) {
+  html, body { overflow-x: hidden !important; width: 100%; }
+  body { background-color: #f1f3f6 !important; }
+
+  .site-footer, .help-bot-container { display: none !important; }
+
+  .cart-main {
+    padding-top: 80px;
+    padding-bottom: 130px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Strip Bootstrap container gutters */
+  .cart-main > .container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .cart-title { font-size: 1.4rem; padding: 0 16px; margin-bottom: 16px; }
+
+  .cart-grid { grid-template-columns: 1fr; gap: 0; }
+
+  /* Make both panels edge-to-edge white cards on grey background */
+  .cart-left, .price-summary, .suggested-section {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 8px;
+    padding: 16px;
+  }
+  
+  .suggested-section { margin-top: 8px; }
+  .suggested-title { font-size: 1.25rem; }
+
+  /* Cart items: tighter layout */
+  .cart-item { grid-template-columns: 80px 1fr; gap: 12px; padding: 14px 0; }
+  .cart-item-img { width: 80px; height: 80px; }
+  .cart-item-details h3 { font-size: 0.95rem; }
+  .cart-item-price { font-size: 1.1rem; }
+
+  /* Sticky checkout bar */
+  .checkout-fixed-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--cart-card);
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.4);
+    z-index: 9999;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid var(--cart-border);
+  }
+
+  .checkout-fixed-bar .checkout-btn {
+    margin-top: 0 !important;
+    width: auto;
+    flex: 1;
+    padding: 15px 20px !important;
+    font-size: 1rem !important;
+    border-radius: 6px !important;
+  }
+
+  .mobile-cart-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .mobile-cart-total .mobile-label {
+    font-size: 0.75rem;
+    color: var(--cart-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .mobile-cart-total .mobile-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--cart-text);
+  }
+
+  /* Disable sticky right column on mobile */
+  .cart-right { position: static; }
+}
+
 </style>
+
 
 <div class="cart-main">
   <div class="container">
@@ -168,6 +396,43 @@ body {
     <div id="cartContent" class="cart-grid">
       <!-- Loading... -->
     </div>
+    
+    <!-- Suggested Products Section -->
+    <% if (locals.storeProducts && locals.storeProducts.length > 0) { %>
+      <div class="suggested-section">
+         <h2 class="suggested-title">Suggested for You</h2>
+         <div class="suggested-grid">
+            <% 
+              // Basic shuffle to show diverse items
+              const shuffled = [...storeProducts].sort(() => 0.5 - Math.random());
+              shuffled.slice(0, 10).forEach(p => { 
+            %>
+                <div class="suggested-card">
+                   <a href="/store/product/<%= p.id %>" class="suggested-img-link">
+                      <img src="<%= p.images[0] %>" alt="<%= p.name %>" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
+                   </a>
+                   <div class="suggested-details">
+                      <a href="/store/product/<%= p.id %>" class="s-title"><%= p.name %></a>
+                      <div class="s-rating">
+                         <span class="rating-badge"><%= p.rating %> <i class="fa-solid fa-star" style="font-size: 9px;"></i></span>
+                         <span class="rating-count">(<%= p.ratingCount %>)</span>
+                      </div>
+                      <div class="s-price">
+                         <span class="curr-price">₹<%= p.price %></span>
+                         <% if(p.orig) { %>
+                           <span class="old-price">₹<%= p.orig %></span>
+                           <span class="disc"><%= Math.round(((p.orig - p.price) / p.orig) * 100) %>% off</span>
+                         <% } %>
+                      </div>
+                      <div class="s-action">
+                         <button class="add-to-cart-btn" onclick="addSuggestedToCart(event, <%= p.id %>)">Add to Cart</button>
+                      </div>
+                   </div>
+                </div>
+            <% }); %>
+         </div>
+      </div>
+    <% } %>
   </div>
 </div>
 
@@ -196,6 +461,44 @@ async function updateQty(productId, delta) {
   }
 }
 
+async function addSuggestedToCart(event, productId) {
+  event.preventDefault();
+  const btn = event.currentTarget;
+  const originalText = btn.innerText;
+  btn.innerText = 'Adding...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/store/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId, qty: 1 })
+    });
+    const data = await res.json();
+    if (data.success) {
+      cartItems = data.items;
+      renderCart();
+      btn.innerText = 'Added!';
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }, 2000);
+      
+      // Scroll smoothly to cart top so user can see it
+      document.querySelector('.cart-main').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      alert(data.error || 'Failed to add item');
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Network error');
+    btn.innerText = originalText;
+    btn.disabled = false;
+  }
+}
+
 async function removeItem(productId) {
   const res = await fetch('/api/store/cart/remove', {
     method: 'POST',
@@ -215,7 +518,9 @@ function renderCart() {
   if (cartItems.length === 0) {
     container.innerHTML = `
       <div class="empty-cart-state" style="grid-column: span 2;">
-        <div style="font-size: 4rem; margin-bottom: 20px;">🛍️</div>
+        <div style="margin-bottom: 20px;">
+          <img src="/assets/images/store/placeholder.jpg" style="width: 100px; opacity: 0.6;" alt="Empty Cart">
+        </div>
         <h2>Your cart is empty</h2>
         <p style="color: var(--cart-text-muted); margin-bottom: 24px;">Add some amazing products from our store!</p>
         <a href="/store" class="checkout-btn" style="text-decoration: none; display: inline-block; width: auto; padding: 12px 30px;">Browse Store</a>
@@ -227,7 +532,7 @@ function renderCart() {
   const itemsHtml = cartItems.map(item => `
     <div class="cart-item">
       <div class="cart-item-img">
-        <img src="${item.image}" alt="${item.name}">
+        <img src="${item.image || '/assets/images/store/placeholder.jpg'}" alt="${item.name}" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
       </div>
       <div class="cart-item-details">
         <h3>${item.name}</h3>
@@ -265,7 +570,14 @@ function renderCart() {
           <span>Total Amount</span>
           <span>₹${total.toLocaleString()}</span>
         </div>
-        <button class="checkout-btn" onclick="window.location.href='/store/order-summary'">PROCEED TO CHECKOUT</button>
+        
+        <div class="checkout-fixed-bar">
+          <div class="mobile-cart-total d-block d-md-none">
+            <span class="mobile-label">Total Amount</span>
+            <span class="mobile-value">₹${total.toLocaleString()}</span>
+          </div>
+          <button class="checkout-btn" onclick="window.location.href='/store/order-summary'">PROCEED TO CHECKOUT</button>
+        </div>
       </div>
       <div style="margin-top: 15px; color: var(--cart-text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
         <i class="fa-solid fa-shield-halved"></i> 100% Safe and Secure Payments

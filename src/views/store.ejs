@@ -680,17 +680,103 @@ body {
   color: #ff4343;
 }
 
-/* Responsive Design */
+/* ========================
+   MOBILE - Flipkart Phone Layout
+   ======================== */
 @media (max-width: 768px) {
+  /* Base */
+  html, body { overflow-x: hidden !important; width: 100%; }
+  body { background-color: #f1f3f6 !important; }
+
+  /* Hero — compact on phone */
+  .store-hero { padding: 48px 0 36px; min-height: auto; }
+  .hero-title { font-size: 1.8rem; }
+  .hero-tagline { font-size: 0.95rem; padding: 0 16px; }
+  .floating-icon { display: none; }
+
+  /* Strip all container padding so content is edge-to-edge */
+  .store-content-wrapper {
+    padding: 0 !important;
+    padding-bottom: 80px !important;
+  }
+  .store-content-wrapper > main.container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Store container stacks vertically */
   .flipkart-store-container {
     flex-direction: column;
     padding: 0;
+    margin: 0;
+    max-width: 100%;
   }
-  
-  /* Mobile Sidebar as Bottom Sheet */
+
+  /* Toolbar: edge-to-edge, search full width */
+  .store-toolbar {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-bottom: 0;
+  }
+  .toolbar-search-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .toolbar-results { text-align: left; font-size: 12px; }
+  .toolbar-sort-row { display: none; }
+
+  /* Mobile Bottom Action Bar */
+  .mobile-action-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .mobile-action-bar button {
+    flex: 1;
+    padding: 15px;
+    background: #fff;
+    border: none;
+    border-right: 1px solid #f0f0f0;
+    font-weight: 700;
+    color: #212121;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .mobile-action-bar button:last-child { border-right: none; }
+
+  /* 2-Column Product Grid */
+  .flipkart-product-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px;
+    margin-top: 0;
+  }
+  .flipkart-product-card { border-radius: 4px; }
+  .flipkart-product-image { height: 160px; }
+  .flipkart-product-content { padding: 8px 10px 12px; }
+  .flipkart-product-title, .flipkart-product-brand { font-size: 12px; }
+  .flipkart-price-current { font-size: 14px; }
+  .flipkart-price-discount { font-size: 11px; }
+  .flipkart-wishlist-btn { width: 28px; height: 28px; }
+
+  /* Mobile bottom sheet filter/sort */
   .flipkart-sidebar {
     position: fixed;
-    bottom: -100%;
+    bottom: -110%;
     left: 0;
     width: 100%;
     height: 75vh;
@@ -698,15 +784,13 @@ body {
     z-index: 1060;
     transition: bottom 0.3s ease-in-out;
     border-radius: 20px 20px 0 0;
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
     background: #fff;
-    padding: 20px 20px 80px 20px;
+    padding: 20px 20px 100px;
     margin: 0;
   }
-  .flipkart-sidebar.show {
-    bottom: 0;
-  }
-  
+  .flipkart-sidebar.show { bottom: 0; }
+
   .sidebar-overlay {
     display: none;
     position: fixed;
@@ -716,10 +800,7 @@ body {
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  .sidebar-overlay.show {
-    display: block;
-    opacity: 1;
-  }
+  .sidebar-overlay.show { display: block; opacity: 1; }
 
   .mobile-filter-header {
     display: flex;
@@ -729,68 +810,11 @@ body {
     padding-bottom: 12px;
     margin-bottom: 16px;
   }
-  .mobile-filter-header h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 700;
-  }
-  .close-filter-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: #444;
-  }
+  .mobile-filter-header h3 { margin: 0; font-size: 16px; font-weight: 700; }
+  .close-filter-btn { background: none; border: none; font-size: 22px; color: #444; }
 
-  /* 2-Column Grid */
-  .flipkart-product-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    padding: 0 10px;
-  }
-  .flipkart-product-image { height: 180px; }
-  .flipkart-product-content { padding: 10px; }
-  .flipkart-product-title { font-size: 13px; }
-  .price-current { font-size: 15px; }
-  .price-discount { font-size: 12px; }
-
-  /* Bottom Action Bar -> Below Search Bar */
-  .mobile-action-bar {
-    display: flex;
-    background: #fff;
-    border-top: 1px solid #f0f0f0;
-    width: 100%;
-  }
-  .mobile-action-bar button {
-    flex: 1;
-    padding: 14px;
-    background: #fff;
-    border: none;
-    border-right: 1px solid #f0f0f0;
-    font-weight: 600;
-    color: #212121;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-  }
-  .mobile-action-bar button:last-child { border-right: none; }
-  
-  .store-content-wrapper { padding-bottom: 20px; }
-  .store-toolbar {
-    margin-bottom: 10px;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-  }
-  .toolbar-search-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .toolbar-results { text-align: center; }
-  .toolbar-sort-row { display: none; }
-  
-  /* Hide the horizontal sort bar to manage it differently if needed, or keep it. Let's keep it but also allow click from bottom bar */
+  /* Hide site footer & help bot */
+  .site-footer, .help-bot-container { display: none !important; }
 }
 
 @media (min-width: 769px) {
@@ -799,6 +823,7 @@ body {
   }
 }
 </style>
+
 
 <div class="store-main">
 <!-- Store Hero -->
@@ -971,33 +996,8 @@ body {
 </div>
 
 <script>
-// Store products data
-const storeProducts = [
-  { id:101, cat:'notebooks', badge:'top', badgeLabel:'2 AM Edition', brand:'Uniqstock', name:'Notebook A4', specs:'Unruled | 200 Pages | Pack of 6', price:417, orig:999, rating:4.5, reviews:1200, stock:18, images: ['https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&q=80&w=800'] },
-  { id:102, cat:'notebooks', badge:'hot', badgeLabel:'Hot', brand:'2 AM Study', name:'Premium Hardcover Diary', specs:'B5 | 160 Pages | Dot Grid', price:249, orig:399, rating:4.7, reviews:850, stock:12, images: ['https://images.unsplash.com/photo-1531346878377-a5ec20888e43?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1519791883288-dc8bd696e637?auto=format&fit=crop&q=80&w=800'] },
-  { id:103, cat:'notebooks', badge:'new', badgeLabel:'New', brand:'Uniqstock', name:'Spiral Notebook Set', specs:'A5 | 300 Pages | Subjects Combo', price:399, orig:599, rating:4.2, reviews:420, stock:8, images: ['https://images.unsplash.com/photo-1544816153-12ad5d7133a1?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1558021211-1da3d5084992?auto=format&fit=crop&q=80&w=800'] },
-  { id:201, cat:'bottles', badge:'top', badgeLabel:'Best Seller', brand:'HydraFocus', name:'Insulated Water Bottle', specs:'750ml | 24h Cold | Matte Black', price:449, orig:699, rating:4.6, reviews:2100, stock:22, images: ['https://images.unsplash.com/photo-1602143399064-711f598503e9?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1523362628744-0c144cae24b4?auto=format&fit=crop&q=80&w=800'] },
-  { id:202, cat:'bottles', badge:'new', badgeLabel:'New', brand:'2 AM Study', name:'Campus Lunch Box', specs:'3-Tier | Stainless Steel | Leak Proof', price:549, orig:799, rating:4.4, reviews:310, stock:15, images: ['https://images.unsplash.com/photo-1584286595398-a59f21d313f5?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1543362906-acac767a9919?auto=format&fit=crop&q=80&w=800'] },
-  { id:203, cat:'bottles', badge:'hot', badgeLabel:'Hot', brand:'FocusFuel', name:'Ceramic Coffee Mug', specs:'350ml | Ergonomic | Midnight Blue', price:299, orig:449, rating:4.7, reviews:560, stock:30, images: ['https://images.unsplash.com/photo-1517142089942-ba376ce32a2e?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=800'] },
-  { id:301, cat:'bags', badge:'top', badgeLabel:'Top Pick', brand:'NomadGear', name:'College Backpack Pro', specs:'25L | 15.6" Laptop | Rain Cover', price:1299, orig:1899, rating:4.4, reviews:890, stock:6, images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1575844444493-f1dcba61a33b?auto=format&fit=crop&q=80&w=800'] },
-  { id:302, cat:'bags', badge:'sale', badgeLabel:'Sale', brand:'NomadGear', name:'Weekend Traveler', specs:'35L | Expandable | Padded Straps', price:1499, orig:2299, rating:4.5, reviews:340, stock:4, images: ['https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?auto=format&fit=crop&q=80&w=800'] },
-  { id:401, cat:'essentials', badge:'top', badgeLabel:'Best Seller', brand:'Lumina', name:'Premium Ball Pen Set', specs:'Pack of 10 | 0.5mm | Blue Ink', price:199, orig:299, rating:4.3, reviews:1800, stock:45, images: ['https://images.unsplash.com/photo-1511556889441-7f3633034237?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=800'] },
-  { id:402, cat:'essentials', badge:'hot', badgeLabel:'Hot', brand:'Lumina', name:'Pastel Highlighter Set', specs:'Pack of 6 | Chisel Tip | Anti-Smudge', price:179, orig:279, rating:4.1, reviews:920, stock:35, images: ['https://images.unsplash.com/photo-1596401057633-5310da1d9ead?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1511116460269-ec582410a544?auto=format&fit=crop&q=80&w=800'] },
-  { id:403, cat:'essentials', brand:'StickyNotes Pro', name:'Color Sticky Notes Pack', specs:'400 Sheets | 3x3 Inch | Multi-color', price:149, orig:229, rating:4.0, reviews:510, stock:50, images: ['https://images.unsplash.com/photo-1582213708522-faba8208479e?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1515224526905-51c7d77c7bb8?auto=format&fit=crop&q=80&w=800'] },
-  { id:404, cat:'essentials', badge:'new', badgeLabel:'New', brand:'DeskElite', name:'Mesh Desk Organizer', specs:'6 Compartments | Metal | Anti-Slip', price:499, orig:749, rating:4.2, reviews:280, stock:10, images: ['https://images.unsplash.com/photo-1519337265831-281ec6cc8514?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&q=80&w=800'] },
-  { id:405, cat:'essentials', badge:'top', badgeLabel:'Top Pick', brand:'LuxBright', name:'LED Eye-Care Lamp', specs:'3 Modes | USB Charging | Foldable', price:699, orig:999, rating:4.5, reviews:1100, stock:9, images: ['https://images.unsplash.com/photo-1534073828943-f801091bb270?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1507473885765-e6ed241274ed?auto=format&fit=crop&q=80&w=800'] },
-  { id:406, cat:'essentials', badge:'new', badgeLabel:'New', brand:'LuxBright', name:'Clip-on Reading Light', specs:'Warm Glow | Rechargeable | 360° Neck', price:549, orig:799, rating:4.3, reviews:180, stock:14, images: ['https://images.unsplash.com/photo-1517520287167-4bbf64ac2f3e?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=800'] },
-  { id:407, cat:'essentials', brand:'FocusTime', name:'Modern Desktop Clock', specs:'Digital | Temperature | Silent Mode', price:399, orig:599, rating:4.1, reviews:440, stock:20, images: ['https://images.unsplash.com/photo-1509048191080-d2984bad6ad5?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1512036667332-28a3f9ef7aa4?auto=format&fit=crop&q=80&w=800'] },
-  { id:408, cat:'essentials', badge:'hot', badgeLabel:'2 AM Edition', brand:'2 AM Study', name:'Focus T-Shirt', specs:'100% Cotton | Oversized Fit | Black', price:599, orig:899, rating:4.6, reviews:670, stock:25, images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1562157873-840cf81a6773?auto=format&fit=crop&q=80&w=800'] },
-  { id:409, cat:'essentials', badge:'sale', badgeLabel:'Sale', brand:'2 AM Study', name:'Night Focus Hoodie', specs:'Heavy Cotton | Fleece Lined | Unisex', price:1199, orig:1699, rating:4.7, reviews:320, stock:7, images: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1578587018872-d914bb7f0ea1?auto=format&fit=crop&q=80&w=800'] },
-  { id:410, cat:'essentials', brand:'AuraStyle', name:'Satin Scrunchie Set', specs:'Pack of 6 | No-snag | Velvet Touch', price:149, orig:249, rating:4.0, reviews:210, stock:40, images: ['https://images.unsplash.com/photo-1582234032230-08703770f3f2?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1534067783941-51c9c23eccfd?auto=format&fit=crop&q=80&w=800'] },
-  { id:411, cat:'essentials', brand:'GuardX', name:'Personal Safety Alarm', specs:'140dB | LED Light | Keychain Design', price:249, orig:499, rating:4.6, reviews:110, stock:30, images: ['https://images.unsplash.com/photo-1588691350645-03719b45610a?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1520110120835-c96534a4c984?auto=format&fit=crop&q=80&w=800'] },
-  { id:412, cat:'essentials', brand:'SafeKnight', name:'Night Safety Flashlight', specs:'Zoomable | 5 Modes | Rechargeable', price:399, orig:749, rating:4.5, reviews:85, stock:25, images: ['https://images.unsplash.com/photo-1550418162-83b16d54832b?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1506450983270-d790d451a012?auto=format&fit=crop&q=80&w=800'] },
-  { id:413, cat:'essentials', badge:'hot', badgeLabel:'Gift', brand:'2 AM Study', name:'Birthday Surprise Box', specs:'Curated Goods | Gift Wrapped | Festive', price:699, orig:1499, rating:4.8, reviews:150, stock:5, images: ['https://images.unsplash.com/photo-1549465220-1d8c9d9c4709?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&q=80&w=800'] },
-  { id:414, cat:'essentials', brand:'MemoryLane', name:'Birthday Memory Kit', specs:'Scrapbook | Pens | Stickers Combo', price:449, orig:899, rating:4.4, reviews:70, stock:10, images: ['https://images.unsplash.com/photo-1512418490979-92798ccc13a0?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&q=80&w=800'] },
-  { id:415, cat:'essentials', brand:'InspoWall', name:'Motivational Poster Set', specs:'Pack of 10 | A4 Size | High Gloss', price:199, orig:299, rating:4.0, reviews:410, stock:35, images: ['https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1554048612-b6a482bc67e5?auto=format&fit=crop&q=80&w=800'] },
-  { id:416, cat:'essentials', badge:'top', badgeLabel:'Best Value', brand:'2 AM Study', name:'Study Essentials Kit', specs:'Complete Stationary | 12 Items', price:899, orig:1299, rating:4.6, reviews:320, stock:11, images: ['https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&q=80&w=800'] }
-];
+// Store products data from server
+const storeProducts = <%- JSON.stringify(storeProducts || []) %>;
 
 let currentCategories = [];
 let currentSearch = '';
@@ -1099,14 +1099,14 @@ function renderProducts(skipAnimation = false) {
   grid.innerHTML = filtered.map((product, index) => {
     const discount = Math.round(((product.orig - product.price) / product.orig) * 100);
     const stockHtml = product.stock <= 10 ? `<span class="flipkart-stock-tag" style="position:relative; margin-left:10px;">Only ${product.stock} left</span>` : '';
-    const img1 = product.images ? product.images[0] : 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&q=80&w=800';
+    const img1 = product.images && product.images[0] ? product.images[0] : '/assets/images/store/placeholder.jpg';
     const img2 = product.images && product.images[1] ? product.images[1] : img1;
 
     return `
     <div class="flipkart-product-card ${skipAnimation ? '' : 'product-anim-entry'}" onclick="viewProduct(${product.id})" style="animation-delay: ${index * 0.05}s">
       <div class="flipkart-product-image">
-        <img src="${img1}" class="img-primary" alt="${product.name}">
-        <img src="${img2}" class="img-secondary" alt="${product.name}">
+        <img src="${img1}" class="img-primary" alt="${product.name}" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
+        <img src="${img2}" class="img-secondary" alt="${product.name}" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
         ${product.badge ? `<span class="flipkart-product-badge flipkart-badge-${product.badge}">${product.badgeLabel}</span>` : ''}
         <button class="flipkart-wishlist-btn" onclick="toggleWishlist(event, this)">
           <i class="fa-solid fa-heart"></i>

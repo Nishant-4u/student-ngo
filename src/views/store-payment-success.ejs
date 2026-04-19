@@ -136,9 +136,16 @@ body {
 }
 
 @media (max-width: 768px) {
+  body { background-color: #f1f3f6 !important; }
+  .site-footer, .help-bot-container { display: none !important; }
+  .success-main { padding-top: 80px; padding-bottom: 40px; }
   .success-card {
-    padding: 2rem;
-    margin: 1rem;
+    padding: 2rem 1rem;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
   }
   
   .success-actions {
@@ -317,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   itemsContainer.innerHTML = lastOrder.items.map((item, index) => `
     <div class="purchased-item-row" id="item-row-${item.productId}">
-      <img src="${item.image || 'https://via.placeholder.com/60'}" class="item-img" alt="${item.name}">
+      <img src="${item.image || '/assets/images/store/placeholder.jpg'}" class="item-img" alt="${item.name}" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
       <div class="item-info">
         <span class="item-name">${item.name}</span>
         <button class="write-review-btn" onclick="toggleReviewForm(${item.productId})">Write a Review</button>

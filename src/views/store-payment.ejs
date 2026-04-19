@@ -3,22 +3,22 @@
 <style>
 /* Review & Pay - Advanced Flipkart Style Formatting */
 :root {
-  --rp-bg: #0b1220;
-  --rp-card: #0f172a;
-  --rp-border: rgba(255,255,255,0.07);
-  --rp-accent: #6366f1;
-  --rp-accent-hover: #4f46e5;
+  --rp-bg: #f1f3f6;
+  --rp-card: #ffffff;
+  --rp-border: #e0e0e0;
+  --rp-accent: #2874f0;
+  --rp-accent-hover: #1a5dc8;
   --rp-orange: #fb641b; 
   --rp-orange-hover: #ff7531;
   --rp-green: #388e3c;
-  --rp-text: #f8fafc;
-  --rp-text-muted: #94a3b8;
+  --rp-text: #212121;
+  --rp-text-muted: #878787;
 }
 
 body {
   background-color: var(--rp-bg);
   color: var(--rp-text);
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .rp-main {
@@ -36,7 +36,7 @@ body {
   overflow: hidden;
 }
 .rp-step-header {
-  background: rgba(255,255,255,0.03);
+  background: var(--rp-accent);
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--rp-border);
   display: flex;
@@ -49,8 +49,8 @@ body {
 .rp-step-num {
   width: 24px;
   height: 24px;
-  background: var(--rp-accent);
-  color: #fff;
+  background: #fff;
+  color: var(--rp-accent);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -60,25 +60,25 @@ body {
 }
 .rp-step-title {
   font-weight: 700;
-  color: #cbd5e1;
+  color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-size: 0.95rem;
   margin: 0;
 }
 .rp-step-btn {
-  background: transparent; color: var(--rp-accent);
-  border: 1px solid var(--rp-border); border-radius: 6px;
+  background: transparent; color: #fff;
+  border: 1px solid rgba(255,255,255,0.5); border-radius: 6px;
   padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 700;
   text-transform: uppercase; transition: 0.2s; text-decoration: none;
 }
-.rp-step-btn:hover { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.4); color: #818cf8; }
+.rp-step-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; color: #fff; }
 
 .rp-step-body { padding: 1.5rem; }
 
 /* Contact Specifics */
 .rp-contact-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.2rem; color: #fff; }
-.rp-contact-line { font-size: 0.95rem; color: #cbd5e1; margin-bottom: 0.2rem; }
+.rp-contact-line { font-size: 0.95rem; color: rgba(255,255,255,0.8); margin-bottom: 0.2rem; }
 
 /* Item Specifics */
 .rp-item-row {
@@ -92,9 +92,9 @@ body {
   width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--rp-border);
 }
 .rp-item-details { display: flex; flex-direction: column; }
-.rp-item-name { font-weight: 600; font-size: 0.95rem; color: #e2e8f0; }
+.rp-item-name { font-weight: 600; font-size: 0.95rem; color: var(--rp-text); }
 .rp-item-qty { font-size: 0.85rem; color: var(--rp-text-muted); }
-.rp-item-price { font-weight: 800; font-size: 1.1rem; color: #fff; }
+.rp-item-price { font-weight: 800; font-size: 1.1rem; color: var(--rp-text); }
 
 /* Price Details Specifics */
 .rp-price-box {
@@ -106,7 +106,7 @@ body {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--rp-border);
   font-weight: 700;
-  color: #cbd5e1;
+  color: var(--rp-text-muted);
   text-transform: uppercase;
   font-size: 0.95rem;
   letter-spacing: 0.5px;
@@ -122,7 +122,7 @@ body {
   border-bottom: 1px dashed var(--rp-border);
 }
 .rp-price-final span { font-weight: 700; font-size: 1.1rem; }
-.rp-price-final strong { font-weight: 800; font-size: 1.4rem; color: #fff; }
+.rp-price-final strong { font-weight: 800; font-size: 1.4rem; color: var(--rp-text); }
 
 .rp-saved-text { color: var(--rp-green); font-weight: 700; font-size: 0.95rem; padding-top: 0.5rem; display: block; }
 
@@ -148,23 +148,118 @@ body {
 }
 .rp-trust-item { display: flex; align-items: center; gap: 0.5rem; }
 
+/* ========================
+   MOBILE - Review & Pay Page
+   ======================== */
 @media (max-width: 768px) {
-  .rp-checkout-btn-wrap {
+  html, body { overflow-x: hidden !important; width: 100%; }
+  body { background-color: #f1f3f6 !important; }
+  .site-footer, .help-bot-container { display: none !important; }
+
+  .rp-main {
+    padding-top: 80px;
+    padding-bottom: 130px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Strip Bootstrap container gutters */
+  .rp-main > .container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Step boxes: edge-to-edge white cards */
+  .rp-step-box, .rp-price-box, .rp-trust-box {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Make the right-column static on mobile */
+  .rp-sticky-parent { position: static !important; }
+  .rp-checkout-btn-wrap { display: none !important; }
+
+  /* Step header & body sizing */
+  .rp-step-title { font-size: 0.8rem; }
+  .rp-step-btn { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
+  .rp-step-body { padding: 1rem; }
+
+  /* Item row: compact on phone */
+  .rp-item-left { gap: 10px; }
+  .rp-item-img { width: 48px; height: 48px; }
+  .rp-item-name { font-size: 0.85rem; }
+  .rp-item-price { font-size: 0.95rem; }
+
+  /* Fixed sticky Pay button at bottom */
+  .mobile-checkout-bar {
+    display: flex !important;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
-    box-shadow: 0 -10px 20px rgba(0,0,0,0.5);
+    z-index: 9999;
+    background: var(--rp-card);
+    border-top: 1px solid var(--rp-border);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+    align-items: center;
+    gap: 14px;
   }
-  .rp-main { padding-bottom: 110px; }
+  .mobile-checkout-bar .mob-price-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .mobile-checkout-bar .mob-price-label {
+    font-size: 0.7rem;
+    color: var(--rp-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .mobile-checkout-bar .mob-price-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--rp-text);
+    line-height: 1.1;
+  }
+  .mobile-checkout-bar .mob-cta {
+    flex: 1;
+    padding: 15px;
+    background: var(--rp-orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: 0.2s;
+  }
+  .mobile-checkout-bar .mob-cta:disabled { opacity: 0.7; cursor: not-allowed; }
 }
+
+/* Always hide the mobile bar on desktop */
+@media (min-width: 769px) {
+  .mobile-checkout-bar { display: none !important; }
+}
+
 </style>
 
 <main class="container rp-main">
   <div class="row justify-content-center">
     
-    <div class="col-12 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div class="col-12 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2 px-3 px-md-0">
       <h1 class="fs-3 fw-bold mb-0">Review & Pay</h1>
     </div>
 
@@ -211,29 +306,17 @@ body {
           </div>
         </div>
 
-        <!-- 3. Payment Method -->
-        <div class="rp-step-box">
-          <div class="rp-step-header">
-            <div class="rp-step-header-left">
-              <div class="rp-step-num"><i class="fa-solid fa-check" style="font-size:0.6rem;"></i></div>
-              <h2 class="rp-step-title">Payment Method</h2>
-            </div>
-          </div>
-          <div class="rp-step-body py-3">
-            <div class="d-flex align-items-center gap-3">
-              <i class="fa-solid fa-credit-card fs-3" style="color:var(--rp-accent)"></i>
-              <div>
-                <div class="fw-bold" style="color:#fff; font-size:1.05rem;">Secure payment via Razorpay</div>
-                <div style="font-size:0.85rem; color:var(--rp-text-muted);">(UPI / Card / Net Banking / Wallets)</div>
-              </div>
-            </div>
-          </div>
+        <!-- Trust Badge (Flipkart Style) -->
+        <div style="display: flex; align-items: center; gap: 16px; padding: 16px 0; margin-bottom: 24px;">
+          <i class="fa-solid fa-shield-halved" style="font-size: 2.2rem; color: #878787;"></i>
+          <span style="font-size: 0.95rem; font-weight: 500; line-height: 1.4; color: var(--rp-text-muted);">Safe and Secure Payments. Easy returns.<br>100% Authentic products.</span>
         </div>
+
       </div>
 
       <!-- RIGHT COL: Price Execution -->
       <div class="col-lg-4">
-        <div style="position: sticky; top: 100px; padding-bottom: 20px;">
+        <div class="rp-sticky-parent" style="position: sticky; top: 100px; padding-bottom: 20px;">
           <div class="rp-price-box">
             <div class="rp-price-header">Price Details</div>
             
@@ -274,15 +357,7 @@ body {
             </div>
           </div>
 
-          <!-- Trust Badges -->
-          <div class="rp-trust-box flex-column gap-3 text-center mt-3 p-3 border rounded" style="background: rgba(255,255,255,0.02); border-color: var(--rp-border)!important;">
-            <div class="d-flex justify-content-center flex-wrap gap-3">
-              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-shield-halved text-success fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">100% Secure<br>Payments</span></div>
-              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-ban text-danger fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">No Cash on<br>Delivery</span></div>
-              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-rotate-left text-warning fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">7-Day<br>Replacement</span></div>
-              <div class="rp-trust-item flex-column text-center"><i class="fa-solid fa-truck-fast text-info fs-4"></i> <span style="font-size:0.75rem; font-weight:700; color:#fff;">Fast<br>Delivery</span></div>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -290,29 +365,53 @@ body {
   </div>
 </main>
 
+<!-- Mobile Fixed Checkout Bar (Phone only) -->
+<div class="mobile-checkout-bar" id="mobileCheckoutBar">
+  <div class="mob-price-col">
+    <span class="mob-price-label">Total Amount</span>
+    <span class="mob-price-value" id="mobBarTotal">₹0</span>
+  </div>
+  <button class="mob-cta" id="payNowBtnMobile">
+    Proceed to Pay &nbsp;<i class="fa-solid fa-angle-right"></i>
+  </button>
+</div>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  (function () {
+  (async function () {
     const RAZORPAY_KEY_ID = '<%= razorpayKeyId || "" %>';
-    const cart = JSON.parse(localStorage.getItem('2am_cart') || '[]');
-    const appliedCoupon = JSON.parse(localStorage.getItem('2am_coupon') || 'null');
-    const checkoutCustomer = JSON.parse(localStorage.getItem('2am_checkout_customer') || 'null');
-    const hasOrderedBefore = () => localStorage.getItem('2am_has_ordered') === 'true';
-
     const empty = document.getElementById('paymentEmpty');
     const content = document.getElementById('paymentContent');
+
+    // Load all checkout state from server session
+    let checkoutData;
+    try {
+      const res = await fetch('/api/store/checkout');
+      checkoutData = await res.json();
+    } catch(e) {
+      empty.classList.remove('d-none');
+      content.classList.add('d-none');
+      return;
+    }
+
+    const cart = checkoutData.cart || [];
+    const checkoutCustomer = checkoutData.customer || null;
+    const appliedCoupon = checkoutData.coupon || null;
+
+    // Guard: empty cart
     if (!cart.length) {
       empty.classList.remove('d-none');
       content.classList.add('d-none');
       return;
     }
 
+    // Guard: no address saved yet
     if (!checkoutCustomer) {
       window.location.href = '/store/order-summary';
       return;
     }
 
-    // Insert Layout UI Data
+    // Render Delivery Address
     const delStartDate = new Date();
     delStartDate.setDate(delStartDate.getDate() + 3);
     const delEndDate = new Date();
@@ -321,15 +420,15 @@ body {
     
     document.getElementById('payAddressBox').innerHTML = `
       <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
-        <span style="font-weight: 700; font-size: 1.1rem; color: #fff;">${checkoutCustomer.name}</span>
+        <span style="font-weight: 700; font-size: 1.1rem; color: var(--rp-text);">${checkoutCustomer.name}</span>
         <span class="badge bg-secondary text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Home</span>
-        <span style="font-weight: 700; font-size: 1.05rem; color: #fff; margin-left: 0.5rem;">${checkoutCustomer.phone}</span>
+        <span style="font-weight: 700; font-size: 1.05rem; color: var(--rp-text); margin-left: 0.5rem;">${checkoutCustomer.phone}</span>
       </div>
-      <div style="font-size: 0.95rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem; max-width: 500px;">
-        ${checkoutCustomer.address}, ${checkoutCustomer.city} 
+      <div style="font-size: 0.95rem; color: var(--rp-text); line-height: 1.5; margin-bottom: 0.5rem; max-width: 500px;">
+        ${checkoutCustomer.address}, ${checkoutCustomer.city}
         <span style="font-weight: 600;">- ${checkoutCustomer.pincode}</span>
       </div>
-      <div style="font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem;">
+      <div style="font-size: 0.85rem; color: var(--rp-text-muted); display: flex; align-items: center; gap: 0.4rem;">
         <i class="fa-regular fa-envelope"></i> ${checkoutCustomer.email}
       </div>
       <div style="font-size: 0.9rem; color: var(--rp-green); font-weight: 700; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed var(--rp-border);">
@@ -337,140 +436,101 @@ body {
       </div>
     `;
 
-    document.getElementById('rpItemCount').textContent = cart.length;
-    document.getElementById('rpItemCountBadge').textContent = cart.length;
-
+    // Render Items
+    const totalItemsQuantity = cart.reduce((sum, item) => sum + parseInt(item.qty || 1), 0);
+    document.getElementById('rpItemCount').textContent = totalItemsQuantity;
+    document.getElementById('rpItemCountBadge').textContent = totalItemsQuantity;
     document.getElementById('payItemsBox').innerHTML = cart.map((i, idx) => {
-      const imgUrl = i.image || `https://picsum.photos/seed/imgA${i.id || idx}/200/200`;
+      const imgUrl = i.image || '/assets/images/store/placeholder.jpg';
       return `
       <div class="rp-item-row">
         <div class="rp-item-left">
-          <img src="${imgUrl}" class="rp-item-img">
+          <img src="${imgUrl}" class="rp-item-img" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
           <div class="rp-item-details">
             <span class="rp-item-name">${i.name}</span>
             <span class="rp-item-qty">Qty: ${i.qty}</span>
           </div>
         </div>
         <div class="rp-item-price">₹${i.price * i.qty}</div>
-      </div>
-    `}).join('');
+      </div>`;
+    }).join('');
 
+    // === DISPLAY ONLY: All values are server-computed ===
+    // The frontend does zero arithmetic — it only renders what the server sends.
+    const s = checkoutData.summary;
 
-    // Math Engine
-    const COUPONS = {
-      'HAPPY BIRTHDAY': { type: 'full_no_delivery' },
-      WELCOME: { type: 'flat_first_time', value: 100 },
-      BHAIYA: { type: 'full_with_delivery_free' }
-    };
-    
-    // Core sum from selling price
-    const getSubtotal = () => cart.reduce((s, c) => s + c.price * c.qty, 0);
-    // Base MRP mapped to simulate savings vs original 
-    const getBaseMrpTotal = () => cart.reduce((s, c) => s + ((c.orig || Math.round(c.price * 1.4)) * c.qty), 0);
-    const getBaseDelivery = subtotal => subtotal > 0 && subtotal < 499 ? 50 : 0;
-    const couponLimitReached = () => cart.length > 2 || cart.some(item => item.qty > 1);
-
-    function getPriceSummary() {
-      const spSubtotal = getSubtotal(); // Actual selling sum
-      const mrpSubtotal = getBaseMrpTotal(); // Fake padded sum to show standard flipkart discount
-      let delivery = getBaseDelivery(spSubtotal);
-      
-      let baseStoreDiscount = mrpSubtotal - spSubtotal; // difference between real store price and MRP
-      let platformFee = 1;
-
-      let couponDiscount = 0;
-      let couponError = '';
-
-      if (appliedCoupon && COUPONS[appliedCoupon.code]) {
-        const cfg = COUPONS[appliedCoupon.code];
-        if (['HAPPY BIRTHDAY', 'BHAIYA'].includes(appliedCoupon.code) && couponLimitReached()) {
-          couponError = 'Limit reached';
-        } else if (cfg.type === 'full_no_delivery') {
-          couponDiscount = spSubtotal; // Full item cost off
-        } else if (cfg.type === 'flat_first_time') {
-          if (hasOrderedBefore()) couponError = 'WELCOME applies only for first-time users.';
-          else couponDiscount = Math.min(cfg.value, spSubtotal);
-        } else if (cfg.type === 'full_with_delivery_free') {
-          couponDiscount = spSubtotal;
-          delivery = 0;
-        }
-      }
-
-      // Calculation Breakdown
-      // Subtotal to display is MRP.
-      // Total Discount includes the base store discount PLUS any valid coupon
-      // Final = MRP - (Base + Coupon) + Delivery + Platform
-      let mathNet = Math.max(0, spSubtotal - couponDiscount);
-      let finalTotal = mathNet + delivery + platformFee;
-      
-      // Override boundary cases identical to previous script
-      if (appliedCoupon && !couponError) {
-        if (appliedCoupon.code === 'BHAIYA') finalTotal = 1 + platformFee; 
-        else if (appliedCoupon.code === 'HAPPY BIRTHDAY') finalTotal = Math.max(1, delivery + platformFee); 
-        else if (appliedCoupon.code === 'WELCOME') finalTotal = Math.max(1, finalTotal);
-      }
-
-      const totalSaved = baseStoreDiscount + couponDiscount;
-
-      return { mrpSubtotal, baseStoreDiscount, couponDiscount, delivery, platformFee, finalTotal, couponError, totalSaved };
-    }
-
-    const summary = getPriceSummary();
-
-    // Map outputs to UI
-    document.getElementById('rpBasePrice').textContent = `₹${summary.mrpSubtotal}`;
-    document.getElementById('rpDiscount').textContent = `- ₹${summary.baseStoreDiscount}`;
-    
-    if (summary.couponDiscount > 0 && !summary.couponError) {
+    document.getElementById('rpBasePrice').textContent = `₹${s.mrpSubtotal}`;
+    document.getElementById('rpDiscount').textContent = `- ₹${s.baseStoreDiscount}`;
+    if (s.couponDiscount > 0) {
       document.getElementById('rpCouponRow').style.display = 'flex';
-      document.getElementById('rpCouponDisc').textContent = `- ₹${summary.couponDiscount}`;
+      document.getElementById('rpCouponDisc').textContent = `- ₹${s.couponDiscount}`;
     }
-
     const delEl = document.getElementById('rpDelivery');
-    if (summary.delivery === 0) {
-      delEl.innerHTML = `<span style="text-decoration: line-through; color: #cbd5e1; font-size: 0.85rem; margin-right: 6px; opacity: 0.7;">₹50</span> <span style="color: #388e3c; font-weight: 700;">FREE</span>`;
+    const delEl2 = document.getElementById('rpDelivery2');
+    if (s.delivery === 0) {
+      const freeDeliveryHTML = `<span style="text-decoration: line-through; color: var(--rp-text-muted); font-size: 0.85rem; margin-right: 6px; opacity: 0.7;">₹50</span> <span style="color: #388e3c; font-weight: 700;">FREE</span>`;
+      delEl.innerHTML = freeDeliveryHTML;
+      if (delEl2) delEl2.innerHTML = freeDeliveryHTML;
     } else {
-      delEl.textContent = `₹${summary.delivery}`;
+      delEl.textContent = `₹${s.delivery}`;
+      if (delEl2) delEl2.textContent = `₹${s.delivery}`;
+    }
+    
+    document.getElementById('rpFinalTotal').textContent = `₹${s.finalTotal}`;
+    const rpFinalTotal2 = document.getElementById('rpFinalTotal2');
+    if (rpFinalTotal2) rpFinalTotal2.textContent = `₹${s.finalTotal}`;
+
+    const mobBarTotalEl = document.getElementById('mobBarTotal');
+    if (mobBarTotalEl) mobBarTotalEl.textContent = `₹${s.finalTotal}`;
+    
+    const taxHtml = '<div style="font-size:0.8rem; color: var(--rp-text-muted); text-align:right; margin-top:2px; font-weight:500; opacity: 0.8;">Inclusive of all taxes</div>';
+    document.getElementById('rpFinalTotal').insertAdjacentHTML('afterend', taxHtml);
+    if (rpFinalTotal2) rpFinalTotal2.insertAdjacentHTML('afterend', taxHtml);
+
+    document.getElementById('payNowBtn').innerHTML = `Proceed to Pay &nbsp;<i class="fa-solid fa-angle-right"></i>`;
+    document.getElementById('rpSavedBlock').textContent = `🎉 You saved ₹${s.totalSaved} on this order`;
+    const rpSavedBlock2 = document.getElementById('rpSavedBlock2');
+    if (rpSavedBlock2) rpSavedBlock2.textContent = `🎉 You saved ₹${s.totalSaved} on this order`;
+
+    // Inline sync
+    const rpItemCountBadge2 = document.getElementById('rpItemCountBadge2');
+    if (rpItemCountBadge2) rpItemCountBadge2.textContent = totalItemsQuantity;
+    const rpBasePrice2 = document.getElementById('rpBasePrice2');
+    if (rpBasePrice2) rpBasePrice2.textContent = `₹${s.mrpSubtotal}`;
+    const rpDiscount2 = document.getElementById('rpDiscount2');
+    if (rpDiscount2) rpDiscount2.textContent = `- ₹${s.baseStoreDiscount}`;
+    if (s.couponDiscount > 0) {
+      document.getElementById('rpCouponRow2').style.display = 'flex';
+      const rpCouponDisc2 = document.getElementById('rpCouponDisc2');
+      if (rpCouponDisc2) rpCouponDisc2.textContent = `- ₹${s.couponDiscount}`;
     }
 
-    document.getElementById('rpFinalTotal').textContent = `₹${summary.finalTotal}`;
-    document.getElementById('rpFinalTotal').insertAdjacentHTML('afterend', '<div style="font-size:0.8rem; color: #cbd5e1; text-align:right; margin-top:2px; font-weight:500; opacity: 0.8;">Inclusive of all taxes</div>');
-    document.getElementById('payNowBtn').innerHTML = `Proceed to Pay ₹${summary.finalTotal}`;
-    document.getElementById('rpSavedBlock').textContent = `🎉 You saved ₹${summary.totalSaved} on this order`;
-
-    // Process order natively
-    document.getElementById('payNowBtn').addEventListener('click', async () => {
-      const btn = document.getElementById('payNowBtn');
+    // Pay Button Config
+    async function startPaymentFlow(btn) {
+      if (!btn) return;
       if (!RAZORPAY_KEY_ID) return alert('Razorpay server key not found in environment.');
-      if (summary.couponError) return alert('Cannot process: ' + summary.couponError);
       
-      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Secure payment loading...`;
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Loading...`;
       btn.disabled = true;
-
-      const orderMeta = {
-        coupon: appliedCoupon?.code || '',
-        itemCount: cart.reduce((s, c) => s + c.qty, 0),
-        subtotal: summary.mrpSubtotal,
-        discount: summary.baseStoreDiscount + summary.couponDiscount,
-        delivery: summary.delivery,
-        platformFee: summary.platformFee,
-        total: summary.finalTotal,
-        customer: checkoutCustomer,
-        products: cart.map(c => `${c.name} x${c.qty}`).slice(0, 10).join(', ')
-      };
+      document.querySelectorAll('.mob-cta, .btn-rp-pay').forEach(b => b.disabled = true);
 
       try {
+        // No amount sent — server reads from session and computes securely
         const res = await fetch('/api/store/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: summary.finalTotal, metadata: orderMeta })
+          body: JSON.stringify({})
         });
         const order = await res.json();
         if (!res.ok) throw new Error(order.error || 'Unable to create order with server.');
 
+        // Use the server's confirmed total for display in Razorpay modal
+        const confirmedTotal = order.serverSummary ? order.serverSummary.finalTotal : s.finalTotal;
+
         const rzp = new Razorpay({
           key: RAZORPAY_KEY_ID,
-          amount: order.amount,
+          amount: order.amount,       // Already in paise from server
           currency: order.currency,
           name: '2 AM Study',
           description: 'Secure Checkout',
@@ -478,7 +538,6 @@ body {
           prefill: { name: checkoutCustomer.name, email: checkoutCustomer.email, contact: checkoutCustomer.phone },
           theme: { color: '#6366f1' },
           handler: async function (response) {
-            
             document.body.insertAdjacentHTML('beforeend', `
               <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(11,18,32,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
                 <div class="spinner-border text-primary" style="width: 3rem; height: 3rem; margin-bottom:1rem;" role="status"></div>
@@ -498,35 +557,44 @@ body {
               return;
             }
 
+            // Save minimal last-order to localStorage ONLY for the post-payment review feature
             localStorage.setItem('2am_last_order', JSON.stringify({
               paymentId: response.razorpay_payment_id,
               orderId: response.razorpay_order_id,
               items: [...cart],
               address: checkoutCustomer,
-              total: summary.finalTotal,
+              total: confirmedTotal,
               coupon: appliedCoupon?.code || '',
-              platformFee: summary.platformFee
+              platformFee: s.platformFee
             }));
 
-            localStorage.setItem('2am_has_ordered', 'true');
-            localStorage.removeItem('2am_coupon');
-            localStorage.removeItem('2am_cart');
+            // Clear all checkout state from server session
+            await fetch('/api/store/checkout/clear', { method: 'POST' });
+
             window.location.href = `/store/payment-success?payment_id=${encodeURIComponent(response.razorpay_payment_id)}&order_id=${encodeURIComponent(response.razorpay_order_id)}`;
           }
         });
         
         rzp.on('payment.failed', function () {
-          btn.innerHTML = `Proceed to Pay ₹${summary.finalTotal}`;
+          btn.innerHTML = `Proceed to Pay ₹${confirmedTotal}`;
           btn.disabled = false;
         });
 
         rzp.open();
       } catch (e) {
         alert(e.message || 'Payment engine failure. Please try again.');
-        btn.innerHTML = `Proceed to Pay ₹${summary.finalTotal}`;
-        btn.disabled = false;
+        btn.innerHTML = `Proceed to Pay &nbsp;<i class="fa-solid fa-angle-right"></i>`;
+        document.querySelectorAll('.mob-cta, .btn-rp-pay').forEach(b => b.disabled = false);
       }
-    });
+    }
+
+    // Attach to Desktop Button
+    const payBtn = document.getElementById('payNowBtn');
+    if (payBtn) payBtn.addEventListener('click', () => startPaymentFlow(payBtn));
+
+    // Attach to Mobile Button
+    const payBtnMobile = document.getElementById('payNowBtnMobile');
+    if (payBtnMobile) payBtnMobile.addEventListener('click', () => startPaymentFlow(payBtnMobile));
 
   })();
 </script>

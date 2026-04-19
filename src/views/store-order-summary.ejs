@@ -1,24 +1,24 @@
 <%- include('partials/header') %>
 
 <style>
-/* Order Summary Page Styles */
+/* Order Summary Page Styles — Flipkart Light Theme */
 :root {
-  --order-bg: #0b1220;
-  --order-card: #0f172a;
-  --order-border: rgba(255,255,255,0.07);
-  --order-accent: #6366f1;
-  --order-accent-hover: #4f46e5;
+  --order-bg: #f1f3f6;
+  --order-card: #ffffff;
+  --order-border: #e0e0e0;
+  --order-accent: #2874f0;
+  --order-accent-hover: #1a5dc8;
   --order-orange: #fb641b;
   --order-orange-hover: #ff7531;
   --order-green: #388e3c;
-  --order-text: #f8fafc;
-  --order-text-muted: #94a3b8;
+  --order-text: #212121;
+  --order-text-muted: #878787;
 }
 
 body {
   background-color: var(--order-bg);
   color: var(--order-text);
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .order-main {
@@ -62,7 +62,8 @@ body {
 .cart-item-image {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: #f1f3f6;
+  border: 1px solid var(--order-border);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -114,16 +115,18 @@ body {
 }
 
 .quantity-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: 1px solid var(--order-border);
-  background: transparent;
+  background: #f5f5f5;
   color: var(--order-text);
   border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
 }
 
 .quantity-btn:hover {
@@ -176,11 +179,14 @@ body {
 .promo-input {
   padding: 0.75rem;
   border: 1px solid var(--order-border);
-  background: var(--order-bg);
+  background: #fafafa;
   color: var(--order-text);
   border-radius: 8px;
   font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
 }
+.promo-input:focus { border-color: var(--order-accent); }
 
 .promo-btn {
   padding: 0.75rem 1.5rem;
@@ -243,21 +249,134 @@ body {
   margin-bottom: 1rem;
 }
 
+/* ========================
+   MOBILE - Secure Checkout Page
+   ======================== */
 @media (max-width: 768px) {
+  html, body { overflow-x: hidden !important; width: 100%; }
+  .site-footer, .help-bot-container { display: none !important; }
+
+  /* Main container: strip all padding for edge-to-edge */
+  .order-main {
+    padding-top: 70px;
+    padding-bottom: 140px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .order-main > .container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Page title */
+  .order-main > .container > h1 {
+    font-size: 1.25rem !important;
+    padding: 0 16px;
+    margin-bottom: 16px !important;
+  }
+
+  /* Grid switches to single column */
   .order-container {
     grid-template-columns: 1fr;
+    gap: 0;
+    margin-bottom: 0;
   }
-  
-  .order-summary {
-    position: static;
+
+  /* Make the right-column price summary static on mobile */
+  .order-sticky-parent { position: static !important; }
+
+  /* Each section: edge-to-edge white card */
+  .order-section {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 8px !important;
+    padding: 16px;
   }
+
+  /* Section headings smaller */
+  .order-section h2 { font-size: 1rem !important; margin-bottom: 12px; }
+
+  /* Address input form: single column */
+  .address-form { grid-template-columns: 1fr !important; }
+  .address-form > div[style*="span 2"] { grid-column: span 1 !important; }
+  .promo-input { font-size: 0.9rem; padding: 10px; }
+
+  /* Cart items in order summary: compact */
+  .cart-item { grid-template-columns: 64px 1fr; gap: 10px; padding: 12px 0; }
+  .cart-item-image { width: 64px; height: 64px; font-size: 1.5rem; }
+  .cart-item-title { font-size: 0.9rem; }
+  .cart-item-current { font-size: 1rem; }
+
+  /* Fixed sticky checkout bar – always visible at bottom */
+  .mobile-checkout-bar {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: var(--order-card);
+    border-top: 1px solid var(--order-border);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+    align-items: center;
+    gap: 14px;
+  }
+  .mobile-checkout-bar .mob-price-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .mobile-checkout-bar .mob-price-label {
+    font-size: 0.7rem;
+    color: var(--order-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .mobile-checkout-bar .mob-price-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--order-green);
+    line-height: 1.1;
+  }
+  .mobile-checkout-bar .mob-cta {
+    flex: 1;
+    padding: 15px;
+    background: var(--order-orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  /* Hide old desktop checkout button wrap that's inside the card */
+  .checkout-btn-wrap { display: none !important; }
+}
+
+/* Always hide the mobile bar on desktop */
+@media (min-width: 769px) {
+  .mobile-checkout-bar { display: none !important; }
 }
 </style>
+
 
 <div class="order-main">
   <div class="container">
     <!-- Header -->
-    <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 24px; color: var(--order-text);">Secure Checkout</h1>
+    <h1 class="px-3 px-md-0" style="font-size: 1.75rem; font-weight: 700; margin-bottom: 24px; color: var(--order-text);">Secure Checkout</h1>
 
     <div class="order-container">
       <!-- Left Column: Checkout Forms & Order Summary -->
@@ -298,145 +417,145 @@ body {
           </div>
         </div>
 
-        <!-- 3. Payment Method -->
-        <div class="order-section">
-          <h2 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
-            <i class="fa-solid fa-credit-card" style="color: var(--order-accent);"></i> 3. Payment Method
-          </h2>
-          <div class="payment-options" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
-            <label style="display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 2px solid var(--order-accent); border-radius: 12px; background: rgba(99, 102, 241, 0.05); cursor: pointer; transition: all 0.2s;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <input type="radio" name="payment_method" value="upi" checked style="accent-color: var(--order-accent); transform: scale(1.2);">
-                <div style="display: flex; flex-direction: column;">
-                  <span style="font-weight: 700;">UPI</span>
-                  <span style="font-size: 0.8rem; color: var(--order-text-muted);">Google Pay, PhonePe, Paytm</span>
-                </div>
-              </div>
-              <div style="display: flex; gap: 8px; opacity: 0.8;">
-                <i class="fa-brands fa-google-pay" style="font-size: 24px;"></i>
-                <i class="fa-solid fa-mobile-screen-button" style="font-size: 18px;"></i>
-              </div>
-            </label>
-            <label style="display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--order-border); border-radius: 12px; cursor: pointer; transition: all 0.2s; opacity: 0.6;">
-              <input type="radio" name="payment_method" value="card" style="accent-color: var(--order-accent); transform: scale(1.2);">
-              <span style="font-weight: 600;">Credit / Debit Card</span>
-            </label>
-          </div>
+        <!-- Trust Badge (Flipkart Style) -->
+        <div style="display: flex; align-items: center; gap: 16px; padding: 16px 0; margin-bottom: 24px;">
+          <i class="fa-solid fa-shield-halved" style="font-size: 2.2rem; color: #878787;"></i>
+          <span style="font-size: 0.95rem; font-weight: 500; line-height: 1.4; color: var(--order-text-muted);">Safe and Secure Payments. Easy returns.<br>100% Authentic products.</span>
         </div>
       </div>
-      
-      <!-- Right Column: Price Details -->
-      <div class="order-section order-summary" style="border: 2px solid var(--order-accent); height: max-content;">
-        <h2 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-          <i class="fa-solid fa-receipt" style="color: var(--order-accent);"></i> Price Details
+
+      <!-- Right Column: price summary (desktop sticky sidebar, hidden on mobile) -->
+      <div class="order-sticky-parent order-section order-summary" style="border: 1px solid var(--order-border); height: max-content; position: sticky; top: 100px;">
+        <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--order-text-muted); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 12px; border-bottom: 1px solid var(--order-border);">
+          Price Details
         </h2>
-        
-        <div style="border-top: 1px solid var(--order-border); padding-top: 16px;">
-          <div class="summary-row" style="padding: 8px 0;">
+        <div style="margin-top: 4px;">
+          <div class="summary-row" style="padding: 10px 0;">
             <span class="summary-label" id="priceLabel">Price (1 item)</span>
             <span class="summary-value" id="mrpTotal">₹0</span>
           </div>
-          <div class="summary-row" style="padding: 8px 0;">
-            <span class="summary-label">Product Discount</span>
+          <div class="summary-row" style="padding: 10px 0;">
+            <span class="summary-label">Discount</span>
             <span class="summary-value" id="discountTotal" style="color: var(--order-green);">-₹0</span>
           </div>
-          <div class="summary-row" id="couponRow" style="padding: 8px 0; display: none;">
-            <span class="summary-label">Coupon Savings</span>
+          <div class="summary-row" id="couponRow" style="padding: 10px 0; display: none;">
+            <span class="summary-label">Coupon Discount</span>
             <span class="summary-value" id="couponDiscount" style="color: var(--order-green);">-₹0</span>
           </div>
-          <div class="summary-row" style="padding: 8px 0;">
+          <div class="summary-row" style="padding: 10px 0;">
             <span class="summary-label">Delivery Charges</span>
             <span class="summary-value" style="color: var(--order-green); font-weight: 700;">FREE</span>
           </div>
-          <div class="summary-row" style="margin-top: 12px; border-top: 2px dashed var(--order-border); padding-top: 16px;">
-            <span class="summary-label" style="font-size: 1.2rem; color: var(--order-text); font-weight: 700;">Total Amount</span>
-            <span class="summary-value" id="total" style="font-size: 1.5rem; color: var(--order-green); font-weight: 800;">₹0</span>
-          </div>
-
-          <!-- Coupon Code moved below total amount -->
-          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--order-border);">
-            <div class="promo-code" style="margin-bottom: 5px;">
-              <input type="text" class="promo-input" id="couponInput" placeholder="Enter Coupon Code">
-              <button class="promo-btn" onclick="applyCoupon()">Apply</button>
-            </div>
-            <div id="couponMessage" style="font-size: 0.85rem; margin-top: 0px; margin-bottom: 10px; display: none;"></div>
-          </div>
-          
-          <div style="margin-top: 12px; font-size: 0.9rem; color: var(--order-green); font-weight: 600; text-align: right;" id="savingsText">
-            You will save ₹0 on this order
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-top: 2px dashed var(--order-border); margin-top: 6px;">
+            <span style="font-size: 1rem; font-weight: 700;">Total Amount</span>
+            <span style="font-size: 1.25rem; font-weight: 800; color: var(--order-text);" id="total">₹0</span>
           </div>
         </div>
-        
-        <button class="checkout-btn" style="margin-top: 24px; font-size: 1.2rem; padding: 1.2rem; display: flex; justify-content: center; align-items: center; gap: 12px; border-radius: 12px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);" onclick="proceedToCheckout()">
-          <i class="fa-solid fa-shield-check"></i> PAY SECURELY
-        </button>
+
+        <div style="background: #f0faf0; border: 1px solid #c8e6c9; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i>
+          <span style="color: var(--order-green); font-size: 0.85rem; font-weight: 600;" id="savingsText">You will save ₹0 on this order</span>
+        </div>
+
+        <!-- Coupon Code -->
+        <div style="border-top: 1px dashed var(--order-border); padding-top: 16px; margin-bottom: 16px;">
+          <div class="promo-code" style="margin-bottom: 5px;">
+            <input type="text" class="promo-input" id="couponInput" placeholder="Enter Coupon Code">
+            <button class="promo-btn" onclick="applyCoupon('desktop')">Apply</button>
+          </div>
+          <div id="couponMessage" style="font-size: 0.85rem; margin-top: 4px; display: none;"></div>
+        </div>
+
+        <div class="checkout-btn-wrap">
+          <div class="mobile-price-review d-block d-md-none">
+            <span class="mobile-label">Total Amount</span>
+            <span class="mobile-total" id="mobileSummaryTotal">₹0</span>
+          </div>
+          <button class="checkout-btn" style="margin-top: 8px; font-size: 1.05rem; padding: 1rem; display: flex; justify-content: center; align-items: center; gap: 10px; border-radius: 8px;" onclick="proceedToCheckout()">
+            <i class="fa-solid fa-lock"></i> Proceed to Pay
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+
+
+<!-- Mobile Fixed Checkout Bar (Phone only) -->
+<div class="mobile-checkout-bar" id="mobileCheckoutBar" style="display:none;">
+  <div class="mob-price-col">
+    <span class="mob-price-label">Total Amount</span>
+    <span class="mob-price-value" id="mobBarTotal">₹0</span>
+  </div>
+  <button class="mob-cta" onclick="proceedToCheckout()">
+    <i class="fa-solid fa-lock"></i> Proceed to Pay
+  </button>
+</div>
+
 <script>
 let cartItems = [];
+let appliedCouponData = null; // { code, discount, freeDelivery, message }
+
+// Debounce helper
+function debounce(fn, delay) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
+}
 
 async function initializeCart() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const buyNowId = urlParams.get('buyNow');
-
-  if (buyNowId) {
-    // Direct Purchase Mode
-    try {
-      const res = await fetch(`/api/store/products/${buyNowId}`);
+  // Standard Cart + checkout state from server session
+  try {
+      const res = await fetch('/api/store/checkout');
       const data = await res.json();
-      if (data.success && data.product) {
-        const p = data.product;
-        cartItems = [{
-          productId: p.id,
-          name: p.name,
-          image: p.images[0],
-          price: p.price,
-          orig: p.orig,
-          qty: 1
-        }];
+      if (data.success) {
+        cartItems = data.cart || [];
+        appliedCouponData = data.coupon || null;
+
+        // Pre-fill address from session
+        if (data.customer) {
+          const c = data.customer;
+          ['name','email','phone','pincode','address','city'].forEach(k => {
+            const el = document.getElementById(`checkout-${k}`);
+            if (el) el.value = c[k] || '';
+          });
+        }
+
+        // Restore coupon UI if one was saved
+        if (appliedCouponData && appliedCouponData.discount > 0) {
+          const input = document.getElementById('couponInput');
+          if (input) input.value = appliedCouponData.code;
+          showCouponSuccess(appliedCouponData);
+        }
       }
     } catch (err) {
-      console.error('Failed to load buy now product', err);
+      console.error('Failed to load checkout state', err);
     }
-  } else {
-    // Standard Cart Mode
+
+  // Auto-save address to server as user types (debounced 600ms)
+  const addressFields = ['checkout-name','checkout-email','checkout-phone','checkout-pincode','checkout-address','checkout-city'];
+  const saveAddress = debounce(async () => {
+    const payload = {};
+    let allFilled = true;
+    addressFields.forEach(id => {
+      const el = document.getElementById(id);
+      const key = id.replace('checkout-', '');
+      payload[key] = el ? el.value.trim() : '';
+      if (!payload[key]) allFilled = false;
+    });
+    if (!allFilled) return; // Only save when all fields have something
     try {
-      const res = await fetch('/api/store/cart');
-      const data = await res.json();
-      if (data.success && data.items) {
-        cartItems = data.items;
-      }
-    } catch (err) {
-      console.error('Failed to load cart', err);
-    }
-  }
+      await fetch('/api/store/checkout/address', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch(e) { /* silent fail — will be validated on submit */ }
+  }, 600);
 
-  // Pre-fill address if available
-  const savedCustomer = JSON.parse(localStorage.getItem('2am_checkout_customer') || 'null');
-  if (savedCustomer) {
-    if (document.getElementById('checkout-name')) document.getElementById('checkout-name').value = savedCustomer.name || '';
-    if (document.getElementById('checkout-email')) document.getElementById('checkout-email').value = savedCustomer.email || '';
-    if (document.getElementById('checkout-phone')) document.getElementById('checkout-phone').value = savedCustomer.phone || '';
-    if (document.getElementById('checkout-pincode')) document.getElementById('checkout-pincode').value = savedCustomer.pincode || '';
-    if (document.getElementById('checkout-address')) document.getElementById('checkout-address').value = savedCustomer.address || '';
-    if (document.getElementById('checkout-city')) document.getElementById('checkout-city').value = savedCustomer.city || '';
-  }
-
-  // Auto-save address as user types
-  const addressFields = ['checkout-name', 'checkout-email', 'checkout-phone', 'checkout-pincode', 'checkout-address', 'checkout-city'];
   addressFields.forEach(id => {
     const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', () => {
-        const currentData = JSON.parse(localStorage.getItem('2am_checkout_customer') || '{}');
-        const key = id.replace('checkout-', '');
-        currentData[key] = el.value.trim();
-        localStorage.setItem('2am_checkout_customer', JSON.stringify(currentData));
-      });
-    }
+    if (el) el.addEventListener('input', saveAddress);
   });
 
   renderCart();
@@ -448,7 +567,9 @@ function renderCart() {
   if (cartItems.length === 0) {
     cartContainer.innerHTML = `
       <div class="empty-cart" style="text-align: center; padding: 40px 0;">
-        <div class="empty-cart-icon" style="font-size: 3rem; margin-bottom: 16px;">🛒</div>
+        <div class="empty-cart-icon" style="margin-bottom: 16px;">
+          <img src="/assets/images/store/placeholder.jpg" style="width: 80px; opacity: 0.6;" alt="Empty Cart">
+        </div>
         <h3 style="color: var(--order-text);">Your cart is empty</h3>
         <p style="color: var(--order-text-muted);">Add items to your cart to see them here.</p>
       </div>
@@ -457,10 +578,10 @@ function renderCart() {
     return;
   }
   
-  cartContainer.innerHTML = cartItems.map((item, index) => `
+  cartContainer.innerHTML = cartItems.map((item) => `
     <div class="cart-item" style="display: grid; grid-template-columns: 70px 1fr; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--order-border);">
       <div class="cart-item-image" style="width: 70px; height: 70px; border-radius: 6px; overflow: hidden; background: #fff;">
-        <img src="${item.image || item.images?.[0] || 'https://via.placeholder.com/70'}" style="width: 100%; height: 100%; object-fit: contain;" alt="${item.name}">
+        <img src="${item.image || item.images?.[0] || '/assets/images/store/placeholder.jpg'}" style="width: 100%; height: 100%; object-fit: contain;" alt="${item.name}" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
       </div>
       <div class="cart-item-details">
         <div class="cart-item-title" style="font-weight: 700; color: var(--order-text); font-size: 0.95rem;">${item.name}</div>
@@ -478,123 +599,183 @@ function renderCart() {
   updateSummary();
 }
 
-let appliedCouponAmount = 0;
-
 function updateSummary() {
-  let mrpTotal = 0;
-  let priceTotal = 0;
-  let totalItems = 0;
+  let mrpTotal = 0, priceTotal = 0, totalItems = 0;
   
   cartItems.forEach(item => {
-    let itemPrice = item.price;
-    let itemMrp = item.orig || Math.round(itemPrice * 1.2); // Fallback MRP if not provided
-    let qty = item.qty || 1;
-    mrpTotal += itemMrp * qty;
-    priceTotal += itemPrice * qty;
+    const qty = item.qty || 1;
+    mrpTotal  += (item.orig || Math.round(item.price * 1.2)) * qty;
+    priceTotal += item.price * qty;
     totalItems += qty;
   });
   
   const discount = mrpTotal - priceTotal;
-  const finalTotal = priceTotal - appliedCouponAmount;
-  const totalSavings = discount + appliedCouponAmount;
-  
+  const couponDiscount = appliedCouponData ? (appliedCouponData.discount || 0) : 0;
+  const finalTotal = Math.max(0, priceTotal - couponDiscount);
+  const totalSavings = discount + couponDiscount;
   const itemText = totalItems === 1 ? '1 item' : `${totalItems} items`;
+
+  // Desktop right-sidebar update
   const priceLabel = document.getElementById('priceLabel');
-  if(priceLabel) priceLabel.textContent = `Price (${itemText})`;
+  if (priceLabel) priceLabel.textContent = `Price (${itemText})`;
+  const mrpEl = document.getElementById('mrpTotal');
+  if (mrpEl) mrpEl.textContent = `₹${mrpTotal.toLocaleString()}`;
+  const discEl = document.getElementById('discountTotal');
+  if (discEl) discEl.textContent = `-₹${discount.toLocaleString()}`;
+  const totEl = document.getElementById('total');
+  if (totEl) totEl.textContent = `₹${finalTotal.toLocaleString()}`;
+  const savEl = document.getElementById('savingsText');
+  if (savEl) savEl.textContent = `You will save ₹${totalSavings.toLocaleString()} on this order`;
+
+  // Mobile/Inline left-side Flipkart-style price details update
+  const priceLabel2 = document.getElementById('priceLabel2');
+  if (priceLabel2) priceLabel2.textContent = `Price (${itemText})`;
+  const mrpEl2 = document.getElementById('mrpTotal2');
+  if (mrpEl2) mrpEl2.textContent = `₹${mrpTotal.toLocaleString()}`;
+  const discEl2 = document.getElementById('discountTotal2');
+  if (discEl2) discEl2.textContent = `-₹${discount.toLocaleString()}`;
+  const totEl2 = document.getElementById('total2');
+  if (totEl2) totEl2.textContent = `₹${finalTotal.toLocaleString()}`;
+  const savEl2 = document.getElementById('savingsText2');
+  if (savEl2) savEl2.textContent = `You will save ₹${totalSavings.toLocaleString()} on this order`;
+
   
-  document.getElementById('mrpTotal').textContent = `₹${mrpTotal.toLocaleString()}`;
-  document.getElementById('discountTotal').textContent = `-₹${discount.toLocaleString()}`;
-  document.getElementById('total').textContent = `₹${finalTotal.toLocaleString()}`;
-  document.getElementById('savingsText').textContent = `You will save ₹${totalSavings.toLocaleString()} on this order`;
+  const mobileTotalEl = document.getElementById('mobileSummaryTotal');
+  if (mobileTotalEl) mobileTotalEl.textContent = `₹${finalTotal.toLocaleString()}`;
+
+  // Update the new fixed mobile checkout bar
+  const mobBarTotal = document.getElementById('mobBarTotal');
+  if (mobBarTotal) mobBarTotal.textContent = `₹${finalTotal.toLocaleString()}`;
+
+  // Show the mobile bar once we have items
+  const mobileBar = document.getElementById('mobileCheckoutBar');
+  if (mobileBar) mobileBar.style.display = cartItems.length > 0 ? 'flex' : 'none';
+
+  // Coupon row (Desktop)
+  const couponRow = document.getElementById('couponRow');
+  const couponDiscountEl = document.getElementById('couponDiscount');
+  if (couponRow && couponDiscountEl) {
+    if (couponDiscount > 0) {
+      couponRow.style.display = 'flex';
+      couponDiscountEl.textContent = `-₹${couponDiscount}`;
+    } else {
+      couponRow.style.display = 'none';
+    }
+  }
+
+  // Coupon row (Mobile/Inline)
+  const couponRow2 = document.getElementById('couponRow2');
+  const couponDiscountEl2 = document.getElementById('couponDiscount2');
+  if (couponRow2 && couponDiscountEl2) {
+    if (couponDiscount > 0) {
+      couponRow2.style.display = 'flex';
+      couponDiscountEl2.textContent = `-₹${couponDiscount}`;
+    } else {
+      couponRow2.style.display = 'none';
+    }
+  }
 }
 
-function applyCoupon() {
-  const code = document.getElementById('couponInput').value.trim().toUpperCase();
-  const msg = document.getElementById('couponMessage');
-  const couponRow = document.getElementById('couponRow');
-  const couponDiscount = document.getElementById('couponDiscount');
-  
-  if (code === 'STUDY10') {
-    appliedCouponAmount = 50; // Flat ₹50 off for example
-    msg.textContent = 'Coupon applied successfully!';
+function showCouponSuccess(data, source = 'desktop') {
+  const msgId = source === 'mobile' ? 'couponMessage2' : 'couponMessage';
+  const inputId = source === 'mobile' ? 'couponInput2' : 'couponInput';
+  const msg = document.getElementById(msgId);
+  const input = document.getElementById(inputId);
+  if (msg) {
+    msg.textContent = data.message;
     msg.style.color = 'var(--order-green)';
     msg.style.display = 'block';
-    
-    couponRow.style.display = 'flex';
-    couponDiscount.textContent = `-₹${appliedCouponAmount}`;
-  } else {
-    appliedCouponAmount = 0;
-    msg.textContent = 'Invalid or expired coupon code.';
-    msg.style.color = '#ff6161';
-    msg.style.display = 'block';
-    
-    couponRow.style.display = 'none';
   }
+  // Sync to other input if possible
+  const otherInput = document.getElementById(source === 'mobile' ? 'couponInput' : 'couponInput2');
+  if (otherInput && input) {
+    otherInput.value = input.value;
+    const otherMsg = document.getElementById(source === 'mobile' ? 'couponMessage' : 'couponMessage2');
+    if (otherMsg) {
+      otherMsg.textContent = data.message;
+      otherMsg.style.color = 'var(--order-green)';
+      otherMsg.style.display = 'block';
+    }
+  }
+}
+
+async function applyCoupon(source = 'desktop') {
+  const inputId = source === 'mobile' ? 'couponInput2' : 'couponInput';
+  const msgId = source === 'mobile' ? 'couponMessage2' : 'couponMessage';
+  const input = document.getElementById(inputId);
+  const msg = document.getElementById(msgId);
+  const code = input ? input.value.trim() : '';
+  if (!code) { if(msg) { msg.textContent = 'Enter a coupon code first.'; msg.style.color = '#ff6161'; msg.style.display = 'block'; } return; }
+
+  try {
+    const res = await fetch('/api/store/checkout/coupon', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+    if (data.success) {
+      appliedCouponData = data;
+      showCouponSuccess(data, source);
+      updateSummary();
+    } else {
+      appliedCouponData = null;
+      if (msg) { msg.textContent = data.error || 'Invalid coupon.'; msg.style.color = '#ff6161'; msg.style.display = 'block'; }
+      updateSummary();
+    }
+  } catch(e) {
+    if (msg) { msg.textContent = 'Could not apply coupon. Try again.'; msg.style.color = '#ff6161'; msg.style.display = 'block'; }
+  }
+}
+
+async function removeCoupon() {
+  try {
+    await fetch('/api/store/checkout/coupon', { method: 'DELETE' });
+  } catch(e) { /* ignore */ }
+  appliedCouponData = null;
+  const input = document.getElementById('couponInput');
+  if (input) input.value = '';
+  const msg = document.getElementById('couponMessage');
+  if (msg) msg.style.display = 'none';
   updateSummary();
 }
 
-function proceedToCheckout() {
-  if (cartItems.length === 0) {
-    alert('Your cart is empty!');
-    return;
-  }
+async function proceedToCheckout() {
+  if (cartItems.length === 0) { alert('Your cart is empty!'); return; }
 
-  // Address Validation
-  const name = document.getElementById('checkout-name').value.trim();
-  const email = document.getElementById('checkout-email').value.trim();
-  const phone = document.getElementById('checkout-phone').value.trim();
-  const pincode = document.getElementById('checkout-pincode').value.trim();
-  const address = document.getElementById('checkout-address').value.trim();
-  const city = document.getElementById('checkout-city').value.trim();
+  const fields = ['checkout-name','checkout-email','checkout-phone','checkout-pincode','checkout-address','checkout-city'];
+  const payload = {};
+  let hasEmpty = false;
 
-  if (!name || !email || !phone || !pincode || !address || !city) {
-    alert('Please fill in all mandatory address details (marked with *) before proceeding.');
-    const fields = ['checkout-name', 'checkout-email', 'checkout-phone', 'checkout-pincode', 'checkout-address', 'checkout-city'];
-    fields.forEach(f => {
-      const el = document.getElementById(f);
-      if (!el.value.trim()) {
-        el.style.borderColor = '#ff6161';
-      } else {
-        el.style.borderColor = 'var(--order-border)';
-      }
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    const key = id.replace('checkout-', '');
+    payload[key] = el ? el.value.trim() : '';
+    if (!payload[key]) {
+      hasEmpty = true;
+      if (el) el.style.borderColor = '#ff6161';
+    } else {
+      if (el) el.style.borderColor = 'var(--order-border)';
+    }
+  });
+
+  if (hasEmpty) { alert('Please fill in all mandatory address details (marked with *) before proceeding.'); return; }
+
+  // Submit address to server for validation + session save
+  try {
+    const res = await fetch('/api/store/checkout/address', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
+    const data = await res.json();
+    if (!data.success) {
+      alert(data.error || 'Address validation failed. Please check your details.');
+      return;
+    }
+  } catch(e) {
+    alert('Network error. Please try again.');
     return;
-  }
-
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    alert('Please enter a valid Email Address.');
-    document.getElementById('checkout-email').style.borderColor = '#ff6161';
-    return;
-  }
-
-  if (pincode.length !== 6 || isNaN(pincode)) {
-    alert('Please enter a valid 6-digit Pincode.');
-    document.getElementById('checkout-pincode').style.borderColor = '#ff6161';
-    return;
-  }
-
-  if (phone.length < 10 || isNaN(phone.replace(/\D/g,''))) {
-    alert('Please enter a valid Phone Number.');
-    document.getElementById('checkout-phone').style.borderColor = '#ff6161';
-    return;
-  }
-
-  // Save to localStorage so payment page can read it
-  localStorage.setItem('2am_checkout_customer', JSON.stringify({
-    name, email, phone, pincode, address, city
-  }));
-  
-  // Sync cart to localStorage for payment page
-  localStorage.setItem('2am_cart', JSON.stringify(cartItems));
-  
-  // Save coupon if applied
-  if (appliedCouponAmount > 0) {
-    const code = document.getElementById('couponInput').value.trim().toUpperCase();
-    localStorage.setItem('2am_coupon', JSON.stringify({ code, amount: appliedCouponAmount }));
-  } else {
-    localStorage.removeItem('2am_coupon');
   }
 
   window.location.href = '/store/payment';
@@ -605,3 +786,4 @@ initializeCart();
 </script>
 
 <%- include('partials/footer') %>
+

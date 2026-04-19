@@ -72,12 +72,19 @@ body{background:var(--fk-bg);color:var(--fk-text);font-family:'Inter',sans-serif
 .fk-review-form textarea{height:60px;resize:vertical}
 .fk-star-select{display:flex;gap:4px;margin-bottom:8px}.fk-star-select span{font-size:24px;cursor:pointer;color:#ddd;transition:color .2s}.fk-star-select span.active{color:#ffc107}
 .fk-review-submit{padding:8px 20px;background:var(--fk-blue);color:#fff;border:none;border-radius:2px;font-weight:600;cursor:pointer;font-size:13px}
-.fk-related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.fk-related-card{border:1px solid var(--fk-border);border-radius:4px;padding:12px;text-align:center;cursor:pointer;transition:box-shadow .2s}
-.fk-related-card:hover{
-    border-color: #2874f0;
-    box-shadow: 0 0 0 4px rgba(40,116,240,0.1);
-  }
+.fk-related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fk-related-card{background:var(--fk-card);border:1px solid var(--fk-border);border-radius:8px;overflow:hidden;text-align:left;cursor:pointer;transition:all 0.3s ease;position:relative;}
+.fk-related-card:hover{border-color:#2874f0;box-shadow:0 4px 16px rgba(40,116,240,0.15);transform:translateY(-4px);}
+.fk-related-card:hover .fk-related-title { color: #2874f0; }
+
+.fk-related-img-wrap { height:200px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+.fk-related-img { width:100%; height:100%; object-fit:cover; }
+.fk-related-content { padding: 14px 16px 16px; }
+.fk-related-title { font-size: 14px; font-weight: 500; color: #212121; margin-bottom: 6px; line-height: 1.4; height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; transition: color 0.3s; }
+.fk-related-price-row { margin-bottom:0; display:flex; align-items:center; flex-wrap:wrap; }
+.fk-related-price { font-size:17px; font-weight:700; color:#212121; }
+.fk-related-orig { font-size:12px; color:#878787; text-decoration:line-through; margin-left:8px; }
+.fk-related-disc { font-size:13px; color:#388e3c; margin-left:8px; font-weight:600; }
 
   /* Toast Notification Styling */
   #storeToast {
@@ -163,39 +170,79 @@ body{background:var(--fk-bg);color:var(--fk-text);font-family:'Inter',sans-serif
   }
 
   @media (max-width: 576px) {
-    .store-cart-container {
-      right: 20px;
-      bottom: 100px;
+    .store-cart-container { right: 12px; bottom: 80px; }
+  }
+
+  /* ========================
+     MOBILE - Product Page
+     ======================== */
+  @media (max-width: 768px) {
+    html, body { overflow-x: hidden !important; width: 100%; }
+    body { background-color: #f1f3f6 !important; }
+
+    /* Hide help bot & footer */
+    body.is-product-page .help-bot-container,
+    .site-footer, .help-bot-container { display: none !important; }
+
+    /* Ensure enough scroll room above sticky bar */
+    .fk-product-page { padding-bottom: 130px !important; }
+
+    /* Strip Bootstrap container gutters */
+    .fk-product-page > .container {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      max-width: 100% !important;
+    }
+
+    /* 1-column layout */
+    .fk-product-layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    /* All sections: edge-to-edge, white card on grey background */
+    .fk-image-section, .fk-details-section, .fk-desc-section,
+    .fk-specs-section, .fk-reviews-section, .fk-related-section {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      padding: 16px;
+      background-color: #fff;
+      margin-bottom: 8px;
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+    }
+
+    /* Don't stick image on mobile */
+    .fk-image-section { position: static !important; }
+    .fk-main-image { height: 280px; }
+    .fk-main-image .fk-emoji { font-size: 7rem; }
+
+    /* Price & name tweaks for small screen */
+    .fk-product-name { font-size: 15px; }
+    .fk-price-current { font-size: 22px; }
+    .fk-price-original, .fk-price-discount { font-size: 13px; }
+
+    /* Related products: 2 columns */
+    .fk-related-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .fk-related-img-wrap { height: 140px; }
+    .fk-related-content { padding: 10px; }
+    .fk-related-title { font-size: 13px; height: 36px; }
+    .fk-related-price { font-size: 15px; }
+    .fk-related-orig, .fk-related-disc { font-size: 11px; margin-left: 6px; }
+
+    /* Hide desktop action buttons — use sticky bar instead */
+    .fk-image-actions.fk-sticky-desktop { display: none; }
+
+    /* Show sticky bottom bar */
+    #bottomBar, .fk-sticky-bar {
+      display: block !important;
+      background-color: #ffffff !important;
+      border-top: 1px solid #e0e0e0;
     }
   }
 
-  /* Adjustments when sticky product bar is present */
-  @media (max-width: 768px) {
-    body.is-product-page .help-bot-container {
-      bottom: 85px !important;
-    }
-    body.is-product-page .store-cart-container {
-      bottom: 165px !important;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .fk-sticky-bar {
-      display: block; /* Show on mobile */
-      background-color: #ffffff !important; /* Solid background */
-      border-top: 1px solid rgba(0,0,0,0.05);
-    }
-    
-    /* Offset main content so sticky bar doesn't cover footer or last content */
-    .fk-product-page {
-      padding-bottom: 100px !important;
-    }
-    
-    /* Hide the non-sticky buttons in the layout to avoid redundancy */
-    .fk-image-actions.fk-sticky-desktop {
-      display: none;
-    }
-  }
 
   /* Desktop Sticky (Optional side sticky) */
   @media (min-width: 769px) {
@@ -233,16 +280,17 @@ body{background:var(--fk-bg);color:var(--fk-text);font-family:'Inter',sans-serif
       <!-- Left: Image Section -->
       <div class="fk-image-section">
         <div class="fk-main-image" id="mainImage">
-          <span class="fk-emoji"><%= product.emoji %></span>
+          <img src="<%= product.images && product.images.length ? product.images[0] : '/assets/images/store/placeholder.jpg' %>" alt="<%= product.name %>" style="width: 100%; height: 100%; object-fit: contain; max-height: 400px;" id="mainImageEl" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
           <% if (product.stock <= 10) { %>
           <span class="fk-stock-badge">Only <%= product.stock %> left</span>
           <% } %>
         </div>
         <% if (product.images && product.images.length > 1) { %>
         <div class="fk-image-thumbs">
-          <div class="fk-thumb active"><%= product.emoji %></div>
           <% product.images.forEach(function(img, i) { %>
-          <div class="fk-thumb" data-img="<%= img %>"><%= product.emoji %></div>
+          <div class="fk-thumb <%= i === 0 ? 'active' : '' %>" data-img="<%= img || '/assets/images/store/placeholder.jpg' %>" style="overflow: hidden;">
+            <img src="<%= img || '/assets/images/store/placeholder.jpg' %>" alt="<%= product.name %>" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
+          </div>
           <% }); %>
         </div>
         <% } %>
@@ -395,15 +443,22 @@ body{background:var(--fk-bg);color:var(--fk-text);font-family:'Inter',sans-serif
 
   <!-- Related Products -->
   <div class="fk-related-section">
-    <h2 class="fk-section-title">Related Products</h2>
+    <h2 class="fk-section-title" style="margin-bottom: 20px;">Similar Products</h2>
     <div class="fk-related-grid">
       <% storeProducts.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 4).forEach(function(rp) { %>
       <% const rd = Math.round(((rp.orig - rp.price) / rp.orig) * 100); %>
       <div class="fk-related-card" onclick="viewProduct(<%= rp.id %>)">
-        <div class="fk-related-emoji"><%= rp.emoji %></div>
-        <div class="fk-related-name"><%= rp.name %></div>
-        <div class="fk-related-price">Rs. <%= rp.price %></div>
-        <div class="fk-related-discount"><%= rd %>% off</div>
+        <div class="fk-related-img-wrap">
+          <img src="<%= rp.images && rp.images.length ? rp.images[0] : (rp.image || '/assets/images/store/placeholder.jpg') %>" class="fk-related-img" alt="<%= rp.name %>" onerror="this.src='/assets/images/store/placeholder.jpg'">
+        </div>
+        <div class="fk-related-content">
+          <div class="fk-related-title"><%= rp.name %></div>
+          <div class="fk-related-price-row">
+            <span class="fk-related-price">₹<%= rp.price %></span>
+            <span class="fk-related-orig">₹<%= rp.orig %></span>
+            <span class="fk-related-disc"><%= rd %>% off</span>
+          </div>
+        </div>
       </div>
       <% }); %>
     </div>
@@ -414,7 +469,7 @@ body{background:var(--fk-bg);color:var(--fk-text);font-family:'Inter',sans-serif
 <div class="fk-sticky-bar" id="bottomBar">
   <div class="fk-sticky-inner">
     <div class="fk-sticky-info">
-      <span class="fk-sticky-emoji"><%= product.emoji %></span>
+      <img src="<%= product.images && product.images.length ? product.images[0] : '/assets/images/store/placeholder.jpg' %>" alt="<%= product.name %>" style="height: 40px; width: 40px; object-fit: contain; border-radius: 4px;" class="fk-sticky-emoji" onerror="this.onerror=null; this.src='/assets/images/store/placeholder.jpg';">
       <span class="fk-sticky-name"><%= product.name %></span>
       <span class="fk-sticky-price">Rs. <%= product.price %></span>
     </div>
@@ -472,7 +527,15 @@ function checkDelivery() {
 }
 
 // Add to cart
-function addToCart(productId) {
+function addToCart(productId, btnEl) {
+  // Visual feedback on the button
+  const btn = btnEl || document.querySelector('.fk-btn-cart');
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+  }
+
   fetch('/api/store/cart/add', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -481,19 +544,108 @@ function addToCart(productId) {
   .then(r => r.json())
   .then(data => {
     if (data.success) {
-      showToast('Added to cart ✅');
+      // Show popup
+      showCartPopup(data.itemCount);
+      // Update all cart buttons state
+      document.querySelectorAll('.fk-btn-cart').forEach(b => {
+        b.style.background = '#fb641b';
+      });
       window.dispatchEvent(new CustomEvent('cartUpdated'));
     } else {
-      showToast('Error: ' + data.error, true);
+      showToast('\u26a0\ufe0f ' + (data.error || 'Unable to add item.'), true);
     }
   })
-  .catch(() => { showToast('Something went wrong.', true); });
+  .catch((err) => { 
+    console.error('Add to cart error:', err);
+    showToast('\u26a0\ufe0f Network error. Try again.', true); 
+  })
+  .finally(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+}
+
+function showCartPopup(itemCount) {
+  // Create a floating popup notification
+  const existing = document.getElementById('cartAddedPopup');
+  if (existing) existing.remove();
+
+  const popup = document.createElement('div');
+  popup.id = 'cartAddedPopup';
+  popup.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;">
+      <i class="fa-solid fa-circle-check" style="font-size:1.5rem;color:#fff;"></i>
+      <div style="font-weight:600;font-size:1.05rem;color:#fff;">Item added in cart</div>
+    </div>
+  `;
+  Object.assign(popup.style, {
+    position: 'fixed',
+    bottom: '30px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    background: 'linear-gradient(135deg, #fb641b, #ff8c42)',
+    borderRadius: '14px',
+    padding: '18px 22px',
+    zIndex: '99999',
+    boxShadow: '0 10px 40px rgba(251,100,27,0.5)',
+    minWidth: '320px',
+    maxWidth: '90vw',
+    animation: 'slideUpPop 0.35s cubic-bezier(0.16,1,0.3,1)',
+  });
+
+  // Add animation
+  const style = document.createElement('style');
+  style.textContent = '@keyframes slideUpPop{from{opacity:0;transform:translateX(-50%) translateY(30px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+  document.head.appendChild(style);
+
+  document.body.appendChild(popup);
+
+  // Auto dismiss after 4 seconds
+  setTimeout(() => {
+    if (document.getElementById('cartAddedPopup')) {
+      popup.style.animation = 'none';
+      popup.style.opacity = '0';
+      popup.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => popup.remove(), 300);
+    }
+  }, 4000);
 }
 
 // Buy now
 function buyNow(productId) {
-  // Directly go to checkout with only this product
-  window.location.href = `/store/order-summary?buyNow=${productId}`;
+  const btn = document.querySelector('.fk-btn-buy');
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+  }
+
+  fetch('/api/store/cart/buynow', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productId })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = '/store/order-summary';
+    } else {
+      showToast('\u26a0\ufe0f ' + (data.error || 'Unable to process.'), true);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  })
+  .catch((err) => {
+    showToast('\u26a0\ufe0f Network error. Try again.', true);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
 }
 
 // Toast Notification
@@ -550,6 +702,10 @@ document.querySelectorAll('.fk-thumb').forEach(function(thumb) {
   thumb.addEventListener('click', function() {
     document.querySelectorAll('.fk-thumb').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
+    const mainImg = document.getElementById('mainImageEl');
+    if (mainImg) {
+      mainImg.src = this.getAttribute('data-img');
+    }
   });
 });
 
