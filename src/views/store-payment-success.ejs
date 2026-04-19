@@ -372,10 +372,11 @@ async function submitItemReview(productId, userName) {
   btn.disabled = true;
 
   try {
-    const res = await fetch(`/api/store/products/${productId}/reviews`, {
+    const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/products/${productId}/reviews`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user: userName, rating, comment })
+      body: JSON.stringify({ user: userName, rating, comment }),
+      credentials: 'include'
     });
     const data = await res.json();
     if (data.success) {

@@ -386,7 +386,7 @@ body {
     // Load all checkout state from server session
     let checkoutData;
     try {
-      const res = await fetch('/api/store/checkout');
+      const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/checkout`, { credentials: 'include' });
       checkoutData = await res.json();
     } catch(e) {
       empty.classList.remove('d-none');
@@ -517,10 +517,11 @@ body {
 
       try {
         // No amount sent — server reads from session and computes securely
-        const res = await fetch('/api/store/create-order', {
+        const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/create-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({})
+          body: JSON.stringify({}),
+          credentials: 'include'
         });
         const order = await res.json();
         if (!res.ok) throw new Error(order.error || 'Unable to create order with server.');
@@ -545,10 +546,11 @@ body {
               </div>
             `);
 
-            const verifyRes = await fetch('/api/store/verify-payment', {
+            const verifyRes = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/verify-payment`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(response)
+              body: JSON.stringify(response),
+              credentials: 'include'
             });
             const verifyData = await verifyRes.json();
             if (!verifyRes.ok || !verifyData.verified) {
@@ -569,7 +571,7 @@ body {
             }));
 
             // Clear all checkout state from server session
-            await fetch('/api/store/checkout/clear', { method: 'POST' });
+            await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/checkout/clear`, { method: 'POST', credentials: 'include' });
 
             window.location.href = `/store/payment-success?payment_id=${encodeURIComponent(response.razorpay_payment_id)}&order_id=${encodeURIComponent(response.razorpay_order_id)}`;
           }

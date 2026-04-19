@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const nodemailer = require('nodemailer');
 const compression = require('compression');
 const path = require('path');
@@ -11,6 +12,13 @@ const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
+
+// Enable CORS for cross-origin requests (e.g. Vercel frontend -> Render backend)
+app.use(cors({
+  origin: process.env.NEXT_PUBLIC_API_URL || process.env.FRONTEND_URL || true,
+  credentials: true
+}));
+
 const port = process.env.PORT || 3000;
 const STORE_PRODUCTS = [
   {
