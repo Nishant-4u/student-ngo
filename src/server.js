@@ -183,7 +183,7 @@ const STORE_PRODUCTS = [
   },
   {
     id: 414, cat: 'essentials', emoji: '💝', badge: 'new', badgeLabel: '2 AM Study', name: 'Birthday Memory Kit', desc: 'Memory kit to preserve photos, messages, and celebration moments.', price: 799, orig: 1199,
-    images: ['/assets/images/products/gift-1.webp', ', 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'],
+    images: ['/assets/images/products/gift-1.webp', 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'],
       stock: 8, rating: 4.5, ratingCount: 234,
       features: ['Photo album with 30 slip-in pockets', 'Message cards for friends to write', 'Decorative stickers and washi tape', 'Memory journal section', 'Keepsake box packaging'],
       specs: { brand: '2 AM Study', type: 'Memory Kit', photoPockets: '30', includes: 'Album, Message Cards, Stickers, Washi Tape, Journal', packaging: 'Keepsake Box', dimensions: '25x20x5 cm', weight: '450g' },
