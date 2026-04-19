@@ -247,6 +247,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Session middleware for cart & auth
+const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
   secret: process.env.SESSION_SECRET || '2am-study-store-secret',
   resave: false,
@@ -254,8 +255,8 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     httpOnly: true,
-    secure: true,
-    sameSite: 'none'
+    secure: isProduction, // Only secure in production
+    sameSite: isProduction ? 'none' : 'lax'
   }
 }));
 

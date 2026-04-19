@@ -1029,8 +1029,8 @@ function renderProducts(skipAnimation = false) {
     filtered = filtered.filter(p => 
       p.name.toLowerCase().includes(term) || 
       p.cat.toLowerCase().includes(term) ||
-      p.brand.toLowerCase().includes(term) ||
-      p.specs.toLowerCase().includes(term)
+      (p.brand && p.brand.toLowerCase().includes(term)) ||
+      (p.specs && JSON.stringify(p.specs).toLowerCase().includes(term))
     );
   }
 
@@ -1113,13 +1113,13 @@ function renderProducts(skipAnimation = false) {
         </button>
       </div>
       <div class="flipkart-product-content">
-        <span class="flipkart-product-brand">${product.brand}</span>
+        <span class="flipkart-product-brand">${product.specs?.brand || '2 AM Study'}</span>
         <h3 class="flipkart-product-title">${product.name}</h3>
-        <span class="flipkart-product-specs">${product.specs}</span>
+        <span class="flipkart-product-specs">${product.specs ? Object.values(product.specs).slice(1, 4).join(', ') : ''}</span>
         
         <div class="flipkart-rating-row">
           <span class="flipkart-rating-pill">${product.rating} ★</span>
-          <span class="flipkart-review-count">(${product.reviews.toLocaleString()})</span>
+          <span class="flipkart-review-count">(${product.ratingCount?.toLocaleString() || 0})</span>
           ${stockHtml}
         </div>
         
