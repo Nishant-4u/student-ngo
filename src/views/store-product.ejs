@@ -509,7 +509,7 @@ function checkDelivery() {
     return;
   }
   resultDiv.innerHTML = '<span style="color:var(--fk-text2)">Checking...</span>';
-  fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/check-delivery`, {
+  fetch(`/api/store/check-delivery`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ pincode, productId: PRODUCT_ID }),
@@ -537,7 +537,7 @@ function addToCart(productId, btnEl) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
   }
 
-  fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart/add`, {
+  fetch(`/api/store/cart/add`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId, qty: 1 }),
@@ -624,7 +624,7 @@ function buyNow(productId) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
   }
 
-  fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart/buynow`, {
+  fetch(`/api/store/cart/buynow`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId }),
@@ -683,7 +683,7 @@ function submitReview(productId) {
     alert('Please fill all fields and select a rating.');
     return;
   }
-  fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/products/` + productId + `/reviews`, {
+  fetch(`/api/store/products/` + productId + `/reviews`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ user, rating: selectedRating, comment }),

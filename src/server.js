@@ -110,7 +110,7 @@ const STORE_PRODUCTS = [
   },
   {
     id: 403, cat: 'essentials', emoji: '📌', badge: null, badgeLabel: '', name: 'Sticky Notes Pack', desc: 'Sticky notes pack for reminders, formulas, and revision tags.', price: 149, orig: 229,
-    images: ['/assets/images/products/sticky-1.webp', '/assets/images/products/sticky-2.webp', '/assets/images/products/sticky-3.webp', '/assets/images/products/sticky-4.webp'],
+    images: ['/assets/images/products/Sticky-1.webp', '/assets/images/products/Sticky-2.webp', '/assets/images/products/Sticky-3.webp', '/assets/images/products/Sticky-4.webp'],
     stock: 50, rating: 4.0, ratingCount: 445,
     features: ['Pack of 8 pads (6 colors)', 'Strong adhesive that removes cleanly', 'Perfect for formulas and reminders', 'Compact size fits in pencil box', 'Recyclable paper material'],
     specs: { brand: '2 AM Study', type: 'Sticky Notes', sheetsPerPad: '100', totalSheets: '800', colors: '6 Assorted', size: '3x3 inches', adhesive: 'Repositionable' },

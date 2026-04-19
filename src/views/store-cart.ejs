@@ -440,7 +440,7 @@ body {
 let cartItems = [];
 
 async function loadCart() {
-  const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart`, { credentials: 'include' });
+  const res = await fetch(`/api/store/cart`, { credentials: 'include' });
   const data = await res.json();
   if (data.success) {
     cartItems = data.items;
@@ -449,7 +449,7 @@ async function loadCart() {
 }
 
 async function updateQty(productId, delta) {
-  const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart/add`, {
+  const res = await fetch(`/api/store/cart/add`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId, qty: delta }),
@@ -470,7 +470,7 @@ async function addSuggestedToCart(event, productId) {
   btn.disabled = true;
 
   try {
-    const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart/add`, {
+    const res = await fetch(`/api/store/cart/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productId, qty: 1 }),
@@ -502,7 +502,7 @@ async function addSuggestedToCart(event, productId) {
 }
 
 async function removeItem(productId) {
-  const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart/remove`, {
+  const res = await fetch(`/api/store/cart/remove`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId }),
