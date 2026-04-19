@@ -489,7 +489,7 @@ app.get('/store/order-summary', (req, res) => {
 // --- Store API Endpoints ---
 
 // Get all products (API)
-app.get('/api/store/products', (req, res) => {
+app.get('/store/api/store/products', (req, res) => {
   const { category, sort, search } = req.query;
   let products = [...STORE_PRODUCTS];
 
@@ -516,14 +516,14 @@ app.get('/api/store/products', (req, res) => {
 });
 
 // Get single product (API)
-app.get('/api/store/products/:id', (req, res) => {
+app.get('/store/api/store/products/:id', (req, res) => {
   const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
   if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
   res.json({ success: true, product });
 });
 
 // Get related products (API)
-app.get('/api/store/products/:id/related', (req, res) => {
+app.get('/store/api/store/products/:id/related', (req, res) => {
   const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
   if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
   const related = STORE_PRODUCTS.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 4);
@@ -531,7 +531,7 @@ app.get('/api/store/products/:id/related', (req, res) => {
 });
 
 // Delivery check by pincode (API)
-app.post('/api/store/check-delivery', (req, res) => {
+app.post('/store/api/store/check-delivery', (req, res) => {
   const { pincode, productId } = req.body;
   if (!pincode || !/^\d{6}$/.test(pincode)) {
     return res.status(400).json({ success: false, error: 'Please enter a valid 6-digit pincode' });
@@ -572,13 +572,13 @@ app.post('/api/store/check-delivery', (req, res) => {
 });
 
 // Cart management (session-based)
-app.get('/api/store/cart', (req, res) => {
+app.get('/store/api/store/cart', (req, res) => {
   const cart = req.session.cart || [];
   const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   res.json({ success: true, items: cart, total, itemCount: cart.reduce((s, i) => s + i.qty, 0) });
 });
 
-app.post('/api/store/cart/add', (req, res) => {
+app.post('/store/api/store/cart/add', (req, res) => {
   const { productId, qty } = req.body;
   const product = STORE_PRODUCTS.find(p => p.id === Number(productId));
   if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
@@ -622,12 +622,12 @@ app.post('/api/store/cart/add', (req, res) => {
   res.json({ success: true, items: cart, total: cart.reduce((s, i) => s + i.price * i.qty, 0), itemCount: cart.reduce((s, i) => s + i.qty, 0) });
 });
 
-app.get('/api/store/cart', (req, res) => {
+app.get('/store/api/store/cart', (req, res) => {
   const cart = req.session.cart || [];
   res.json({ success: true, items: cart, total: cart.reduce((s, i) => s + i.price * i.qty, 0), itemCount: cart.reduce((s, i) => s + i.qty, 0) });
 });
 
-app.post('/api/store/cart/remove', (req, res) => {
+app.post('/store/api/store/cart/remove', (req, res) => {
   const { productId } = req.body;
   if (!req.session.cart) return res.json({ success: true, items: [], total: 0, itemCount: 0 });
   req.session.cart = req.session.cart.filter(i => i.productId !== Number(productId));
@@ -635,7 +635,7 @@ app.post('/api/store/cart/remove', (req, res) => {
   res.json({ success: true, items: cart, total: cart.reduce((s, i) => s + i.price * i.qty, 0), itemCount: cart.reduce((s, i) => s + i.qty, 0) });
 });
 
-app.post('/api/store/cart/buynow', (req, res) => {
+app.post('/store/api/store/cart/buynow', (req, res) => {
   const { productId } = req.body;
   const product = STORE_PRODUCTS.find(p => p.id === Number(productId));
   if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
@@ -653,7 +653,7 @@ app.post('/api/store/cart/buynow', (req, res) => {
 });
 
 // Product reviews (API)
-app.get('/api/store/products/:id/reviews', (req, res) => {
+app.get('/store/api/store/products/:id/reviews', (req, res) => {
   const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
   if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
   const reviews = product.reviews || [];
@@ -666,7 +666,7 @@ app.get('/api/store/products/:id/reviews', (req, res) => {
   res.json({ success: true, avgRating, totalReviews: reviews.length, ratingBreakdown, reviews });
 });
 
-app.post('/api/store/products/:id/reviews', (req, res) => {
+app.post('/store/api/store/products/:id/reviews', (req, res) => {
   const { user, rating, comment } = req.body;
   if (!user || !rating || !comment) return res.status(400).json({ success: false, error: 'All fields required' });
   if (rating < 1 || rating > 5) return res.status(400).json({ success: false, error: 'Rating must be 1-5' });
@@ -683,7 +683,7 @@ app.post('/api/store/products/:id/reviews', (req, res) => {
 });
 
 // Product image upload (admin use)
-app.post('/api/store/products/:id/images', upload.array('images', 5), (req, res) => {
+app.post('/store/api/store/products/:id/images', upload.array('images', 5), (req, res) => {
   const product = STORE_PRODUCTS.find(p => p.id === Number(req.params.id));
   if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
   if (!req.files || req.files.length === 0) return res.status(400).json({ success: false, error: 'No images uploaded' });
@@ -713,7 +713,7 @@ function computeCheckoutSummary(cart, coupon) {
 // --- Unified Checkout State API ---
 
 // GET /api/store/checkout — Returns cart + customer + coupon + server-computed price summary
-app.get('/api/store/checkout', (req, res) => {
+app.get('/store/api/store/checkout', (req, res) => {
   const cart = req.session.cart || [];
   const customer = req.session.checkoutCustomer || null;
   const coupon = req.session.checkoutCoupon || null;
@@ -722,7 +722,7 @@ app.get('/api/store/checkout', (req, res) => {
 });
 
 // POST /api/store/checkout/address — Save delivery address to session
-app.post('/api/store/checkout/address', (req, res) => {
+app.post('/store/api/store/checkout/address', (req, res) => {
   const { name, email, phone, pincode, address, city } = req.body;
   if (!name || !email || !phone || !pincode || !address || !city) {
     return res.status(400).json({ success: false, error: 'All address fields are required' });
@@ -742,7 +742,7 @@ app.post('/api/store/checkout/address', (req, res) => {
 });
 
 // POST /api/store/checkout/coupon — Validate and apply coupon
-app.post('/api/store/checkout/coupon', (req, res) => {
+app.post('/store/api/store/checkout/coupon', (req, res) => {
   const { code } = req.body;
   if (!code) return res.status(400).json({ success: false, error: 'Coupon code is required' });
 
@@ -796,13 +796,13 @@ app.post('/api/store/checkout/coupon', (req, res) => {
 });
 
 // DELETE /api/store/checkout/coupon — Remove applied coupon
-app.delete('/api/store/checkout/coupon', (req, res) => {
+app.delete('/store/api/store/checkout/coupon', (req, res) => {
   req.session.checkoutCoupon = null;
   res.json({ success: true, message: 'Coupon removed' });
 });
 
 // POST /api/store/checkout/clear — Clear session after successful payment
-app.post('/api/store/checkout/clear', (req, res) => {
+app.post('/store/api/store/checkout/clear', (req, res) => {
   req.session.hasOrderedBefore = true; // Mark for WELCOME coupon restriction
   req.session.cart = [];
   req.session.checkoutCustomer = null;
@@ -1092,7 +1092,7 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-app.post('/api/store/create-order', async (req, res) => {
+app.post('/store/api/store/create-order', async (req, res) => {
   try {
     if (!razorpay) {
       return res.status(500).json({ error: 'Razorpay is not configured on server.' });
@@ -1153,7 +1153,7 @@ app.post('/api/store/create-order', async (req, res) => {
   }
 });
 
-app.post('/api/store/verify-payment', (req, res) => {
+app.post('/store/api/store/verify-payment', (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
