@@ -506,7 +506,7 @@ function debounce(fn, delay) {
 async function initializeCart() {
   // Standard Cart + checkout state from server session
   try {
-      const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/checkout`, { credentials: 'include' });
+      const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/checkout`, { credentials: 'include' });
       const data = await res.json();
       if (data.success) {
         cartItems = data.cart || [];
@@ -545,7 +545,7 @@ async function initializeCart() {
     });
     if (!allFilled) return; // Only save when all fields have something
     try {
-      await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/checkout/address`, {
+      await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/checkout/address`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -709,7 +709,7 @@ async function applyCoupon(source = 'desktop') {
   if (!code) { if(msg) { msg.textContent = 'Enter a coupon code first.'; msg.style.color = '#ff6161'; msg.style.display = 'block'; } return; }
 
   try {
-    const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/checkout/coupon`, {
+    const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/checkout/coupon`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code }),
@@ -732,7 +732,7 @@ async function applyCoupon(source = 'desktop') {
 
 async function removeCoupon() {
   try {
-    await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/checkout/coupon`, { method: 'DELETE', credentials: 'include' });
+    await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/checkout/coupon`, { method: 'DELETE', credentials: 'include' });
   } catch(e) { /* ignore */ }
   appliedCouponData = null;
   const input = document.getElementById('couponInput');
@@ -765,7 +765,7 @@ async function proceedToCheckout() {
 
   // Submit address to server for validation + session save
   try {
-    const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/checkout/address`, {
+    const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/checkout/address`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

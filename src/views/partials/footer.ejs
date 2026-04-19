@@ -2332,7 +2332,7 @@
       const isStorePage = window.location.pathname.includes('/store');
       
       try {
-        const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL || '' %>/api/store/cart`, { credentials: 'include' });
+        const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart`, { credentials: 'include' });
         const data = await res.json();
         if (data.success && data.itemCount > 0) {
           badge.textContent = data.itemCount;
