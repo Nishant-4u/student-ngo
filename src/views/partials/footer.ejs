@@ -591,7 +591,6 @@
 
 
 <!-- Store Cart Bubble -->
-<% if (!locals.hideCartBubble) { %>
 <div class="store-cart-container" id="storeCartContainer">
   <div class="store-cart-bubble" onclick="window.location.href='/store/cart'">
     <i class="fa-solid fa-cart-shopping"></i>
@@ -599,7 +598,6 @@
     <span class="cart-badge" id="floatingCartCount" style="display: none;">0</span>
   </div>
 </div>
-<% } %>
 
 <footer class="site-footer">
   <div class="container pb-5 pt-4">
@@ -2328,21 +2326,24 @@
       const badge = document.getElementById('floatingCartCount');
       if (!container || !badge) return;
       
-      // Only show on store pages
       const isStorePage = window.location.pathname.includes('/store');
       
+      // Strict path check - Only show on store pages
+      if (isStorePage) {
+        container.style.display = 'block';
+      } else {
+        container.style.display = 'none';
+        return; // No need to fetch cart data on non-store pages
+      }
+      
       try {
-        const res = await fetch(`<%= process.env.NEXT_PUBLIC_API_URL %>/api/store/cart`, { credentials: 'include' });
+        const res = await fetch(`/store/api/store/cart`, { credentials: 'include' });
         const data = await res.json();
         if (data.success && data.itemCount > 0) {
           badge.textContent = data.itemCount;
           badge.style.display = 'flex';
-          container.style.display = 'block'; // Always show if items exist
         } else {
           badge.style.display = 'none';
-          // Hide only if not on a store page AND cart is empty
-          if (!isStorePage) container.style.display = 'none';
-          else container.style.display = 'block'; 
         }
       } catch (err) {
         console.error('Failed to sync cart', err);
@@ -2352,7 +2353,7 @@
     document.addEventListener('DOMContentLoaded', updateFloatingCart);
     window.addEventListener('cartUpdated', updateFloatingCart);
     
-    // Also periodically check for cart updates if not triggered by event
+    // Periodically sync cart state
     setInterval(updateFloatingCart, 10000); 
   </script>
 </body>

@@ -472,7 +472,7 @@ app.get('/store/cart', (req, res) => {
     pageTitle: 'My Cart | 2AM Study Store',
     metaDescription: 'View and manage your selected items in the Student Store cart before proceeding to checkout.',
     hideBot: true,
-    hideCartBubble: true,
+    hideCartBubble: false,
     storeProducts: STORE_PRODUCTS
   });
 });
@@ -482,7 +482,7 @@ app.get('/store/order-summary', (req, res) => {
     pageTitle: 'Order Summary | 2AM Study Store',
     metaDescription: 'Review your cart items, total amount, and proceed to checkout securely.',
     hideBot: true,
-    hideCartBubble: true
+    hideCartBubble: false
   });
 });
 
